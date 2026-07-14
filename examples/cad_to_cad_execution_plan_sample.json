@@ -1,0 +1,12 @@
+{
+  "id": "synthetic_empty_plan",
+  "confirmed": false,
+  "previewed": false,
+  "active_document": null,
+  "risk_level": "low",
+  "operation_count": 0,
+  "operations": [],
+  "fixture_kind": "original_synthetic",
+  "status": "not_run",
+  "fixture_notice": "Original empty synthetic schema; no captured drawing geometry or observed handles. Not run and not real-CAD acceptance evidence."
+}

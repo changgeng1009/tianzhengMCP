@@ -1,0 +1,14 @@
+{
+  "phase": "H0",
+  "status": "PASS",
+  "service_created": true,
+  "tool_registry_created": true,
+  "registered_tool_count": 13,
+  "pipeline_state_created": true,
+  "safety_middleware_created": true,
+  "invocation_log_created": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "d1_allowed": false,
+  "production_d1_allowed": false
+}

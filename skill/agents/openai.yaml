@@ -1,0 +1,4 @@
+interface:
+  display_name: "天正给排水识别与副本补绘"
+  short_description: "安全识别目标图缺失的给排水对象并通过可替换后端修复副本"
+  default_prompt: "Use $tianzheng-water-repair to inspect reference and target water-supply drawings, plan safe repairs, and route tasks by backend capability."

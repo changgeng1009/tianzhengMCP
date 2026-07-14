@@ -1,0 +1,54 @@
+{
+  "phase": "MVP-1.3",
+  "mode": "dry_run_gpt_visual_decision",
+  "tasks": [
+    {
+      "task_id": "mvp1_review_0001",
+      "source_visual_item": "mvp1_visual_0001",
+      "task_type": "review_only",
+      "review_reason": "Evidence crop is only an insufficient-evidence card; no bbox/center/local CAD crop is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with bbox for reference_dwg:aggregate_AcDbCircle.",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0002",
+      "source_visual_item": "mvp1_visual_0002",
+      "task_type": "review_only",
+      "review_reason": "Evidence crop is only an insufficient-evidence card; no bbox/center/local CAD crop is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with bbox for reference_dwg:aggregate_AcDbArc.",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0003",
+      "source_visual_item": "mvp1_visual_0003",
+      "task_type": "review_only",
+      "review_reason": "Evidence crop is only an insufficient-evidence card; no text position, bbox, or local overlay is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with text bbox for reference_dwg:aggregate_AcDbText.",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0004",
+      "source_visual_item": "mvp1_visual_0004",
+      "task_type": "review_only",
+      "review_reason": "Evidence crop is only an insufficient-evidence card; no block name, insertion point, bbox, or local overlay is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with insertion point for reference_dwg:aggregate_AcDbBlockReference.",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0005",
+      "source_visual_item": "mvp1_visual_0005",
+      "task_type": "review_only",
+      "review_reason": "Evidence is a full PDF page crop without region bbox or target overlay; cannot identify a specific missing entity.",
+      "required_followup": "Provide region-level PDF crop plus corresponding target crop/overlay for the ambiguous visual region.",
+      "gpt_visual_review_required": true
+    }
+  ],
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false
+}
+

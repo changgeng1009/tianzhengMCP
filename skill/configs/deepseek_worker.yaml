@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "api_key_environment_variable": "DEEPSEEK_API_KEY",
+  "max_input_chars": 20000,
+  "max_output_tokens": 4000,
+  "allowed_task_types": ["schema_review", "static_analysis", "test_draft", "report_draft"],
+  "autocad_execution_authorized": false,
+  "dwg_binary_allowed": false,
+  "full_history_allowed": false
+}

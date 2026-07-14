@@ -1,0 +1,28 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "real_test_001",
+      "name": "示例班级班真实图纸首轮dry-run验收",
+      "reference_sources": [
+        {
+          "type": "pdf",
+          "source_type": "pdf",
+          "path": "D:/ExampleWorkspace/天正/artifactsreal.test.001/水泵房-模型.pdf"
+        }
+      ],
+      "target_dwg_path": "D:/ExampleWorkspace/天正/artifactsreal.test.001/reference_sample_02.dwg",
+      "expected_missing": [],
+      "manual_anchor_pairs": [],
+      "options": {
+        "enable_spatial_alignment": true,
+        "enable_coordinate_repair_actions": true,
+        "enable_t30_writeback": false,
+        "dry_run_only": true,
+        "verification_mode": "manual_review"
+      },
+      "metadata": {
+        "note": "首轮真实图纸dry-run测试，不真实写CAD，不修改原始DWG。目标DWG按项目目录搜索确认使用实际存在文件：reference_sample_02.dwg；用户给定文件名reference_sample_02_requested.dwg未找到。参考PDF为水泵房-模型.pdf。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "backend_capabilities.schema.json",
+  "type": "object",
+  "required": ["backend_id", "backend_version", "available", "capabilities", "capability_evidence", "sandbox_verified_capabilities", "professional_domains"],
+  "properties": {
+    "backend_id": {"enum": ["com", "mock", "net_bridge", "tianzheng_api"]},
+    "backend_version": {"type": "string"},
+    "available": {"type": "boolean"},
+    "capabilities": {
+      "type": "object",
+      "properties": {
+        "scan_acdb_entities": {"type": "boolean"},
+        "scan_tianzheng_water_objects": {"type": "boolean"},
+        "create_acdb_line": {"type": "boolean"},
+        "create_acdb_text": {"type": "boolean"},
+        "create_acdb_polyline": {"type": "boolean"},
+        "create_tdb_pipe": {"type": "boolean"},
+        "create_tdb_valve": {"type": "boolean"},
+        "create_tdb_fitting": {"type": "boolean"},
+        "create_tianzheng_water_equipment": {"type": "boolean"},
+        "save_working_copy": {"type": "boolean"},
+        "close_reopen": {"type": "boolean"},
+        "persistence_qa": {"type": "boolean"},
+        "command_completion_tracking": {"type": "boolean"},
+        "official_tianzheng_api": {"type": "boolean"}
+      },
+      "additionalProperties": {"type": "boolean"}
+    },
+    "capability_evidence": {"type": "object", "additionalProperties": {"type": "string"}},
+    "sandbox_verified_capabilities": {"type": "array", "items": {"type": "string"}},
+    "professional_domains": {"type": "object", "additionalProperties": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

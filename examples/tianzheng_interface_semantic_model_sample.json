@@ -1,0 +1,223 @@
+{
+  "source_dwg": "pump_room.dwg",
+  "scan_timestamp": "2026-07-07T12:00:00+08:00",
+  "tianzheng_detected": true,
+  "tianzheng_version": "T30 V1.0 公测版",
+  "entity_statistics": {
+    "total_entities": 85,
+    "basic_cad_count": 30,
+    "tianzheng_object_count": 55,
+    "pipe_count": 35,
+    "valve_count": 8,
+    "fitting_count": 10,
+    "dimension_count": 2,
+    "unknown_proxy_count": 0,
+    "model_space_count": 80,
+    "paper_space_count": 5,
+    "object_name_distribution": {
+      "TDbPipe": 35,
+      "TDbPipeValve": 8,
+      "TDbPipeFitting": 10,
+      "TDbDimension2": 2,
+      "AcDbLine": 15,
+      "AcDbText": 10
+    },
+    "layer_distribution": {
+      "PIPE-给水": 12,
+      "PIPE-排水": 8,
+      "PIPE-消防": 15,
+      "PIPE-喷淋": 10,
+      "VALVE-消防": 6,
+      "DIM-标注": 2
+    }
+  },
+  "systems": [
+    {
+      "system_type": "给水",
+      "pipes": [
+        {
+          "handle": "A1B2",
+          "object_name": "TDbPipe",
+          "semantic_type": "pipe",
+          "layer": "PIPE-给水",
+          "system_type": "给水",
+          "system_type_source": "TDbPipe.SysType",
+          "dn": "DN50",
+          "dn_source": "TDbPipe.DNDiameter",
+          "start_point": {
+            "x": 0,
+            "y": 0,
+            "z": 3000,
+            "coordinate_system": "cad_world"
+          },
+          "end_point": {
+            "x": 5000,
+            "y": 0,
+            "z": 3000,
+            "coordinate_system": "cad_world"
+          },
+          "length": 5000.0,
+          "elevation_start": 3000.0,
+          "elevation_end": 3000.0,
+          "bounding_box": [],
+          "warnings": []
+        },
+        {
+          "handle": "C3D4",
+          "object_name": "TDbPipe",
+          "semantic_type": "pipe",
+          "layer": "PIPE-给水",
+          "system_type": "给水",
+          "system_type_source": "TDbPipe.SysType",
+          "dn": "DN25",
+          "dn_source": "TDbPipe.DNDiameter",
+          "start_point": {
+            "x": 5000,
+            "y": 0,
+            "z": 3000,
+            "coordinate_system": "cad_world"
+          },
+          "end_point": {
+            "x": 5000,
+            "y": 3000,
+            "z": 3000,
+            "coordinate_system": "cad_world"
+          },
+          "length": 3000.0,
+          "elevation_start": 3000.0,
+          "elevation_end": 3000.0,
+          "bounding_box": [],
+          "warnings": []
+        }
+      ],
+      "valves": [
+        {
+          "handle": "V001",
+          "object_name": "TDbPipeValve",
+          "semantic_type": "valve",
+          "layer": "VALVE-给水",
+          "system_type": "给水",
+          "valve_type_guess": "给水阀门",
+          "center": {
+            "x": 2500,
+            "y": 0,
+            "z": 3000,
+            "coordinate_system": "cad_world"
+          },
+          "width": 200.0,
+          "height": 300.0,
+          "bounding_box": [],
+          "warnings": []
+        }
+      ],
+      "fittings": [
+        {
+          "handle": "F001",
+          "object_name": "TDbPipeFitting",
+          "semantic_type": "fitting",
+          "layer": "PIPE-给水",
+          "system_type": "给水",
+          "fitting_type_guess": "弯头",
+          "center": {
+            "x": 5000,
+            "y": 0,
+            "z": 3000,
+            "coordinate_system": "cad_world"
+          },
+          "width": 100.0,
+          "height": 100.0,
+          "bounding_box": [],
+          "warnings": []
+        }
+      ],
+      "annotations": [],
+      "warnings": []
+    },
+    {
+      "system_type": "消防",
+      "pipes": [
+        {
+          "handle": "F5G6",
+          "object_name": "TDbPipe",
+          "semantic_type": "pipe",
+          "layer": "PIPE-消防",
+          "system_type": "消防",
+          "system_type_source": "TDbPipe.SysType",
+          "dn": "DN150",
+          "dn_source": "TDbPipe.DNDiameter",
+          "start_point": {
+            "x": 0,
+            "y": 5000,
+            "z": 0,
+            "coordinate_system": "cad_world"
+          },
+          "end_point": {
+            "x": 8000,
+            "y": 5000,
+            "z": 0,
+            "coordinate_system": "cad_world"
+          },
+          "length": 8000.0,
+          "elevation_start": 0.0,
+          "elevation_end": 0.0,
+          "bounding_box": [],
+          "warnings": []
+        }
+      ],
+      "valves": [
+        {
+          "handle": "V101",
+          "object_name": "TDbPipeValve",
+          "semantic_type": "valve",
+          "layer": "VALVE-消防",
+          "system_type": "消防",
+          "valve_type_guess": "消防阀门",
+          "center": {
+            "x": 4000,
+            "y": 5000,
+            "z": 0,
+            "coordinate_system": "cad_world"
+          },
+          "width": 300.0,
+          "height": 400.0,
+          "bounding_box": [],
+          "warnings": []
+        }
+      ],
+      "fittings": [],
+      "annotations": [],
+      "warnings": []
+    }
+  ],
+  "pipe_network_summary": {
+    "node_count": 18,
+    "edge_count": 35,
+    "connected_component_count": 4,
+    "system_summaries": {
+      "给水": {
+        "pipe_count": 12,
+        "valve_count": 3
+      },
+      "消防": {
+        "pipe_count": 15,
+        "valve_count": 5
+      }
+    }
+  },
+  "proxy_objects": [
+    {
+      "handle": "U999",
+      "object_name": "SomeUnknownType",
+      "layer": "0",
+      "classification": "unknown_custom",
+      "classification_reason": "ObjectName not recognized",
+      "bounding_box": [],
+      "xdata_summary": {},
+      "extension_dictionary_keys": [],
+      "warnings": []
+    }
+  ],
+  "warnings": [
+    "部分管道未标注管径，请人工确认"
+  ]
+}

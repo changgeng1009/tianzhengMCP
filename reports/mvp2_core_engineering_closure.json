@@ -1,0 +1,101 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "MVP2-CORE-ENGINEERING-CLOSURE",
+  "status": "PASS_MVP2_CORE_ENGINEERING_RECONSTRUCTION",
+  "supersedes": "Stage 5.1-R3 full-337 policy; Dimension2 is now an allowed difference by Stage 6 plan",
+  "ordinary": {
+    "attempted": 16,
+    "persisted": 16
+  },
+  "core_tdb": {
+    "planned": 331,
+    "persisted": 331
+  },
+  "work_packages": {
+    "planned": 103,
+    "successful": 103
+  },
+  "valve_relationships": {
+    "status": "VERIFIED_RELATIONSHIP_REMAP",
+    "save_reopen_verified": true
+  },
+  "capability_matrix": {},
+  "dimension2": {
+    "count": 6,
+    "task_ids": [
+      "stage3_2_missing_0001",
+      "stage3_2_missing_0354",
+      "stage3_2_missing_0355",
+      "stage3_2_missing_0356",
+      "stage3_2_missing_0357",
+      "stage3_2_missing_0358"
+    ],
+    "required": false,
+    "classification": "ALLOWED_DIFFERENCE",
+    "automated_completion_claimed": false
+  },
+  "source_integrity": {
+    "phase": "STAGE5.1-R3-FINAL",
+    "reference_sha256_before": "redacted_input_sha256",
+    "reference_sha256_after": "redacted_input_sha256",
+    "target_sha256_before": "redacted_input_sha256",
+    "target_sha256_after": "redacted_input_sha256",
+    "source_hashes_unchanged": true,
+    "source_reference_opened": false,
+    "source_target_opened": false,
+    "source_reference_saved": false,
+    "source_target_saved": false,
+    "source_modified": false,
+    "production_d1_allowed": false
+  },
+  "source_paths": {},
+  "tests": {
+    "targeted": "7 passed",
+    "acceptance_group": "214 passed",
+    "full_suite": "1255 passed, 1 warning",
+    "passed": true
+  },
+  "mvp2_completed": true,
+  "mvp3_allowed": true,
+  "production_d1_allowed": false,
+  "evidence": {
+    "core_checkpoint": {
+      "path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\reports\\checkpoint_c_d.json",
+      "sha256": "redacted_input_sha256",
+      "size": 162766
+    },
+    "source_integrity": {
+      "path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\source_integrity.json",
+      "sha256": "redacted_input_sha256",
+      "size": 662
+    },
+    "input_manifest": {
+      "path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\input_manifest.json",
+      "sha256": "redacted_input_sha256",
+      "size": 870
+    },
+    "capability_matrix": {},
+    "dimension2_scope": {
+      "path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\dimension2\\dimension2_frozen_objects.json",
+      "sha256": "redacted_input_sha256",
+      "size": 8389
+    }
+  },
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 3
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

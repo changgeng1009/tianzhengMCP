@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["last_completed_batch_id", "completed_batch_count", "completed_task_count", "plan_hash", "journal_mode", "atomic_write", "manual_save_status"],
+  "properties": {
+    "last_completed_batch_id": {"type": ["string", "null"]},
+    "completed_batch_count": {"type": "integer", "minimum": 0},
+    "completed_task_count": {"type": "integer", "minimum": 0},
+    "plan_hash": {"type": "string"}, "journal_mode": {"const": "append_only"}, "atomic_write": {"const": true},
+    "manual_save_status": {"enum": ["NOT_REQUIRED", "MANUAL_SAVE_REQUIRED", "MANUAL_SAVE_CONFIRMED"]}
+  }
+}

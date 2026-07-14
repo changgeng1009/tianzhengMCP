@@ -1,0 +1,92 @@
+{
+  "phase": "STAGE5.1-R2",
+  "run_id": "stage5_1_r2_20260711_151937",
+  "status": "BLOCKED_TDB_OBSERVABILITY_LIMIT",
+  "source_hashes_before": {},
+  "source_hashes_after": {},
+  "source_hashes_unchanged": true,
+  "frozen_regression_capabilities": {
+    "TDbPipe": "PASS",
+    "TDbPipeFitting": "PASS",
+    "TDbPipeValve": "PASS"
+  },
+  "capability_matrix": {},
+  "blocked_types": [
+    "TDbDimension2"
+  ],
+  "observability_blockers": {
+    "TDbDimension2": {
+      "fields": [],
+      "attempted_channels": [
+        "COM_dynamic_properties",
+        "ObjectName_Handle_OwnerId_ObjectId",
+        "GetXData",
+        "ExtensionDictionary",
+        "NamedObjectDictionary",
+        "IDPairs",
+        "GetBoundingBox",
+        "position_center",
+        "rotation",
+        "dimensions",
+        "nested_block_geometry",
+        "internal_text_or_child",
+        "neighboring_TDb",
+        "equipment_interface_geometry",
+        "reference_clone_fingerprint",
+        "reopen_fingerprint"
+      ],
+      "reason": "field is not directly readable and cannot be uniquely derived from current COM/metadata/geometry evidence",
+      "required_new_interface": "Tianzheng read-only API exposing Dimension2 display value, dimension/leader geometry, and annotation target",
+      "named_object_dictionary_records_scanned": 98,
+      "named_object_dictionary_matches": 0,
+      "readonly_virtual_preview_available": false
+    }
+  },
+  "full_reconstruction_continued": false,
+  "mvp2_completed": false,
+  "mvp3_allowed": false,
+  "tests": {
+    "stage5_1_r2_targeted": "11 passed in 0.30s",
+    "stage5_r2_stage5_1_stage5_stage4_backend_safety": "136 passed in 1.26s",
+    "full_pytest": "1232 passed, 1 warning in 5.61s"
+  },
+  "tests_passed": true,
+  "safety_flags": {
+    "source_reference_opened": false,
+    "source_target_opened": false,
+    "source_reference_saved": false,
+    "source_target_saved": false,
+    "source_modified": false,
+    "saveas_used": false,
+    "whole_modelspace_copyobjects_used": false,
+    "sendcommand_used": false,
+    "lisp_executed": false,
+    "netload_used": false,
+    "external_dll_loaded": false,
+    "automatic_fallback_used": false,
+    "new_autocad_instance_created": false,
+    "existing_object_modified": false,
+    "existing_object_deleted": false,
+    "mvp3_executed": false,
+    "production_d1_allowed": false,
+    "autocad_connected": true,
+    "analysis_copies_opened": true,
+    "poc_sandboxes_opened_read_only": true,
+    "dwg_modified": false,
+    "dwg_saved": false
+  },
+  "production_d1_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 4
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

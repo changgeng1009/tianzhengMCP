@@ -1,0 +1,109 @@
+{
+  "phase": "S1-EVIDENCE",
+  "status": "PARTIAL",
+  "source_hash_expected": "redacted_input_sha256",
+  "source_hash_actual": "redacted_input_sha256",
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "save_called_on_source": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "drawing_executed": false,
+  "sandbox_saved": false,
+  "opened_sandbox_copy": false,
+  "input_blocked_geometry_task_count": 1,
+  "lineage_found": true,
+  "cad_geometry_found": false,
+  "executable_direct_com_task_count": 0,
+  "manual_anchor_request_count": 1,
+  "geometry_fabrication_detected": false,
+  "can_enter_s1_sandbox_minimal_repair_loop": false,
+  "tests_passed": true,
+  "pytest_result": "19 passed in 0.18s",
+  "new_test_files": [
+    "tests/repair_actions/test_s1_evidence_geometry_recovery.py"
+  ],
+  "modified_test_files": [],
+  "lineage": [
+    {
+      "source_task_id": "mvp1_task_208c4ccc9f",
+      "source_item_type": "direct_com_create",
+      "source_artifact_path": "reports/mvp_missing_tasks.json",
+      "reference_object_id": null,
+      "target_object_id": null,
+      "visual_item_id": null,
+      "crop_id": null,
+      "overlay_id": null,
+      "alignment_id": "reports/phase_d4_6_2_calibration_result.json"
+    }
+  ],
+  "manual_anchor_requests": [
+    {
+      "task_id": "mvp1_task_208c4ccc9f",
+      "object_type": "text",
+      "why_blocked": "only PDF page/width/height is present; no CAD coordinate geometry",
+      "missing_geometry_fields": [
+        "insert_point",
+        "position",
+        "center",
+        "bbox",
+        "start_point",
+        "end_point",
+        "vertices"
+      ],
+      "required_user_input": [
+        "Provide CAD-space insert_point or text bounding bbox for the missing title/block text.",
+        "Provide at least two reference-to-target anchor points if the location must be transformed.",
+        "Provide a localized overlay or crop that ties the PDF text to a CAD coordinate region."
+      ],
+      "recommended_capture_method": "在 sandbox 或 reference 中点选该标题/图签文字对象，记录 CAD 坐标 insert_point 或 bbox；不要在 source DWG 上操作。",
+      "nearby_context": [
+        {
+          "source_object_id": null,
+          "semantic_text_preview": ""
+        }
+      ],
+      "related_artifacts": [
+        "reports/mvp_missing_tasks.json",
+        "reports/phase_d4_6_2_calibration_result.json"
+      ],
+      "lineage": {
+        "source_task_id": "mvp1_task_208c4ccc9f",
+        "source_item_type": "direct_com_create",
+        "source_artifact_path": "reports/mvp_missing_tasks.json",
+        "reference_object_id": null,
+        "target_object_id": null,
+        "visual_item_id": null,
+        "crop_id": null,
+        "overlay_id": null,
+        "alignment_id": "reports/phase_d4_6_2_calibration_result.json"
+      }
+    }
+  ],
+  "generated_files": [
+    "artifacts/repair_tasks/s1_evidence_manual_anchor_requests.json",
+    "reports/s1_evidence_geometry_recovery.json",
+    "reports/s1_evidence_geometry_recovery.md"
+  ],
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 3
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

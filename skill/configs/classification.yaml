@@ -1,0 +1,9 @@
+{
+  "professional_domain": "water_supply_and_drainage",
+  "geometry_confidence_threshold": 0.8,
+  "classes": ["confirmed_direct_com", "controlled_tianzheng_execution", "manual_tianzheng", "review_only", "blocked_geometry", "blocked_invalid_task"],
+  "executable_by_default": ["confirmed_direct_com"],
+  "isolated_from_execution": ["manual_tianzheng", "review_only", "blocked_geometry", "blocked_invalid_task"],
+  "controlled_tianzheng_execution_enabled": false,
+  "hvac_execution_enabled": false
+}

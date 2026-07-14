@@ -1,0 +1,14 @@
+{
+  "task_id": "manual_tdb_pipe_001",
+  "classification": "manual_tianzheng",
+  "object_type": "TDbPipe",
+  "professional_domain": "water_supply_and_drainage",
+  "system_type": "water_supply",
+  "domain_object_type": "pipe",
+  "geometry": {"start_point": [100, 200, 0], "end_point": [150, 200, 0]},
+  "required_capabilities": ["create_tdb_pipe", "persistence_qa"],
+  "preferred_backend": "tianzheng_api",
+  "allowed_backends": ["tianzheng_api", "net_bridge"],
+  "fallback_policy": "manual_tianzheng",
+  "execution_allowed": false
+}

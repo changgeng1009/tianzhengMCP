@@ -1,0 +1,10 @@
+{
+  "status": "synthetic_no_local_merge",
+  "synthetic": true,
+  "seed_total": 6,
+  "local_discovered_matched": 0,
+  "unmatched_seed": 6,
+  "matched_ids": [],
+  "d1_allowed": false,
+  "production_d1_allowed": false
+}

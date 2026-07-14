@@ -1,0 +1,25 @@
+# Anonymized historical pilot configuration; input drawings are not bundled.
+# Configure authorized local copies before use. Stored write flags are not user authorization.
+samples:
+  - sample_id: sample_multi_region_pilot
+    reference_path: "D:\\ExampleWorkspace\\天正\\图纸\\2.dwg"
+    target_path: "D:\\ExampleWorkspace\\天正\\图纸\\target_sample.dwg"
+    scope: multi_region
+    expected_region: null
+    blind_test: false
+    dimension2_required: false
+    allowed_differences:
+      - TDbDimension2
+      - display_color
+      - title_variant
+      - plot_scale_text
+    protected_regions:
+      - 水泵房大样图
+      - 泵房大样
+    write_mode: AUTHORIZED_TARGET_IN_PLACE
+    target_in_place_write_allowed: true
+    target_save_allowed: true
+    reference_write_allowed: false
+    reference_save_allowed: false
+    notes: >-
+      当前为 MVP3 Pilot。目标图中的水泵房已经完成，不得重新绘制或修改。

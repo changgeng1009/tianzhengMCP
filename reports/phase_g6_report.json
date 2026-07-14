@@ -1,0 +1,8 @@
+{
+  "phase": "G6",
+  "status": "PASS",
+  "timestamp": "2026-07-08T16:29:21.301470+00:00",
+  "description": "Visual+Semantic QA: object existence, type, layer, diameter, system, geometry, persistence",
+  "source_dwg_opened": false,
+  "d1_allowed": false
+}

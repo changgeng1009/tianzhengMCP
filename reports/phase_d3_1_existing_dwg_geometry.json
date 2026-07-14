@@ -1,0 +1,45 @@
+{
+  "label": "sandbox",
+  "name": "sandbox_20260708_225154.dwg",
+  "modelspace_count": 606,
+  "enumerated": 606,
+  "object_name_counts": {
+    "AcDbPolyline": 24,
+    "AcDbLine": 179,
+    "AcDbCircle": 31,
+    "AcDbArc": 1,
+    "AcDbBlockReference": 1,
+    "TDbDrawingName": 1,
+    "AcDbText": 22,
+    "TDbDimension2": 6,
+    "TDbPump": 6,
+    "TDbPipe": 107,
+    "TDbPipeFitting": 130,
+    "TDbPipeValve": 88,
+    "TDbVPipeDim": 4,
+    "TDbWaterTank": 1,
+    "TDbEquipment": 2,
+    "TDbSymbMultiLeader": 3
+  },
+  "extents": {},
+  "sample_objects": [],
+  "pipe_count": 107,
+  "valve_count": 88,
+  "fitting_count": 130,
+  "dlp_count": 0,
+  "source_dwg_opened": false,
+  "dwg_saved": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 2
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

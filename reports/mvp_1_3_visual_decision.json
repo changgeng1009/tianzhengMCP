@@ -1,0 +1,66 @@
+{
+  "phase": "MVP-1.3",
+  "input_visual_item_count": 5,
+  "decided_item_count": 5,
+  "converted_to_direct_com_count": 0,
+  "converted_to_manual_tianzheng_count": 0,
+  "kept_review_only_count": 5,
+  "blocked_count": 0,
+  "final_direct_com_task_count": 1,
+  "final_manual_tianzheng_task_count": 0,
+  "final_review_task_count": 5,
+  "final_blocked_task_count": 0,
+  "can_enter_mvp_2": true,
+  "can_enter_mvp_2_reason": "MVP-2A only confirmed direct_com tasks; visual review items remain review_only and must not be executed.",
+  "decisions": [
+    {
+      "item_id": "mvp1_visual_0001",
+      "input_evidence_status": "insufficient",
+      "decision": "review_only",
+      "confidence": 0.0,
+      "reason": "Crop is an evidence-insufficient card only; no bbox, center, local CAD crop, or identifiable circle location is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with bbox for reference_dwg:aggregate_AcDbCircle."
+    },
+    {
+      "item_id": "mvp1_visual_0002",
+      "input_evidence_status": "insufficient",
+      "decision": "review_only",
+      "confidence": 0.0,
+      "reason": "Crop is an evidence-insufficient card only; no bbox, center, local CAD crop, or identifiable arc location is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with bbox for reference_dwg:aggregate_AcDbArc."
+    },
+    {
+      "item_id": "mvp1_visual_0003",
+      "input_evidence_status": "insufficient",
+      "decision": "review_only",
+      "confidence": 0.0,
+      "reason": "Crop is an evidence-insufficient card only; no text location, bbox, center, or local overlay is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with text bbox for reference_dwg:aggregate_AcDbText."
+    },
+    {
+      "item_id": "mvp1_visual_0004",
+      "input_evidence_status": "insufficient",
+      "decision": "review_only",
+      "confidence": 0.0,
+      "reason": "Crop is an evidence-insufficient card only; no block name, insertion point, bbox, center, or local overlay is available.",
+      "required_followup": "Provide localized reference/target crop or overlay with insertion point for reference_dwg:aggregate_AcDbBlockReference."
+    },
+    {
+      "item_id": "mvp1_visual_0005",
+      "input_evidence_status": "partial",
+      "decision": "review_only",
+      "confidence": 0.25,
+      "reason": "Crop shows a full PDF page of the pump room drawing, but there is no region bbox or target overlay tying a specific visual object to a missing task.",
+      "required_followup": "Provide region-level PDF crop plus corresponding target crop/overlay for the ambiguous visual region."
+    }
+  ],
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "acceptance_decision": "PARTIAL"
+}
+

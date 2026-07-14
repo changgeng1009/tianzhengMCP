@@ -1,0 +1,41 @@
+{
+  "environment_summary": {
+    "detected": false,
+    "message": "not_run: original empty synthetic fixture; no CAD application was contacted",
+    "caption": "",
+    "version": "",
+    "active_document": "synthetic_sample.dwg",
+    "menu_groups": []
+  },
+  "diagnostics": {
+    "active_document": "synthetic_sample.dwg",
+    "selection_count": 0,
+    "object_name_top_20": [],
+    "layer_top_20": [],
+    "proxy": 0,
+    "tianzheng_like": 0,
+    "unknown": 0,
+    "first_20_entities": []
+  },
+  "model": {
+    "source": "original_synthetic_fixture",
+    "active_document": "synthetic_sample.dwg",
+    "selection_count": 0,
+    "entities": [],
+    "summary": {
+      "total": 0,
+      "line": 0,
+      "polyline": 0,
+      "block_reference": 0,
+      "text": 0,
+      "mtext": 0,
+      "dimension": 0,
+      "proxy": 0,
+      "tianzheng_like": 0,
+      "unknown": 0
+    }
+  },
+  "fixture_kind": "original_synthetic",
+  "status": "not_run",
+  "fixture_notice": "Original empty diagnostic-schema example. All observed entities, handles, geometry, machine details and execution claims were removed. No CAD application was contacted; this is not an acceptance result."
+}

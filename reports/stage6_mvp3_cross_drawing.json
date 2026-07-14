@@ -1,0 +1,48 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "STAGE6-MVP3-CROSS-DRAWING-CORE-RECONSTRUCTION",
+  "status": "BLOCKED_MVP3_SAMPLE_SET_INSUFFICIENT",
+  "run_id": "stage6_20260711_204619",
+  "mvp2_closure_status": "PASS_MVP2_CORE_ENGINEERING_RECONSTRUCTION",
+  "sample_specific_hardcoding": false,
+  "runtime_forbidden_hardcode_count": 0,
+  "sample_config_path": "D:\\ExampleWorkspace\\天正\\config\\mvp3_samples.yaml",
+  "sample_template_path": "D:\\ExampleWorkspace\\天正\\config\\mvp3_samples.template.yaml",
+  "valid_sample_count": 0,
+  "pilot_count": 0,
+  "blind_sample_count": 0,
+  "samples": [],
+  "safety_policy_requested_path": "D:\\ExampleWorkspace\\天正\\docs\\GLOBAL_SAFETY_POLICY.md",
+  "safety_policy_resolved_path": "D:\\ExampleWorkspace\\天正\\SAFETY_POLICY.md",
+  "safety_policy_resolved": true,
+  "autocad_connected": false,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "sandbox_written": false,
+  "sendcommand_used": false,
+  "lisp_executed": false,
+  "netload_used": false,
+  "tianzheng_command_executed": false,
+  "mvp3_completed": false,
+  "mvp4_allowed": false,
+  "production_d1_allowed": false,
+  "tests": {
+    "targeted": "7 passed",
+    "acceptance_group": "214 passed",
+    "full_suite": "1255 passed, 1 warning",
+    "passed": true
+  },
+  "next_required_action": "填写 config/mvp3_samples.yaml，提供至少 3 组新真实对应样本，其中至少 2 组 blind_test=true。",
+  "evidence_paths": {
+    "mvp2_closure": "D:\\ExampleWorkspace\\天正\\reports\\mvp2_core_engineering_closure.json",
+    "hardcoding_audit": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6\\stage6_20260711_204619\\audit\\sample_specific_hardcoding_audit.json",
+    "run_root": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6\\stage6_20260711_204619"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

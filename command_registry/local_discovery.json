@@ -1,0 +1,13 @@
+{
+  "status": "not_scanned",
+  "synthetic": true,
+  "local_installation_scanned": false,
+  "total_discovered": 0,
+  "by_domain": {
+    "plumbing": 0,
+    "hvac": 0
+  },
+  "discovered": [],
+  "d1_allowed": false,
+  "production_d1_allowed": false
+}

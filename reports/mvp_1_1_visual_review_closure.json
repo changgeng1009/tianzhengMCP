@@ -1,0 +1,78 @@
+{
+  "phase": "MVP-1.1",
+  "input_visual_item_count": 5,
+  "reviewed_item_count": 5,
+  "converted_to_direct_com_count": 0,
+  "converted_to_manual_tianzheng_count": 0,
+  "kept_review_only_count": 5,
+  "blocked_count": 0,
+  "visual_evidence_missing": true,
+  "required_user_action": "请提供 reference/target overlay 截图或 PDF 页面截图",
+  "final_direct_com_task_count": 1,
+  "final_manual_tianzheng_task_count": 0,
+  "final_review_task_count": 5,
+  "final_blocked_task_count": 0,
+  "can_enter_mvp_2": false,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "visual_evidence_files_checked": [
+    "artifacts/review_previews/pump_room_review_overlay.png",
+    "artifacts/input/reference.pdf"
+  ],
+  "review_results": [
+    {
+      "item_id": "mvp1_visual_0001",
+      "related_object_ids": [],
+      "decision": "review_only",
+      "reason": "只有 aggregate 统计对象，无 bbox/center/crop；现有 overlay 不能定位该圆对象。",
+      "visual_evidence_missing": true
+    },
+    {
+      "item_id": "mvp1_visual_0002",
+      "related_object_ids": [],
+      "decision": "review_only",
+      "reason": "只有 aggregate 统计对象，无 bbox/center/crop；现有 overlay 不能定位该圆弧对象。",
+      "visual_evidence_missing": true
+    },
+    {
+      "item_id": "mvp1_visual_0003",
+      "related_object_ids": [],
+      "decision": "review_only",
+      "reason": "只有 aggregate 统计对象，无文字位置、截图或 overlay 证据；不能确认应创建或忽略。",
+      "visual_evidence_missing": true
+    },
+    {
+      "item_id": "mvp1_visual_0004",
+      "related_object_ids": [],
+      "decision": "review_only",
+      "reason": "只有 aggregate 统计对象，无 block 插入点、名称、截图或 overlay 证据；不能确认任务类型。",
+      "visual_evidence_missing": true
+    },
+    {
+      "item_id": "mvp1_visual_0005",
+      "related_object_ids": [],
+      "decision": "review_only",
+      "reason": "PDF 现有报告仅有文字摘要，缺少页面截图、区域 crop、vector/path 细节或 target overlay。",
+      "visual_evidence_missing": true
+    }
+  ],
+  "acceptance_decision": "PARTIAL",
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 5
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

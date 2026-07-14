@@ -1,0 +1,87 @@
+{
+  "source": {
+    "kind": "mock",
+    "name": "current_cad_model_sample"
+  },
+  "global_uncertainties": [],
+  "entities": [
+    {
+      "id": "shared_pipe",
+      "type": "pipe",
+      "geometry": {
+        "coordinate_system": "normalized",
+        "points": [
+          {
+            "x": 0.1,
+            "y": 0.1,
+            "coordinate_system": "normalized"
+          },
+          {
+            "x": 0.4,
+            "y": 0.12,
+            "coordinate_system": "normalized"
+          }
+        ],
+        "bounding_box": {
+          "x_min": 0.1,
+          "y_min": 0.1,
+          "x_max": 0.4,
+          "y_max": 0.12,
+          "coordinate_system": "normalized"
+        }
+      },
+      "confidence": 1.0,
+      "status": "Confirmed",
+      "evidence": "来自 Mock Current CAD Model，非图像识别。",
+      "uncertainties": [],
+      "properties": {
+        "system": "排水",
+        "dn": 75
+      }
+    },
+    {
+      "id": "moved_fixture",
+      "type": "fixture",
+      "geometry": {
+        "coordinate_system": "normalized",
+        "points": [],
+        "bounding_box": {
+          "x_min": 0.5,
+          "y_min": 0.5,
+          "x_max": 0.6,
+          "y_max": 0.6,
+          "coordinate_system": "normalized"
+        }
+      },
+      "confidence": 1.0,
+      "status": "Confirmed",
+      "evidence": "来自 Mock Current CAD Model，非图像识别。",
+      "uncertainties": [],
+      "properties": {
+        "symbol_name": "floor_drain"
+      }
+    },
+    {
+      "id": "obsolete_valve",
+      "type": "valve",
+      "geometry": {
+        "coordinate_system": "normalized",
+        "points": [],
+        "bounding_box": {
+          "x_min": 0.9,
+          "y_min": 0.9,
+          "x_max": 0.95,
+          "y_max": 0.95,
+          "coordinate_system": "normalized"
+        }
+      },
+      "confidence": 1.0,
+      "status": "Confirmed",
+      "evidence": "来自 Mock Current CAD Model，非图像识别。",
+      "uncertainties": [],
+      "properties": {
+        "system": "给水"
+      }
+    }
+  ]
+}

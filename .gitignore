@@ -1,0 +1,63 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+.codex/
+.claude/
+.agents/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+logs/
+_analyze_temp/
+temp/
+tmp/
+
+# Build and export artifacts
+build/
+dist/
+output/
+artifacts/
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+*.crt
+*.cer
+*.p7b
+*.p7c
+
+# Node and package caches
+node_modules/

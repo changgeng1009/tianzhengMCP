@@ -1,0 +1,72 @@
+{
+  "total_actions": 6,
+  "executable_actions": 0,
+  "review_required_actions": 6,
+  "high_risk_actions": 2,
+  "unsupported_actions": 2,
+  "estimated_added_objects": 3,
+  "estimated_modified_objects": 1,
+  "estimated_deleted_objects": 1,
+  "warnings": [
+    "[bbca4489] delete_candidate: action_type=delete_candidate 自动标记为 high risk",
+    "[a0b63802] review_only: 未知 object_type: UnknownType，自动标记为 high risk",
+    "Phase 1: 1/6 actions 置信度 < 0.75",
+    "Phase 1 限制: 所有 action 均为 dry-run only，不可执行"
+  ],
+  "action_summaries": [
+    {
+      "action_id": "a4f8e96f-4ec5-4fc1-85f8-c801a3d030d4",
+      "action_type": "add_pipe",
+      "object_type": "TDbPipe",
+      "risk_level": "medium",
+      "confidence": 0.92,
+      "ready_to_execute": false,
+      "requires_confirmation": true
+    },
+    {
+      "action_id": "3db6c33e-e60d-4156-bcd8-c5712d665373",
+      "action_type": "add_pipe",
+      "object_type": "TDbPipe",
+      "risk_level": "medium",
+      "confidence": 0.88,
+      "ready_to_execute": false,
+      "requires_confirmation": true
+    },
+    {
+      "action_id": "67de8c4e-4330-4412-93ae-1b1d7ac3745e",
+      "action_type": "add_valve",
+      "object_type": "TDbPipeValve",
+      "risk_level": "medium",
+      "confidence": 0.85,
+      "ready_to_execute": false,
+      "requires_confirmation": true
+    },
+    {
+      "action_id": "4e9f0192-3c1d-4887-a565-47c81249708b",
+      "action_type": "update_diameter",
+      "object_type": "TDbPipe",
+      "risk_level": "medium",
+      "confidence": 0.76,
+      "ready_to_execute": false,
+      "requires_confirmation": true
+    },
+    {
+      "action_id": "bbca4489-8262-4940-94e9-b95b783e1619",
+      "action_type": "delete_candidate",
+      "object_type": "TDbPipe",
+      "risk_level": "high",
+      "confidence": 0.95,
+      "ready_to_execute": false,
+      "requires_confirmation": true
+    },
+    {
+      "action_id": "a0b63802-53b7-4a74-b02e-0f59065de4e7",
+      "action_type": "review_only",
+      "object_type": "UnknownType",
+      "risk_level": "high",
+      "confidence": 0.4,
+      "ready_to_execute": false,
+      "requires_confirmation": true
+    }
+  ]
+}

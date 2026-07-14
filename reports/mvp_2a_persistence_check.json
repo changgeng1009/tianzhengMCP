@@ -1,0 +1,12 @@
+{
+  "phase": "MVP-2A",
+  "persistence_check_attempted": false,
+  "reason": "execution blocked before drawing because task lacks CAD geometry",
+  "saved_sandbox_copy": false,
+  "reopened_sandbox_copy": false,
+  "persisted_delta": 0,
+  "created_object_handles": [],
+  "source_dwg_opened": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false
+}

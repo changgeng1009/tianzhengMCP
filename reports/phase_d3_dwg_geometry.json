@@ -1,0 +1,15 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "D3",
+  "source": "D:\\ExampleWorkspace\\天正\\artifactsreal.test.001\\水泵房-模型\\target.dwg",
+  "autocad_connected": false,
+  "errors": [
+    "(-2147352567, '发生意外。', (0, '天正软件', '未找到文件 D:\\\\ExampleWorkspace\\\\天正\\\\artifactsreal.test.001\\\\水泵房-模型\\\\target.dwg', 'E:\\\\AutoCAD 2026\\\\HELP\\\\OLE_ERR.CHM', -2145320924, -2145320924), None)"
+  ],
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

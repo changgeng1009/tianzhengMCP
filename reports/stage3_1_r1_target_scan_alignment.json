@@ -1,0 +1,228 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "STAGE3.1-R1-TARGET-SCAN-ALIGNMENT",
+  "run_id": "stage3_1_r1_20260711_002112",
+  "stage2_status": "PARTIAL_DEEPSEEK_DEFERRED",
+  "deepseek_checked": false,
+  "deepseek_call_attempted": false,
+  "reference_source_path": "D:\\ExampleWorkspace\\天正\\artifacts\\validation\\s1_reference_fixture_20260710_134249.dwg",
+  "target_source_path": "E:\\SampleDrawings\\target_sample.dwg",
+  "reference_source_exists": true,
+  "target_source_exists": true,
+  "reference_source_sha256_before": "redacted_input_sha256",
+  "target_source_sha256_before": "redacted_input_sha256",
+  "reference_source_sha256_after": "redacted_input_sha256",
+  "target_source_sha256_after": "redacted_input_sha256",
+  "source_hashes_unchanged": true,
+  "copy_hashes_unchanged": true,
+  "copy_hashes_match_sources": true,
+  "live_document_diverges_from_disk": false,
+  "reference_copy_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\copies\\reference_working_copy.dwg",
+  "target_copy_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\copies\\target_analysis_sandbox.dwg",
+  "copies_opened": true,
+  "copies_saved": false,
+  "stage3_1_r1_final_status": "PARTIAL_LOW_CONFIDENCE",
+  "stage3_2_allowed": false,
+  "stage3_2_executed": false,
+  "repair_task_generated": false,
+  "production_d1_allowed": false,
+  "safety_flags": {
+    "autocad_connected": true,
+    "new_autocad_instance_created": false,
+    "source_reference_opened": false,
+    "source_target_opened": false,
+    "source_reference_activated": false,
+    "source_target_activated": false,
+    "source_reference_saved": false,
+    "source_target_saved": false,
+    "source_modified": false,
+    "reference_copy_opened": true,
+    "target_copy_opened": true,
+    "reference_copy_saved": false,
+    "target_copy_saved": false,
+    "current_live_drawings_modified": false,
+    "entities_created": false,
+    "entities_modified": false,
+    "entities_deleted": false,
+    "explode_used": false,
+    "copyobjects_used": false,
+    "saveas_used": false,
+    "sendcommand_used": false,
+    "lisp_executed": false,
+    "netload_used": false,
+    "tianzheng_command_executed": false,
+    "tdb_modified": false,
+    "automatic_fallback_used": false,
+    "repair_task_generated": false,
+    "stage3_2_executed": false,
+    "production_d1_allowed": false
+  },
+  "tests": {
+    "stage3_1_r1_targeted": "21 passed in 0.49s",
+    "stage3_1_regression": "18 passed in 0.63s",
+    "backend_safety_regression": "64 passed in 0.96s",
+    "stage1_regression": "21 passed in 0.38s",
+    "full_pytest": "1105 passed, 1 warning in 6.00s",
+    "warning": "PyPDF2 deprecation only",
+    "static_forbidden_call_audit": "no matches"
+  },
+  "errors": [],
+  "autocad_version": "25.1s (LMS Tech)",
+  "existing_source_documents_observed": 2,
+  "reference_copy_sha256_initial": "redacted_input_sha256",
+  "target_copy_sha256_initial": "redacted_input_sha256",
+  "target_modelspace_count": 51,
+  "target_paperspace_count": 0,
+  "target_object_name_counts": {
+    "AcDbBlockReference": 11,
+    "AcDbLine": 16,
+    "AcDbPolyline": 3,
+    "AcDbText": 20,
+    "TDbDrawingName": 1
+  },
+  "target_classification_sum_matches_scan": true,
+  "target_block_reference_count": 11,
+  "target_block_definition_count": 49,
+  "target_xref_count": 0,
+  "target_proxy_count": 0,
+  "target_nested_block_count": 18,
+  "target_dynamic_block_count": 0,
+  "virtual_expansion_required": true,
+  "virtual_expansion_performed": true,
+  "virtual_entity_count": 94,
+  "target_scan_status": "TARGET_SCAN_CONFIRMED_BLOCK_CONTAINED",
+  "target_top_level_count_basically_credible": true,
+  "reference_region": {},
+  "target_region": {},
+  "region_correspondence_status": "CONFIRMED",
+  "text_anchor_classification_count": 6,
+  "accepted_text_anchor_count": 0,
+  "duplicate_text_accepted_count": 0,
+  "duplicate_text_rejected_count": 0,
+  "non_text_anchor_candidate_count": 1427,
+  "non_text_anchor_count": 23,
+  "non_text_anchor_types": {
+    "unique_block_insertion": 1,
+    "rectangle_center": 8,
+    "long_line_midpoint": 6,
+    "wall_corner": 8
+  },
+  "translation_primary_cluster": {},
+  "selected_transform": {},
+  "geometry_overlap_score": 0.63098,
+  "geometry_overlap_validation": {},
+  "confidence_breakdown": {
+    "components": [
+      {
+        "name": "region_correspondence_score",
+        "score": 0.9,
+        "weight": 0.12,
+        "weighted_score": 0.108,
+        "evidence": "both selected local regions"
+      },
+      {
+        "name": "target_scan_confidence",
+        "score": 0.9,
+        "weight": 0.12,
+        "weighted_score": 0.108,
+        "evidence": "TARGET_SCAN_CONFIRMED_BLOCK_CONTAINED"
+      },
+      {
+        "name": "unique_text_anchor_score",
+        "score": 0.0,
+        "weight": 0.08,
+        "weighted_score": 0.0,
+        "evidence": "accepted unique anchors=0; candidates=2"
+      },
+      {
+        "name": "duplicate_text_disambiguation_score",
+        "score": 0.0,
+        "weight": 0.06,
+        "weighted_score": 0.0,
+        "evidence": "accepted=0/0"
+      },
+      {
+        "name": "non_text_anchor_score",
+        "score": 1.0,
+        "weight": 0.18,
+        "weighted_score": 0.18,
+        "evidence": "accepted non-text anchors=23"
+      },
+      {
+        "name": "inlier_ratio_score",
+        "score": 1.0,
+        "weight": 0.1,
+        "weighted_score": 0.1,
+        "evidence": "inliers=23/23"
+      },
+      {
+        "name": "residual_score",
+        "score": 1.0,
+        "weight": 0.12,
+        "weighted_score": 0.12,
+        "evidence": "normalized max=2.0370170919341424e-15"
+      },
+      {
+        "name": "spatial_coverage_score",
+        "score": 1.0,
+        "weight": 0.07,
+        "weighted_score": 0.07,
+        "evidence": "inlier reference-point coverage"
+      },
+      {
+        "name": "transform_stability_score",
+        "score": 1.0,
+        "weight": 0.07,
+        "weighted_score": 0.07,
+        "evidence": "leave-one-out=0.0"
+      },
+      {
+        "name": "geometry_overlap_score",
+        "score": 0.63098,
+        "weight": 0.08,
+        "weighted_score": 0.050478,
+        "evidence": "ordinary geometry overlap validation"
+      }
+    ],
+    "weight_sum": 1.0,
+    "final_confidence": 0.806478,
+    "pass_threshold": 0.72
+  },
+  "alignment_confidence": 0.806478,
+  "alignment_blockers": [
+    "primary translation cluster lacks an accepted text anchor"
+  ],
+  "reference_copy_sha256_after": "redacted_input_sha256",
+  "target_copy_sha256_after": "redacted_input_sha256",
+  "mixed_text_non_text_gate_passed": false,
+  "alignment_score_components": {
+    "text_alignment_score": 0.0,
+    "non_text_alignment_score": 1.0,
+    "geometry_overlap_score": 0.63098,
+    "region_correspondence_score": 0.9
+  },
+  "low_information_text_excluded_count": 4,
+  "final_integrity_verification": {
+    "open_stage3_1_r1_copy_count": 0,
+    "source_documents_observed": 2,
+    "source_documents_all_saved": true,
+    "source_documents_modified_by_stage": false
+  },
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 3
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

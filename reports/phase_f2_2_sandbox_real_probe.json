@@ -1,0 +1,7 @@
+﻿{
+  "phase":"F2.2","status":"PASS-B",
+  "conclusion":"hsxg recognized but enters interactive mode (timeout). Auto-execution via SendCommand not feasible. Consistent with R4 findings.",
+  "sendcommand_used":true,"sendcommand_scope":"sandbox_probe_only",
+  "source_dwg_opened":false,"d1_allowed":false,
+  "commands_probed":[{"command":"hsxg","recognized":true,"auto_executed":false,"reason":"interactive_timeout"}]
+}

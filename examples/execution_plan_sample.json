@@ -1,0 +1,113 @@
+{
+  "id": "plan_sample_diff_result",
+  "confirmed": false,
+  "previewed": false,
+  "active_document": null,
+  "risk_level": "high",
+  "operation_count": 4,
+  "operations": [
+    {
+      "id": "op_0001",
+      "action": "modify_entity",
+      "entity_type": "pipe",
+      "geometry": {
+        "properties": {
+          "from": {
+            "system": "排水",
+            "dn": 75
+          },
+          "to": {
+            "system": "排水",
+            "dn": 100
+          }
+        }
+      },
+      "layer": "0",
+      "reason": "匹配对象存在，但属性与 Reference Model 不一致。",
+      "source_diff_id": "shared_pipe",
+      "risk_level": "medium",
+      "requires_confirmation": true,
+      "status": "pending",
+      "executable": false,
+      "result": {}
+    },
+    {
+      "id": "op_0002",
+      "action": "move_entity",
+      "entity_type": "fixture",
+      "geometry": {
+        "coordinate_system": "normalized",
+        "from": {
+          "x_min": 0.5,
+          "y_min": 0.5,
+          "x_max": 0.6,
+          "y_max": 0.6,
+          "coordinate_system": "normalized"
+        },
+        "to": {
+          "x_min": 0.7,
+          "y_min": 0.7,
+          "x_max": 0.8,
+          "y_max": 0.8,
+          "coordinate_system": "normalized"
+        },
+        "distance": 0.28284271247461895
+      },
+      "layer": "0",
+      "reason": "匹配对象存在，但位置差异超过移动容差。",
+      "source_diff_id": "moved_fixture",
+      "risk_level": "medium",
+      "requires_confirmation": true,
+      "status": "pending",
+      "executable": false,
+      "result": {}
+    },
+    {
+      "id": "op_0003",
+      "action": "add_polyline",
+      "entity_type": "window",
+      "geometry": {
+        "coordinate_system": "normalized",
+        "points": [
+          [0.2, 0.8, 0.0],
+          [0.3, 0.8, 0.0],
+          [0.3, 0.85, 0.0],
+          [0.2, 0.85, 0.0],
+          [0.2, 0.8, 0.0]
+        ]
+      },
+      "layer": "0",
+      "reason": "Reference Model 中存在该对象，Current CAD Model 中未找到匹配对象。",
+      "source_diff_id": "missing_window",
+      "risk_level": "low",
+      "requires_confirmation": true,
+      "status": "pending",
+      "executable": true,
+      "result": {}
+    },
+    {
+      "id": "op_0004",
+      "action": "delete_suggestion",
+      "entity_type": "valve",
+      "geometry": {
+        "coordinate_system": "normalized",
+        "points": [],
+        "bounding_box": {
+          "x_min": 0.9,
+          "y_min": 0.9,
+          "x_max": 0.95,
+          "y_max": 0.95,
+          "coordinate_system": "normalized"
+        }
+      },
+      "layer": "0",
+      "reason": "Current CAD Model 中存在该对象，但 Reference Model 中未找到匹配对象；仅建议删除，不允许自动执行。",
+      "source_diff_id": "obsolete_valve",
+      "risk_level": "high",
+      "requires_confirmation": true,
+      "status": "pending",
+      "executable": false,
+      "result": {}
+    }
+  ]
+}

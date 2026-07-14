@@ -1,0 +1,61 @@
+{
+  "phase": "AGENT-DS1",
+  "title": "Controlled DeepSeek Worker",
+  "status": "PARTIAL",
+  "why_this_phase": "旧线程上下文已满，DeepSeek 子 agent 尚未创建，因此先创建受控 DeepSeek Worker，用于后续非视觉代码、schema、测试、报告草稿任务。",
+  "worker_design": {
+    "deepseek_client_created": true,
+    "deepseek_worker_created": true,
+    "task_pack_builder_created": true,
+    "agent_budget_created": true,
+    "result_schema_created": true
+  },
+  "global_safety_gate": {
+    "d1_allowed": false,
+    "production_d1_allowed": false,
+    "production_d1_executed": false,
+    "source_modification_allowed": false,
+    "source_dwg_opened": false,
+    "source_dwg_saved": false,
+    "save_called_on_source": false,
+    "production_allowed": false
+  },
+  "safety_result": {
+    "api_key_hardcoded": false,
+    "api_key_logged": false,
+    "full_chat_sent_to_deepseek": false,
+    "opened_source_dwg": false,
+    "saved_source_dwg": false,
+    "used_sendcommand": false,
+    "executed_tianzheng_command": false,
+    "executed_dangerous_command": false,
+    "production_d1_allowed": false
+  },
+  "files_modified": [
+    "mcp/agents/__init__.py",
+    "mcp/agents/deepseek_client.py",
+    "mcp/agents/deepseek_worker.py",
+    "mcp/agents/task_pack_builder.py",
+    "mcp/agents/agent_budget.py",
+    "mcp/agents/agent_result_schema.py",
+    "mcp/agents/README_deepseek_worker.md",
+    "reports/phase_agent_ds1_controlled_deepseek_worker.json",
+    "reports/phase_agent_ds1_controlled_deepseek_worker.md",
+    "tests/agents/test_deepseek_client_safety.py",
+    "tests/agents/test_task_pack_builder.py",
+    "tests/agents/test_agent_budget.py",
+    "tests/agents/test_agent_result_schema.py",
+    "tests/agents/test_deepseek_worker_forbidden_actions.py"
+  ],
+  "tests_run": [
+    "python -m py_compile mcp/agents/deepseek_client.py mcp/agents/deepseek_worker.py mcp/agents/task_pack_builder.py mcp/agents/agent_budget.py mcp/agents/agent_result_schema.py",
+    "python -m pytest tests/agents/test_deepseek_client_safety.py tests/agents/test_task_pack_builder.py tests/agents/test_agent_budget.py tests/agents/test_agent_result_schema.py tests/agents/test_deepseek_worker_forbidden_actions.py -q"
+  ],
+  "test_results": {
+    "py_compile": "PASS",
+    "pytest": "PASS: 27 passed in 0.27s"
+  },
+  "acceptance_decision": "PARTIAL",
+  "acceptance_reason": "Worker 框架完成，预算、安全、危险动作阻断和 dry_run 均已通过测试；本阶段未真实调用 DeepSeek，可继续 MVP-1 dry-run。"
+}
+

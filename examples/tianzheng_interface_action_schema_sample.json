@@ -1,0 +1,116 @@
+[
+  {
+    "action_id": "76dbfde8-1e75-4d6d-8813-d57bcb6f4234",
+    "action_type": "add_pipe",
+    "object_type": "TDbPipe",
+    "target_handle": "",
+    "parameters": {
+      "start_point": [
+        0,
+        0,
+        3000
+      ],
+      "end_point": [
+        5000,
+        0,
+        3000
+      ]
+    },
+    "geometry": {
+      "start": {
+        "x": 0,
+        "y": 0,
+        "z": 3000
+      },
+      "end": {
+        "x": 5000,
+        "y": 0,
+        "z": 3000
+      }
+    },
+    "system": "给水",
+    "dn": "DN100",
+    "layer": "PIPE-给水",
+    "confidence": 0.92,
+    "source_evidence": "reference DWG pump_room.dwg",
+    "ready_to_execute": false,
+    "requires_confirmation": true,
+    "risk_level": "medium",
+    "warnings": [],
+    "notes": ""
+  },
+  {
+    "action_id": "60adb73a-3a68-4a2b-91fd-fac7f7da4731",
+    "action_type": "add_valve",
+    "object_type": "TDbPipeValve",
+    "target_handle": "",
+    "parameters": {},
+    "geometry": {},
+    "system": "消防",
+    "dn": null,
+    "layer": "VALVE-消防",
+    "confidence": 0.88,
+    "source_evidence": "reference DWG section A-A",
+    "ready_to_execute": false,
+    "requires_confirmation": true,
+    "risk_level": "medium",
+    "warnings": [],
+    "notes": ""
+  },
+  {
+    "action_id": "0abda6fd-90b8-4016-9a5e-639c1918a512",
+    "action_type": "update_diameter",
+    "object_type": "TDbPipe",
+    "target_handle": "A1B2",
+    "parameters": {},
+    "geometry": {},
+    "system": null,
+    "dn": "DN150",
+    "layer": null,
+    "confidence": 0.76,
+    "source_evidence": "管径标准表",
+    "ready_to_execute": false,
+    "requires_confirmation": true,
+    "risk_level": "medium",
+    "warnings": [],
+    "notes": ""
+  },
+  {
+    "action_id": "ec06bde1-4c09-4740-aac2-4c32235f4bcd",
+    "action_type": "delete_candidate",
+    "object_type": "TDbPipe",
+    "target_handle": "OLD001",
+    "parameters": {},
+    "geometry": {},
+    "system": null,
+    "dn": null,
+    "layer": null,
+    "confidence": 0.95,
+    "source_evidence": "多余管道",
+    "ready_to_execute": false,
+    "requires_confirmation": true,
+    "risk_level": "high",
+    "warnings": [
+      "action_type=delete_candidate 自动标记为 high risk"
+    ],
+    "notes": "待人工审核确认后执行"
+  },
+  {
+    "action_id": "b7402327-519d-479e-ab67-3a5c630c83ba",
+    "action_type": "review_only",
+    "object_type": "TDbPipeFitting",
+    "target_handle": "",
+    "parameters": {},
+    "geometry": {},
+    "system": null,
+    "dn": null,
+    "layer": null,
+    "confidence": 0.45,
+    "source_evidence": "fitting type unknown",
+    "ready_to_execute": false,
+    "requires_confirmation": true,
+    "risk_level": "medium",
+    "warnings": [],
+    "notes": "未知管件类型，需要人工确认"
+  }
+]

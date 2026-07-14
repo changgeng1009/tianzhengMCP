@@ -1,0 +1,13 @@
+{
+  "ignored_layers": [
+    "TITLE",
+    "A-TITLE",
+    "BORDER",
+    "DEFPOINTS"
+  ],
+  "ignored_text_patterns": [
+    "图签",
+    "标题栏",
+    "设计说明"
+  ]
+}

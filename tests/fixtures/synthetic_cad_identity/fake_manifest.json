@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0.0",
+  "project_id": "synthetic-project",
+  "runtime_mode": "offline_analysis",
+  "production_allowed": false,
+  "synthetic_test_file": true
+}

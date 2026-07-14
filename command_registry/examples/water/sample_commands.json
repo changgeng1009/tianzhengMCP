@@ -1,0 +1,29 @@
+{
+  "category": "water",
+  "version": "0.1.0",
+  "synthetic": true,
+  "execution_allowed": false,
+  "commands": [
+    {
+      "command_id": "water_synthetic_example",
+      "category": "water",
+      "subcategory": "example",
+      "tianzheng_command": "SYNTHETIC_OFFLINE_EXAMPLE",
+      "object_type": "SyntheticObject",
+      "parameters": [],
+      "risk_level": "low",
+      "requires_sandbox": true,
+      "status": "unconfirmed",
+      "description": "Original fictional offline schema example; not executable",
+      "prerequisites": [],
+      "known_issues": [
+        "No real CAD command or validation"
+      ],
+      "related_commands": [],
+      "source": "original_synthetic_fixture",
+      "version": "0.1.0",
+      "synthetic": true,
+      "execution_allowed": false
+    }
+  ]
+}

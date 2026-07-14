@@ -1,0 +1,50 @@
+{
+  "phase": "S1-CLASSIFIER-FIX",
+  "mode": "corrected_static_classification",
+  "tasks": [
+    {
+      "task_id": "mvp1_task_208c4ccc9f",
+      "task_type": "blocked_invalid_task",
+      "classification": "blocked_invalid_task",
+      "object_type": "text",
+      "expected_text": null,
+      "source_object_id": null,
+      "target_status": "invalid_source_task",
+      "geometry": {},
+      "semantic": {},
+      "object_level_evidence_found": false,
+      "invalid_reasons": [
+        "empty_expected_text",
+        "page_level_aggregate",
+        "empty_semantic_text_preview",
+        "missing_object_bbox",
+        "missing_crop",
+        "missing_reference_entity"
+      ],
+      "execution_allowed": false,
+      "requires_user_anchor": false,
+      "requires_geometry_localization": false,
+      "suggested_executor": "none",
+      "confidence": 0.7,
+      "reason": "blocked_invalid_task: empty_expected_text, page_level_aggregate, empty_semantic_text_preview, missing_object_bbox, missing_crop, missing_reference_entity"
+    }
+  ],
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "production_d1_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 3
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

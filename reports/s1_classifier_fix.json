@@ -1,0 +1,115 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "S1-CLASSIFIER-FIX",
+  "status": "PASS",
+  "original_defect_location": "mcp/planning/mvp_repair_task_classifier.py: object_type in DIRECT_COM_TYPES classified text as direct_com_create without object-level evidence gate",
+  "source_hash_actual": "redacted_input_sha256",
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "save_called_on_source": false,
+  "sandbox_dwg_opened": false,
+  "sandbox_saved": false,
+  "drawing_executed": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "total_missing_candidate_count": 1,
+  "valid_direct_com_candidate_count": 0,
+  "confirmed_direct_com_task_count": 0,
+  "review_only_task_count": 5,
+  "blocked_geometry_task_count": 0,
+  "blocked_invalid_task_count": 1,
+  "invalid_text_task_count": 1,
+  "page_level_text_task_rejected_count": 1,
+  "target_task_id": "mvp1_task_208c4ccc9f",
+  "target_task_final_classification": "blocked_invalid_task",
+  "requires_user_anchor": false,
+  "confirmed_direct_com_contains_target": false,
+  "path_integrity": {
+    "source_dwg_path": {
+      "path": "D:\\ExampleWorkspace\\synthetic_sample_t8.dwg",
+      "path_corrupted": false,
+      "safe_for_source_operation": true,
+      "reason": ""
+    },
+    "sandbox_dwg_path": {
+      "path": "D:\\ExampleWorkspace\\天正\\artifacts\\sandbox\\mvp2a_test_copy_20260710_091816.dwg",
+      "path_corrupted": false,
+      "safe_for_source_operation": true,
+      "reason": ""
+    }
+  },
+  "path_corrupted": false,
+  "geometry_fabrication_detected": false,
+  "can_enter_s1_sandbox_minimal_repair_loop": false,
+  "tests_passed": true,
+  "pytest_result": "62 passed in 0.50s",
+  "deepseek_worker_used": true,
+  "delegated_task_count": 1,
+  "delegated_task_ids": [
+    "ds_static_schema_test_path_rules"
+  ],
+  "deepseek_task_pack_chars": 2322,
+  "deepseek_call_succeeded": true,
+  "deepseek_result_accepted_count": 2,
+  "deepseek_result_rejected_count": 0,
+  "deepseek_result_modified_count": 1,
+  "final_decision_made_by_codex": true,
+  "deepseek_made_final_pass_decision": false,
+  "full_chat_sent_to_deepseek": false,
+  "api_key_sent_to_deepseek": false,
+  "dwg_binary_sent_to_deepseek": false,
+  "source_file_sent_to_deepseek": false,
+  "full_history_sent_to_deepseek": false,
+  "autocad_execution_authorized": false,
+  "deepseek_review_summary": {
+    "codex_accepted": [
+      "non-empty text identity requirement",
+      "object-level evidence requirement"
+    ],
+    "codex_modified": [
+      "DeepSeek suggested bbox/crop/reference all as separate missing cases; Codex implemented them as alternative object-level evidence but still records missing detail reasons."
+    ],
+    "codex_rejected": [],
+    "deepseek_result_status": "PASS"
+  },
+  "generated_file_integrity": {
+    "report_json": {
+      "report_path": "reports\\s1_classifier_fix.json",
+      "path_corrupted": false,
+      "contains_question_mark_run": false,
+      "contains_replacement_character": false
+    },
+    "report_md": {
+      "report_path": "reports\\s1_classifier_fix.md",
+      "path_corrupted": false,
+      "contains_question_mark_run": false,
+      "contains_replacement_character": false
+    },
+    "tasks_json": {
+      "report_path": "artifacts\\repair_tasks\\s1_classifier_fix_tasks.json",
+      "path_corrupted": false,
+      "contains_question_mark_run": false,
+      "contains_replacement_character": false
+    },
+    "corrected_missing_json": {
+      "report_path": "reports\\mvp_missing_tasks_corrected.json",
+      "path_corrupted": false,
+      "contains_question_mark_run": false,
+      "contains_replacement_character": false
+    }
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

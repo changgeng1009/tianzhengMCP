@@ -1,0 +1,19 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "first_real_acceptance",
+      "name": "????? T30 ??????",
+      "reference_sources": [
+        {
+          "type": "png",
+          "role": "reference",
+          "path": "PATH_TO_REFERENCE.png"
+        }
+      ],
+      "target_dwg_path": "PATH_TO_TARGET_UNFINISHED.dwg",
+      "expected_missing": [],
+      "manual_anchor_pairs": [],
+      "options": {}
+    }
+  ]
+}

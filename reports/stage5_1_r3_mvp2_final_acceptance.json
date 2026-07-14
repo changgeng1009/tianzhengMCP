@@ -1,0 +1,111 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "STAGE5.1-R3",
+  "status": "FAILED_PERSISTENCE_QA",
+  "run_id": "stage5_1_r3_20260711_153559",
+  "checkpoint_reached": "FINAL_DIMENSION2_PERSISTENCE",
+  "input_hashes": {
+    "reference_expected": "redacted_input_sha256",
+    "reference_actual": "redacted_input_sha256",
+    "target_expected": "redacted_input_sha256",
+    "target_actual": "redacted_input_sha256"
+  },
+  "source_integrity_verified": true,
+  "core_331_reconstruction_passed": true,
+  "core": {
+    "ordinary_successful": 16,
+    "ordinary_persisted": 16,
+    "core_tdb_successful": 331,
+    "core_tdb_persisted": 331,
+    "work_packages_successful": 103,
+    "work_packages_planned": 103,
+    "valve_relationship_packages_persisted": 88,
+    "existing_modified": 0,
+    "existing_deleted": 0,
+    "unexpected_new": 0,
+    "duplicate": 0,
+    "saved": true,
+    "close_reopen": true
+  },
+  "dimension2": {
+    "native_clone_verified_count": 6,
+    "individual_save_reopen_verified_count": 6,
+    "manual_dimension2_acceptance": true,
+    "manual_reviewed_count": 6,
+    "dimension2_automated_observability": false,
+    "full_automated_semantic_verification": false,
+    "readonly_bridge_used": false,
+    "approved_readonly_bridge_loaded": false,
+    "netload_used_for_approved_readonly_bridge": false,
+    "contact_sheet_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\previews\\dimension2_manual_acceptance_contact_sheet.png"
+  },
+  "final_reconstruction": {
+    "path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\copies\\target_mvp2_final_reconstruction.dwg",
+    "sha256": "redacted_input_sha256",
+    "ordinary_persisted": 16,
+    "core_tdb_persisted": 331,
+    "dimension2_persisted": 0,
+    "required_tdb_persisted": 331,
+    "required_tdb_expected": 337,
+    "complete": false,
+    "failure": "最终图含 331 个核心 TDb 后，追加首个 TDbDimension2 时天正返回‘保存文档时出错’；批量保存和逐项保存均可重复失败。",
+    "failed_task_id": "stage3_2_missing_0001",
+    "file_state": "保存失败后使用 Close(False)，最终文件保持已验证的 16 ordinary + 331 core TDb 状态。"
+  },
+  "qa": {
+    "core_type_mismatch": 0,
+    "core_property_mismatch": 0,
+    "core_topology_mismatch": 0,
+    "final_full_type_qa": "NOT_RUN_INCOMPLETE_337",
+    "final_full_property_qa": "NOT_RUN_INCOMPLETE_337",
+    "final_full_topology_qa": "NOT_RUN_INCOMPLETE_337",
+    "convergence": "NOT_RUN_STOP_GATE",
+    "idempotency": "NOT_RUN_STOP_GATE",
+    "drafting_variant": "NOT_CREATED_STOP_GATE"
+  },
+  "tests": {
+    "targeted": "16 passed",
+    "acceptance_group": "207 passed",
+    "full": "1248 passed, 1 warning",
+    "passed": true
+  },
+  "safety": {
+    "source_reference_opened": false,
+    "source_target_opened": false,
+    "source_reference_saved": false,
+    "source_target_saved": false,
+    "source_modified": false,
+    "sendcommand_used": false,
+    "lisp_executed": false,
+    "netload_used": false,
+    "external_dll_loaded": false,
+    "automatic_fallback_used": false,
+    "new_autocad_instance_created": false,
+    "production_d1_allowed": false
+  },
+  "mvp2_final_status": "FAILED_PERSISTENCE_QA",
+  "mvp2_completed": false,
+  "fixed_sample_full_reconstruction": false,
+  "mvp3_allowed": false,
+  "stage6_run_created": false,
+  "production_d1_allowed": false,
+  "next_required_action": "解决 TDbDimension2 与已复刻核心 TDb 共存时的天正文档保存错误；修复并从最终 checkpoint 重验之前不得进入 MVP3。",
+  "evidence_paths": {
+    "core_checkpoint": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\reports\\checkpoint_c_d.json",
+    "final_core_checkpoint": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\reports\\checkpoint_j_core.json",
+    "final_core_recovery": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\persistence\\final_core_persistence_recovery.json",
+    "dimension2_checkpoint": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\reports\\checkpoint_e_h.json",
+    "dimension2_manual_acceptance": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\dimension2\\dimension2_manual_acceptance.json",
+    "final_checkpoint": "D:\\ExampleWorkspace\\天正\\artifacts\\stage5_1_r3\\stage5_1_r3_20260711_153559\\reports\\checkpoint_j_l.json"
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

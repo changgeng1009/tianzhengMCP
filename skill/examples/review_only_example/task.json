@@ -1,0 +1,11 @@
+{
+  "task_id": "visual_uncertain_001",
+  "classification": "review_only",
+  "object_type": "unknown",
+  "professional_domain": "water_supply_and_drainage",
+  "domain_object_type": "unknown",
+  "required_capabilities": ["scan_acdb_entities"],
+  "fallback_policy": "blocked",
+  "execution_allowed": false,
+  "required_evidence": ["reference_crop", "target_crop", "overlay", "cad_anchor"]
+}

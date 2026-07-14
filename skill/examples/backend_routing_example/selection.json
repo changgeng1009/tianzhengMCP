@@ -1,0 +1,9 @@
+{
+  "task_id": "fixture_line_001",
+  "requested_capabilities": ["create_acdb_line"],
+  "candidate_backends": [{"backend_id": "com", "available": true, "sandbox_verified": true}],
+  "selected_backend": "com",
+  "selection_status": "selected",
+  "selection_reason": "capability complete and sandbox verified",
+  "fallback_used": false
+}

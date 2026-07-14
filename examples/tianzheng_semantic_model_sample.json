@@ -1,0 +1,60 @@
+{
+  "environment_summary": {
+    "detected": false,
+    "message": "not_run: original empty synthetic fixture; no CAD application was contacted",
+    "caption": "",
+    "version": "",
+    "active_document": "synthetic_sample.dwg",
+    "menu_groups": []
+  },
+  "diagnostics": {
+    "active_document": "synthetic_sample.dwg",
+    "tianzheng_detected": false,
+    "selection_count": 0,
+    "semantic_summary": {
+      "total": 0,
+      "pipe": 0,
+      "valve": 0,
+      "fitting": 0,
+      "dimension": 0,
+      "text": 0,
+      "block": 0,
+      "unknown_tianzheng": 0
+    },
+    "pipe_count": 0,
+    "valve_count": 0,
+    "dimension_count": 0,
+    "text_count": 0,
+    "block_count": 0,
+    "unknown_tianzheng_count": 0,
+    "object_name_top_20": [],
+    "semantic_type_counts": {
+      "fitting": 0,
+      "pipe": 0,
+      "valve": 0
+    },
+    "system_type_counts": {
+      "消防": 0
+    },
+    "first_20_entities": []
+  },
+  "model": {
+    "source": "original_synthetic_fixture",
+    "active_document": "synthetic_sample.dwg",
+    "selection_count": 0,
+    "entities": [],
+    "summary": {
+      "total": 0,
+      "pipe": 0,
+      "valve": 0,
+      "fitting": 0,
+      "dimension": 0,
+      "text": 0,
+      "block": 0,
+      "unknown_tianzheng": 0
+    }
+  },
+  "fixture_kind": "original_synthetic",
+  "status": "not_run",
+  "fixture_notice": "Original empty diagnostic-schema example. All observed entities, handles, geometry, machine details and execution claims were removed. No CAD application was contacted; this is not an acceptance result."
+}

@@ -1,0 +1,64 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "run_id": "stage6_p2_coordinate_reconstruction_20260713_101528",
+  "reference_path": "D:\\ExampleWorkspace\\天正\\图纸\\reference_sample_t8_t8_t8.dwg",
+  "reference_sha256": "redacted_input_sha256",
+  "target_path": "D:\\ExampleWorkspace\\天正\\图纸\\target_sample_t8.dwg",
+  "target_sha256": "redacted_input_sha256",
+  "reference_entity_count": 10606,
+  "target_entity_count": 6481,
+  "reference_region_count": 7,
+  "target_region_count": 8,
+  "standard_target_frame_region_count": 7,
+  "protected_region_count": 1,
+  "confirmed_region_pair_count": 7,
+  "verified_transform_count": 4,
+  "low_confidence_transform_count": 2,
+  "rejected_transform_count": 1,
+  "timeout_transform_count": 0,
+  "mapping_conflict_count": 0,
+  "old_plan_reused": false,
+  "old_region_ids_reused": false,
+  "old_transforms_reused": false,
+  "old_mapping_reused": false,
+  "target_write": false,
+  "target_save": false,
+  "reference_save": false,
+  "reference_hash_unchanged": true,
+  "target_hash_unchanged": true,
+  "ready_for_missing_detection": false,
+  "missing_detection_executed": false,
+  "frozen_execution_plan_created": false,
+  "blocking_reasons": [
+    "3/7 region transforms are not VERIFIED"
+  ],
+  "final_status": "COORDINATE_SYSTEM_RECONSTRUCTION_PARTIAL",
+  "created_at": "2026-07-13T02:59:27.426076+00:00",
+  "artifacts_root": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p2_coordinate_reconstruction\\stage6_p2_coordinate_reconstruction_20260713_101528",
+  "region_mappings": [],
+  "transforms": [],
+  "protected_regions": [],
+  "backup": {
+    "path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p2_coordinate_reconstruction\\stage6_p2_coordinate_reconstruction_20260713_101528\\backups\\target_sample_t8.prewrite.dwg",
+    "sha256": "redacted_input_sha256",
+    "file_size": 2134839,
+    "modified_time": "2026-07-12T17:46:02+00:00"
+  },
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 3
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

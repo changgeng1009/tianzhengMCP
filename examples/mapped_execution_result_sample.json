@@ -1,0 +1,11 @@
+{
+  "plan_id": "synthetic_empty_plan",
+  "success": false,
+  "executed": false,
+  "active_document": null,
+  "operations": [],
+  "operation_count": 0,
+  "fixture_kind": "original_synthetic",
+  "status": "not_run",
+  "fixture_notice": "Original empty result schema. No CAD operations were executed; observed handles and historical execution claims were removed."
+}

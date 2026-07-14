@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "tianzheng-command-registry.schema.json",
+  "title": "Tianzheng Command Registry",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "commands"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "generated_for": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "domain",
+          "label_zh",
+          "primary_command",
+          "category",
+          "safety",
+          "validation_status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "domain": {
+            "type": "string",
+            "enum": [
+              "plumbing",
+              "hvac",
+              "architecture",
+              "electrical",
+              "generic"
+            ]
+          },
+          "module": {
+            "type": "string"
+          },
+          "label_zh": {
+            "type": "string"
+          },
+          "primary_command": {
+            "type": "string"
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "all_invocation_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "category": {
+            "type": "string"
+          },
+          "expected_inputs": {
+            "type": "array"
+          },
+          "interactive": {
+            "type": "boolean"
+          },
+          "creates_or_edits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "safety": {
+            "type": "object",
+            "required": [
+              "danger_level",
+              "allow_dry_run",
+              "allow_sandbox",
+              "allow_production"
+            ],
+            "properties": {
+              "danger_level": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "sandbox_safe",
+                  "review",
+                  "dangerous",
+                  "forbidden"
+                ]
+              },
+              "allow_dry_run": {
+                "type": "boolean"
+              },
+              "allow_sandbox": {
+                "type": "boolean"
+              },
+              "allow_production": {
+                "type": "boolean"
+              },
+              "requires_visual_review": {
+                "type": "boolean"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          },
+          "validation_status": {
+            "type": "object"
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

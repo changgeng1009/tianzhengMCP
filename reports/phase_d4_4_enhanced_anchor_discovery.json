@@ -1,0 +1,52 @@
+{
+  "phase": "D4.4",
+  "timestamp": "2026-07-08T15:16:31.359721+00:00",
+  "feature_points_reference_count": 187,
+  "feature_points_sandbox_count": 542,
+  "non_extents_feature_points_reference_count": 20,
+  "non_extents_feature_points_sandbox_count": 370,
+  "candidate_anchor_pairs_count": 28,
+  "top_candidate_anchor_pairs": [],
+  "selected_anchor_pairs": null,
+  "selected_non_extents_anchor_count": 8,
+  "transform_type": "3point_affine",
+  "scale_x": null,
+  "scale_y": null,
+  "rotation_deg": 45.0,
+  "translation": [],
+  "rms_error": null,
+  "max_error": null,
+  "confidence": 0.5,
+  "confidence_threshold": 0.85,
+  "alignment_status": "review_required",
+  "can_enter_d9_1": false,
+  "user_confirmation_required": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "production_d1_allowed": false,
+  "d1_allowed": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "confidence_note": "RANSAC attempted but false positive (sx=0). Reference DWG and sandbox DWG share no common geometric features at recognizable scale difference. Auto anchor methods exhausted.",
+  "candidate_action": "User must visually identify 2-3 matching points in both DWGs and provide coordinates.",
+  "strategies_tried": [
+    "long_line_signature_top20",
+    "text_content_matching",
+    "TDb_dn_system_matching"
+  ],
+  "strategies_exhausted": true,
+  "next_best_action": "manual_2_point_anchor_input",
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 2
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

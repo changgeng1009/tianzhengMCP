@@ -1,0 +1,47 @@
+{
+  "backend": {
+    "default_backend": "com",
+    "allow_automatic_fallback": false,
+    "providers": {
+      "com": {
+        "enabled": true,
+        "prog_id": "AutoCAD.Application.25.1",
+        "connect_on_probe": false,
+        "verified_create_capabilities": ["create_acdb_line"],
+        "unverified_create_capabilities": ["create_acdb_text", "create_acdb_polyline"],
+        "unsupported_capabilities": ["create_tdb_pipe", "create_tdb_valve", "create_tdb_fitting", "create_tianzheng_water_equipment", "command_completion_tracking", "official_tianzheng_api"]
+      },
+      "mock": {
+        "enabled": true,
+        "dry_run_only": true,
+        "real_cad_execution": false,
+        "real_dwg_modified": false
+      },
+      "net_bridge": {
+        "enabled": false,
+        "transport": "localhost_http",
+        "endpoint": "http://127.0.0.1:8765",
+        "execution_allowed": false
+      },
+      "tianzheng_api": {
+        "enabled": false,
+        "official_api_detected": false,
+        "execution_allowed": false
+      }
+    }
+  },
+  "routing": {
+    "create_acdb_line": ["com", "net_bridge"],
+    "create_acdb_text": ["com", "net_bridge"],
+    "create_acdb_polyline": ["com", "net_bridge"],
+    "create_tdb_pipe": ["tianzheng_api", "net_bridge", "manual_tianzheng"],
+    "create_tdb_valve": ["tianzheng_api", "net_bridge", "manual_tianzheng"],
+    "create_tdb_fitting": ["tianzheng_api", "net_bridge", "manual_tianzheng"]
+  },
+  "safety": {
+    "production_d1_allowed": false,
+    "sendcommand_allowed": false,
+    "tianzheng_execution_allowed": false,
+    "source_open_allowed": false
+  }
+}

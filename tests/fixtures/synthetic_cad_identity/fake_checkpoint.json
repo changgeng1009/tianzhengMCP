@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "job_id": "synthetic-job",
+  "last_completed_batch_id": null,
+  "completed_batch_count": 0,
+  "completed_task_count": 0,
+  "synthetic_test_file": true
+}

@@ -1,0 +1,9 @@
+{
+  "runtime_mode":"tianzheng_hvac","product":"tianzheng_hvac","backend":"offline",
+  "capabilities":[
+    {"capability":"product_detection","support_level":"INTERFACE_ONLY","read_supported":false,"write_supported":false,"verification_level":"CONTRACT_ONLY","approval_required":"L0_READ_ONLY","known_limitations":["未接真实暖通实例"],"evidence":["adapters/tianzheng_hvac/adapter.py"]},
+    {"capability":"readonly_scan","support_level":"INTERFACE_ONLY","read_supported":false,"write_supported":false,"verification_level":"CONTRACT_ONLY","approval_required":"L0_READ_ONLY","known_limitations":["对象类型表待真实样本验证"],"evidence":["references/product_adapter_model.md"]},
+    {"capability":"generic_geometry_fallback","support_level":"IMPLEMENTED","read_supported":false,"write_supported":false,"verification_level":"ADAPTER_UNIT_TESTED","approval_required":"L0_READ_ONLY","known_limitations":["只能保留普通几何语义"],"evidence":["tests/test_skill.py"]},
+    {"capability":"write","support_level":"INTERFACE_ONLY","read_supported":false,"write_supported":false,"verification_level":"NOT_VERIFIED","approval_required":"L3_SANDBOX_WRITE","known_limitations":["tianzheng_hvac_write=INTERFACE_ONLY"],"evidence":["references/known_limitations.md"]}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "qa_report.schema.json",
+  "type": "object",
+  "required": ["saved", "reopened", "persisted_delta", "geometry_match", "layer_match", "network_match"],
+  "properties": {
+    "saved": {"type": "boolean"},
+    "reopened": {"type": "boolean"},
+    "persisted_delta": {"type": "integer", "minimum": 0},
+    "geometry_match": {"type": "boolean"},
+    "layer_match": {"type": "boolean"},
+    "network_match": {"type": "boolean"},
+    "created_handles": {"type": "array", "items": {"type": "string"}},
+    "errors": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}

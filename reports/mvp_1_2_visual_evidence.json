@@ -1,0 +1,95 @@
+{
+  "phase": "MVP-1.2",
+  "deepseek_worker_used": true,
+  "full_chat_sent_to_deepseek": false,
+  "api_key_sent_to_deepseek": false,
+  "input_visual_item_count": 5,
+  "evidence_ready_count": 0,
+  "evidence_insufficient_count": 5,
+  "generated_crop_count": 5,
+  "contact_sheet_created": true,
+  "contact_sheet_path": "artifacts\\review_previews\\mvp1_visual_review_contact_sheet.png",
+  "can_run_mvp_1_3_visual_decision": true,
+  "items": [
+    {
+      "item_id": "mvp1_visual_0001",
+      "source": "reference_dwg",
+      "related_object_ids": [],
+      "evidence_status": "insufficient",
+      "bbox": null,
+      "center": null,
+      "crop_path": "artifacts\\review_previews\\mvp1_visual_0001_crop.png",
+      "overlay_crop_path": "artifacts\\review_previews\\mvp1_visual_0001_crop.png",
+      "pdf_page_crop_path": null,
+      "reason": "bbox/center missing; generated evidence card instead of fake crop"
+    },
+    {
+      "item_id": "mvp1_visual_0002",
+      "source": "reference_dwg",
+      "related_object_ids": [],
+      "evidence_status": "insufficient",
+      "bbox": null,
+      "center": null,
+      "crop_path": "artifacts\\review_previews\\mvp1_visual_0002_crop.png",
+      "overlay_crop_path": "artifacts\\review_previews\\mvp1_visual_0002_crop.png",
+      "pdf_page_crop_path": null,
+      "reason": "bbox/center missing; generated evidence card instead of fake crop"
+    },
+    {
+      "item_id": "mvp1_visual_0003",
+      "source": "reference_dwg",
+      "related_object_ids": [],
+      "evidence_status": "insufficient",
+      "bbox": null,
+      "center": null,
+      "crop_path": "artifacts\\review_previews\\mvp1_visual_0003_crop.png",
+      "overlay_crop_path": "artifacts\\review_previews\\mvp1_visual_0003_crop.png",
+      "pdf_page_crop_path": null,
+      "reason": "bbox/center missing; generated evidence card instead of fake crop"
+    },
+    {
+      "item_id": "mvp1_visual_0004",
+      "source": "reference_dwg",
+      "related_object_ids": [],
+      "evidence_status": "insufficient",
+      "bbox": null,
+      "center": null,
+      "crop_path": "artifacts\\review_previews\\mvp1_visual_0004_crop.png",
+      "overlay_crop_path": "artifacts\\review_previews\\mvp1_visual_0004_crop.png",
+      "pdf_page_crop_path": null,
+      "reason": "bbox/center missing; generated evidence card instead of fake crop"
+    },
+    {
+      "item_id": "mvp1_visual_0005",
+      "source": "reference_pdf",
+      "related_object_ids": [],
+      "evidence_status": "partial",
+      "bbox": [],
+      "center": [],
+      "crop_path": "artifacts\\review_previews\\mvp1_visual_0005_crop.png",
+      "overlay_crop_path": null,
+      "pdf_page_crop_path": "artifacts\\review_previews\\mvp1_visual_0005_crop.png",
+      "reason": "PDF page crop generated, but no region bbox exists"
+    }
+  ],
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 7
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

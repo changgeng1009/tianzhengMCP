@@ -1,0 +1,19 @@
+{
+  "phase": "F3",
+  "jobs": [
+    {
+      "job_id": "job_001",
+      "source_dwg": "D:/ExampleWorkspace/xxx.dwg",
+      "reference_dwg": "D:/ExampleWorkspace/ref.dwg",
+      "mode": "production_copy",
+      "requires_anchor": true
+    },
+    {
+      "job_id": "job_002",
+      "source_dwg": "D:/ExampleWorkspace/yyy.dwg",
+      "reference_dwg": "D:/ExampleWorkspace/ref2.dwg",
+      "mode": "sandbox",
+      "requires_anchor": false
+    }
+  ]
+}

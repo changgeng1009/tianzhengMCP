@@ -1,0 +1,67 @@
+{
+  "description": "Original synthetic offline aliases; not real CAD commands",
+  "synthetic": true,
+  "execution_allowed": false,
+  "aliases": {
+    "plumbing_synthetic_01": {
+      "chinese_names": [
+        "合成测试命令1"
+      ],
+      "shortcuts": [
+        "fixture1"
+      ],
+      "tianzheng_commands": [],
+      "notes": "Synthetic; never execute"
+    },
+    "plumbing_synthetic_02": {
+      "chinese_names": [
+        "合成测试命令2"
+      ],
+      "shortcuts": [
+        "fixture2"
+      ],
+      "tianzheng_commands": [],
+      "notes": "Synthetic; never execute"
+    },
+    "plumbing_synthetic_03": {
+      "chinese_names": [
+        "合成测试命令3"
+      ],
+      "shortcuts": [
+        "fixture3"
+      ],
+      "tianzheng_commands": [],
+      "notes": "Synthetic; never execute"
+    },
+    "hvac_synthetic_04": {
+      "chinese_names": [
+        "合成测试命令4"
+      ],
+      "shortcuts": [
+        "fixture4"
+      ],
+      "tianzheng_commands": [],
+      "notes": "Synthetic; never execute"
+    },
+    "hvac_synthetic_05": {
+      "chinese_names": [
+        "合成测试命令5"
+      ],
+      "shortcuts": [
+        "fixture5"
+      ],
+      "tianzheng_commands": [],
+      "notes": "Synthetic; never execute"
+    },
+    "hvac_synthetic_06": {
+      "chinese_names": [
+        "合成测试命令6"
+      ],
+      "shortcuts": [
+        "fixture6"
+      ],
+      "tianzheng_commands": [],
+      "notes": "Synthetic; never execute"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "mode": "stage4-mvp",
+  "professional_domain": "water_supply_and_drainage",
+  "reference_sha256": null,
+  "target_sha256": null,
+  "alignment_mode": "inherited_exact_hash_pair",
+  "alignment_evidence_mode": "conditional_geometry_dominant",
+  "translation": null,
+  "automatic_unattended_alignment": false,
+  "execute_safe_ordinary": true,
+  "automatic_tdb_execution": false,
+  "automatic_fallback": false,
+  "stage5_execution_allowed": false,
+  "production_d1_allowed": false,
+  "external_run_config_env": "TIANZHENG_RUN_CONFIG",
+  "external_run_config_required": true,
+  "parameter_keys": {
+    "reference_sha256": "mcp.orchestration.stage4_mvp.reference_sha256",
+    "target_sha256": "mcp.orchestration.stage4_mvp.target_sha256",
+    "translation": "stage45.translation"
+  },
+  "configuration_notice": "No bundled private defaults. Supply an external local run configuration; configuration alone does not authorize CAD writes."
+}

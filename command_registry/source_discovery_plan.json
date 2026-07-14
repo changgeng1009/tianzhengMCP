@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0.0",
+  "phase": "C2",
+  "description": "本机安装目录命令来源发现计划 — 仅设计，不执行扫描",
+  "local_installation_scanned": false,
+  "requires_user_approval_for_c3": true,
+  "c3_approval_phrase": "我批准 Phase C3 只读扫描天正安装目录，不连接 AutoCAD，不打开 DWG，不执行命令。",
+  "source_types": {
+    "allowed_for_read_only_discovery": [
+      {
+        "type": "acad.pgp",
+        "description": "AutoCAD 命令别名定义文件",
+        "expected_location_patterns": [
+          "{tangent_install}/sys/acad.pgp",
+          "{tangent_install}/sys*/acad.pgp",
+          "{appdata}/Autodesk/*/enu/Support/acad.pgp"
+        ],
+        "extraction_method": "纯文本解析，提取 别名=命令 行",
+        "risk": "low"
+      },
+      {
+        "type": "*.tmn",
+        "description": "天正菜单定义文件",
+        "expected_location_patterns": [
+          "{tangent_install}/sys/tch.tmn",
+          "{tangent_install}/sys/out.tmn",
+          "{tangent_install}/sys*/tch*.tmn"
+        ],
+        "extraction_method": "文本解析，提取菜单项关联的命令字符串",
+        "risk": "low"
+      },
+      {
+        "type": "*.mnu / *.cuix / *.cui",
+        "description": "AutoCAD 菜单/UI 自定义文件",
+        "expected_location_patterns": [
+          "{tangent_install}/sys/*.mnu",
+          "{tangent_install}/sys/*.cuix",
+          "{tangent_install}/sys/*.cui"
+        ],
+        "extraction_method": "XML/文本结构解析，提取菜单宏命令",
+        "risk": "low"
+      },
+      {
+        "type": "help / chm / html / txt",
+        "description": "帮助文档与说明文件",
+        "expected_location_patterns": [
+          "{tangent_install}/help/*.chm",
+          "{tangent_install}/help/*.html",
+          "{tangent_install}/*.txt"
+        ],
+        "extraction_method": "文本提取，搜索命令名称模式 (如 T88_*, T96_*)",
+        "risk": "low"
+      },
+      {
+        "type": "lisp / fas / vlx",
+        "description": "LISP 源码和编译文件 (仅索引用，不执行)",
+        "expected_location_patterns": [
+          "{tangent_install}/lisp/*.lsp",
+          "{tangent_install}/sys/*.lsp",
+          "{tangent_install}/sys/*.fas",
+          "{tangent_install}/sys/*.vlx"
+        ],
+        "extraction_method": "纯文本 grep 搜索 defun c:xxx 定义 (lsp)，FAS/VLX 不解析仅记文件名",
+        "risk": "medium (仅 grep，不加载不执行)"
+      }
+    ],
+    "forbidden_for_any_discovery": [
+      {
+        "type": "执行任何文件",
+        "reason": "禁止运行 LISP、FAS、VLX、EXE、DLL 等可执行文件"
+      },
+      {
+        "type": "加载 CUIX/CUI/MNU",
+        "reason": "禁止通过 NETLOAD 或 MENULOAD 加载天正菜单"
+      },
+      {
+        "type": "NETLOAD DLL",
+        "reason": "禁止加载天正 .NET 程序集"
+      },
+      {
+        "type": "SendCommand",
+        "reason": "禁止通过 SendCommand 探测命令是否存在"
+      },
+      {
+        "type": "打开 AutoCAD",
+        "reason": "禁止启动或连接 AutoCAD 实例"
+      },
+      {
+        "type": "打开 DWG",
+        "reason": "禁止打开任何 DWG 文件"
+      }
+    ]
+  },
+  "future_c3_allowed_actions": [
+    "只读扫描用户明确提供的安装目录路径",
+    "读取文本型配置文件 (pgp, tmn, mnu, cui, cuix, txt, html, chm)",
+    "复制文件摘要 (不复制完整文件)",
+    "提取命令别名和主命令名称",
+    "生成 seed vs local_discovered diff 报告",
+    "标记命令为 local_discovered (不标记 confirmed)"
+  ],
+  "future_c3_forbidden_actions": [
+    "执行任何文件 (LISP, FAS, VLX, EXE, DLL, SCR)",
+    "加载 CUIX / MNU / CUI 菜单",
+    "NETLOAD 任何 DLL",
+    "SendCommand 探测",
+    "启动或连接 AutoCAD",
+    "打开任何 DWG",
+    "将命令标记为 confirmed",
+    "将 allow_production 设为 true"
+  ]
+}

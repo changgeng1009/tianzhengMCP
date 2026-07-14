@@ -1,0 +1,25 @@
+{
+  "fixture_kind": "original_synthetic",
+  "fixture_notice": "Original synthetic PDF geometry fixture. Replaces removed third-party PDF extract; not evidence of a historical or current real-CAD acceptance run. Generated test input is produced locally by tests/extraction/test_d3_pdf_geometry.py.",
+  "phase": "D3",
+  "source": "synthetic_geometry.pdf",
+  "total_pages": 1,
+  "total_text_length": 53,
+  "pages": [
+    {
+      "page_number": 1,
+      "width": 2100.0,
+      "height": 3100.0,
+      "area": 6510000.0,
+      "text_length": 53,
+      "text_preview": "Synthetic geometry fixture - rectangle and test label"
+    }
+  ],
+  "summary": "1 synthetic page, 53 chars total text",
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

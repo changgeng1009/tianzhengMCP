@@ -1,0 +1,12 @@
+{
+  "task_id": "invalid_page_text",
+  "classification": "blocked_invalid_task",
+  "object_type": "text",
+  "professional_domain": "water_supply_and_drainage",
+  "domain_object_type": "annotation",
+  "geometry": {"page": 1, "width": 2384, "height": 3370},
+  "required_capabilities": ["create_acdb_text"],
+  "fallback_policy": "blocked",
+  "execution_allowed": false,
+  "block_reason": "page summary is not object-level CAD geometry"
+}

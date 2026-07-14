@@ -1,0 +1,174 @@
+{
+  "": "https://tianzheng-mcp.local/command_registry/command_schema.json",
+  "title": "天正 CAD 命令注册表 Schema",
+  "description": "定义天正给排水和暖通命令的标准结构，用于 MCP 接口系统的命令注册、验证和沙箱执行。",
+  "type": "object",
+  "required": [
+    "command_id",
+    "category",
+    "tianzheng_command",
+    "risk_level",
+    "requires_sandbox",
+    "status"
+  ],
+  "properties": {
+    "command_id": {
+      "type": "string",
+      "description": "命令唯一标识符，格式为 {category}_{subcategory}_{name}",
+      "pattern": "^[a-z]+_[a-z]+_[a-z_]+$"
+    },
+    "category": {
+      "type": "string",
+      "description": "专业大类：water（给排水）或 hvac（暖通）",
+      "enum": [
+        "water",
+        "hvac"
+      ]
+    },
+    "subcategory": {
+      "type": "string",
+      "description": "子分类：pipe/valve/fitting/dimension/drain/fire/duct/equipment/system 等"
+    },
+    "tianzheng_command": {
+      "type": "string",
+      "description": "天正原生命令名，如 TPIPE、TDRAIN、TVAIRDUCT",
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "object_type": {
+      "type": "string",
+      "description": "天正对象类型。已确认：TDbPipe/TDbPipeValve/TDbPipeFitting/TDbDimension2。未知：unknown",
+      "default": "unknown"
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "required"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number",
+              "integer",
+              "boolean",
+              "point3d",
+              "enum",
+              "array"
+            ]
+          },
+          "required": {
+            "type": "boolean",
+            "default": true
+          },
+          "default": {},
+          "constraints": {
+            "type": "object",
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "pattern": {
+                "type": "string"
+              },
+              "enum_values": {
+                "type": "array",
+                "items": {}
+              }
+            }
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "risk_level": {
+      "type": "string",
+      "description": "风险等级，对应 action_schema.py 的 RiskLevel",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "requires_sandbox": {
+      "type": "boolean",
+      "description": "是否必须在沙箱中执行",
+      "default": true
+    },
+    "status": {
+      "type": "string",
+      "description": "确认状态",
+      "enum": [
+        "unconfirmed",
+        "confirmed",
+        "deprecated"
+      ],
+      "default": "unconfirmed"
+    },
+    "description": {
+      "type": "string",
+      "description": "命令功能中文描述"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "condition"
+        ],
+        "properties": {
+          "condition": {
+            "type": "string"
+          },
+          "check_type": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "auto"
+            ]
+          }
+        }
+      }
+    },
+    "known_issues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related_commands": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source": {
+      "type": "string"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "default": "0.1.0"
+    }
+  }
+}

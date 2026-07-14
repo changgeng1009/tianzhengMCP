@@ -1,0 +1,217 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "STAGE2-SKILL-PACKAGING",
+  "status": "PARTIAL_DEEPSEEK_DEFERRED",
+  "status_reason": "Stage 2 architecture and local verification are complete. The external PowerShell environment was reported to contain DEEPSEEK_API_KEY, but the Codex subprocess cannot observe it; the controlled DeepSeek closure is deferred without fabricating a call result and no longer blocks Stage 3.1 read-only validation.",
+  "skill_root": "D:\\ExampleWorkspace\\天正\\skill",
+  "skill_name": "tianzheng-water-repair",
+  "final_business_goal_written_to_skill": true,
+  "backend_architecture_completed": true,
+  "backend_protocol_path": "mcp/backends/base.py",
+  "implemented_backends": [
+    "com",
+    "mock"
+  ],
+  "contract_skeleton_backends": [
+    "net_bridge",
+    "tianzheng_api"
+  ],
+  "backend_registry_completed": true,
+  "backend_router_completed": true,
+  "capability_model_completed": true,
+  "task_required_capabilities_completed": true,
+  "fallback_silent_execution_allowed": false,
+  "safety_above_router": true,
+  "business_layer_native_backend_imports_found": false,
+  "business_layer_win32com_imports": [],
+  "com_isolated_from_business_layer": true,
+  "legacy_native_adapters": [
+    "mcp/backends/legacy_anchor_com_adapter.py",
+    "mcp/backends/legacy_d10_com_adapter.py"
+  ],
+  "current_sample_paths_hardcoded_in_generic_modules": false,
+  "legacy_stage1_fixture_paths_remain_stage_specific": true,
+  "stage3_sample_paths_guessed": false,
+  "active_professional_domain": "water_supply_and_drainage",
+  "water_supply_and_drainage_status": "active",
+  "hvac_status": "deferred",
+  "hvac_implementation_completed": false,
+  "hvac_execution_enabled": false,
+  "professional_domain_status": {
+    "water_supply_and_drainage": "active",
+    "hvac": "deferred"
+  },
+  "backend_capability_summary": {
+    "com": {
+      "status": "implemented_adapter",
+      "scan_acdb_entities": true,
+      "scan_tianzheng_water_objects": true,
+      "scan_tdb_pipe": true,
+      "create_acdb_line": true,
+      "create_acdb_line_sandbox_verified": true,
+      "create_acdb_text_adapter_present": true,
+      "create_acdb_text_sandbox_verified": false,
+      "create_acdb_polyline_adapter_present": true,
+      "create_acdb_polyline_sandbox_verified": false,
+      "create_tdb_pipe": false,
+      "create_tdb_valve": false,
+      "create_tdb_fitting": false,
+      "create_tianzheng_water_equipment": false,
+      "command_completion_tracking": false,
+      "official_tianzheng_api": false
+    },
+    "mock": {
+      "status": "implemented_test_backend",
+      "real_cad_execution": false,
+      "real_dwg_modified": false
+    },
+    "net_bridge": {
+      "status": "contract_only",
+      "enabled": false,
+      "available": false,
+      "execution_allowed": false
+    },
+    "tianzheng_api": {
+      "status": "contract_only",
+      "enabled": false,
+      "available": false,
+      "official_api_detected": false,
+      "execution_allowed": false
+    }
+  },
+  "backends_yaml_safety_defaults": {
+    "allow_automatic_fallback": false,
+    "net_bridge_enabled": false,
+    "tianzheng_api_enabled": false,
+    "production_d1_allowed": false,
+    "sendcommand_allowed": false,
+    "tianzheng_execution_allowed": false,
+    "source_open_allowed": false
+  },
+  "cli_backend_commands": [
+    "backend-list",
+    "backend-capabilities",
+    "backend-doctor",
+    "execute-sandbox",
+    "validate-fixture"
+  ],
+  "workflow_count": 8,
+  "workflow_names": [
+    "backend_selection",
+    "controlled_tianzheng_execution",
+    "direct_com_repair",
+    "full_safe_pipeline",
+    "manual_tianzheng_review",
+    "persistence_qa",
+    "prepare_sandbox",
+    "recognize_and_diff"
+  ],
+  "schema_count": 9,
+  "schema_names": [
+    "backend_capabilities.schema.json",
+    "backend_result.schema.json",
+    "backend_selection.schema.json",
+    "execution_plan.schema.json",
+    "qa_report.schema.json",
+    "repair_task.schema.json",
+    "safety_report.schema.json",
+    "semantic_object.schema.json",
+    "skill_run_manifest.schema.json"
+  ],
+  "example_count": 6,
+  "example_names": [
+    "backend_fallback_blocked_example",
+    "backend_routing_example",
+    "controlled_line_fixture",
+    "invalid_page_text_task",
+    "manual_tianzheng_example",
+    "review_only_example"
+  ],
+  "prompt_count": 5,
+  "template_count": 5,
+  "capability_matrix_completed": true,
+  "capability_matrix_distinguishes_verified_unimplemented_contract": true,
+  "backend_migration_guide_completed": true,
+  "upper_business_modules_change_required_for_net_bridge": false,
+  "upper_business_modules_change_required_for_tianzheng_api": false,
+  "external_autocad_redraw_skill_read": true,
+  "skill_creator_used": true,
+  "skill_quick_validate_passed": true,
+  "deepseek_worker_used": true,
+  "deepseek_available": false,
+  "deepseek_external_environment_reported_available": true,
+  "deepseek_codex_subprocess_available": false,
+  "deepseek_closure_deferred": true,
+  "deepseek_result_fabricated": false,
+  "delegated_task_count": 1,
+  "delegated_task_ids": [
+    "ds_stage2_backend_architecture_static_review"
+  ],
+  "task_pack_chars": 2431,
+  "call_succeeded": false,
+  "accepted_count": 0,
+  "modified_count": 0,
+  "rejected_count": 0,
+  "deepseek_notes": [
+    "DEEPSEEK_API_KEY is not set; remote call skipped safely"
+  ],
+  "deepseek_missing_items": [
+    "DEEPSEEK_API_KEY environment variable"
+  ],
+  "final_decision_made_by_codex": true,
+  "deepseek_made_final_pass_decision": false,
+  "codex_deepseek_review": "No remote model output was produced, so Codex accepted, modified, and rejected zero DeepSeek recommendations. Codex independently reviewed the architecture and set PARTIAL because this Stage 2 call did not succeed.",
+  "full_chat_sent_to_deepseek": false,
+  "api_key_sent_to_deepseek": false,
+  "dwg_binary_sent_to_deepseek": false,
+  "source_file_sent_to_deepseek": false,
+  "full_history_sent_to_deepseek": false,
+  "autocad_execution_authorized": false,
+  "tests": {
+    "stage2_targeted_and_decoupling_regression": "72 passed in 0.80s",
+    "stage1_regression": "21 passed in 0.22s",
+    "full_pytest": "1065 passed, 1 warning in 4.88s",
+    "warning": "PyPDF2 is deprecated; use pypdf"
+  },
+  "tests_passed": true,
+  "source_dwg_path": "D:\\ExampleWorkspace\\synthetic_sample_t8.dwg",
+  "source_sha256_expected": "redacted_input_sha256",
+  "source_sha256_actual": "redacted_input_sha256",
+  "source_hash_unchanged": true,
+  "base_sandbox_sha256_actual": "redacted_input_sha256",
+  "autocad_connected": false,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "save_called_on_source": false,
+  "sandbox_dwg_opened": false,
+  "sandbox_saved": false,
+  "opened_test_drawings_accessed": false,
+  "opened_test_drawings_used": false,
+  "opened_test_drawings_saved": false,
+  "drawing_executed": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "stage3_reference_path_confirmed": false,
+  "stage3_target_path_confirmed": false,
+  "controlled_fixture_used_as_real_sample": false,
+  "validation_mode": "stage2_static_packaging",
+  "real_sample_repair_completed": false,
+  "production_d1_allowed": false,
+  "stage2_packaging_complete_except_deepseek": true,
+  "can_enter_stage3_real_sample_validation": true,
+  "stage3_block_reasons": [
+    "DeepSeek closure remains deferred because the Codex subprocess cannot observe the externally reported environment variable; this is not a Stage 3.1 hard blocker"
+  ],
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

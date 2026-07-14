@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0.0",
+  "description": "命令来源状态模型",
+  "important": "不得定义 production_confirmed 状态",
+  "source_statuses": {
+    "public_snippet": {
+      "rank": 1,
+      "label": "公开网页片段",
+      "can_be_confirmed": false,
+      "can_be_used_for_production": false,
+      "next_status": "seed"
+    },
+    "seed": {
+      "rank": 2,
+      "label": "种子注册表",
+      "can_be_confirmed": false,
+      "can_be_used_for_production": false,
+      "next_status": "local_discovered"
+    },
+    "local_discovered": {
+      "rank": 3,
+      "label": "本地发现",
+      "can_be_confirmed": false,
+      "can_be_used_for_production": false,
+      "next_status": "local_verified",
+      "note": "不等于 confirmed"
+    },
+    "local_verified": {
+      "rank": 4,
+      "label": "本地已验证",
+      "can_be_confirmed": false,
+      "can_be_used_for_production": false,
+      "next_status": "sandbox_verified"
+    },
+    "sandbox_verified": {
+      "rank": 5,
+      "label": "Sandbox已验证",
+      "can_be_confirmed": false,
+      "can_be_used_for_production": false,
+      "next_status": "confirmed_for_sandbox"
+    },
+    "confirmed_for_sandbox": {
+      "rank": 6,
+      "label": "Sandbox可用",
+      "can_be_confirmed": true,
+      "can_be_used_for_production": false,
+      "next_status": null,
+      "note": "production仍需审批"
+    },
+    "production_forbidden": {
+      "rank": 99,
+      "label": "生产禁止",
+      "can_be_confirmed": false,
+      "can_be_used_for_production": false,
+      "next_status": null
+    },
+    "synthetic": {
+      "rank": 0,
+      "label": "原创离线合成测试数据",
+      "can_be_confirmed": false,
+      "can_be_used_for_production": false,
+      "next_status": null
+    }
+  },
+  "forbidden_statuses": [
+    "production_confirmed",
+    "production_allowed",
+    "confirmed_unrestricted"
+  ],
+  "rules": {
+    "never_auto_promote": "状态转换必须由显式验证步骤触发",
+    "sandbox_required": "confirmed_for_sandbox之前必须经过sandbox_verified",
+    "production_blocked": "任何状态都不得将allow_production设为true",
+    "source_preserved": "每次状态变更必须保留source_ids和变更历史"
+  }
+}

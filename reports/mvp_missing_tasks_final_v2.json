@@ -1,0 +1,44 @@
+{
+  "phase": "MVP-1.3",
+  "mode": "dry_run_gpt_visual_decision",
+  "tasks": [
+    {
+      "task_id": "mvp1_task_208c4ccc9f",
+      "task_type": "direct_com_create",
+      "source_object_id": null,
+      "target_status": "missing_or_review",
+      "geometry": {},
+      "semantic": {},
+      "suggested_executor": "dry_run_direct_com_plan",
+      "confidence": 0.7,
+      "reason": "Existing confirmed direct_com_create task retained; MVP-1.3 did not add visual review items to execution scope."
+    }
+  ],
+  "review_only_task_ids": [
+    "mvp1_review_0001",
+    "mvp1_review_0002",
+    "mvp1_review_0003",
+    "mvp1_review_0004",
+    "mvp1_review_0005"
+  ],
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 3
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

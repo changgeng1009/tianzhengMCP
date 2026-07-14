@@ -1,0 +1,51 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "MVP-2A-PREP",
+  "source_dwg_path": "D:\\ExampleWorkspace\\synthetic_sample_t8.dwg",
+  "source_hash_before": "redacted_input_sha256",
+  "sandbox_copy_path": "D:\\ExampleWorkspace\\天正\\artifacts\\sandbox\\mvp2a_test_copy_20260710_091816.dwg",
+  "sandbox_copy_created": true,
+  "sandbox_copy_opened": true,
+  "sandbox_modelspace_count": 606,
+  "tdb_object_count": 348,
+  "tdb_object_types": {
+    "TDbDimension2": 6,
+    "TDbDrawingName": 1,
+    "TDbEquipment": 2,
+    "TDbPipe": 107,
+    "TDbPipeFitting": 130,
+    "TDbPipeValve": 88,
+    "TDbPump": 6,
+    "TDbSymbMultiLeader": 3,
+    "TDbVPipeDim": 4,
+    "TDbWaterTank": 1
+  },
+  "direct_com_task_count": 1,
+  "mvp2a_execution_plan_created": true,
+  "source_hash_after": "redacted_input_sha256",
+  "source_hash_unchanged": true,
+  "scan_status": "success",
+  "scan_errors": [],
+  "pipeline_state_source_dwg_opened": false,
+  "pipeline_state_production_d1_allowed": false,
+  "review_only_items_excluded": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "save_called_on_source": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "acceptance_decision": "PASS",
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

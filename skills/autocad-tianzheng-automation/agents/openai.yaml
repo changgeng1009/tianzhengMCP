@@ -1,0 +1,4 @@
+interface:
+  display_name: "AutoCAD & Tianzheng Automation"
+  short_description: "统一、安全地编排 AutoCAD 与天正自动化任务"
+  default_prompt: "使用 $autocad-tianzheng-automation 安全分析并规划 CAD 自动化任务。"

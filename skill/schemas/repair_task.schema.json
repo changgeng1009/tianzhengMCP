@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "repair_task.schema.json",
+  "title": "Backend-Decoupled Repair Task",
+  "type": "object",
+  "required": ["task_id", "classification", "object_type", "professional_domain", "domain_object_type", "required_capabilities", "execution_allowed", "fallback_policy"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "classification": {"enum": ["confirmed_direct_com", "controlled_tianzheng_execution", "manual_tianzheng", "review_only", "blocked_geometry", "blocked_invalid_task"]},
+    "object_type": {"type": "string"},
+    "professional_domain": {"enum": ["water_supply_and_drainage", "hvac"]},
+    "system_type": {"type": ["string", "null"]},
+    "domain_object_type": {"type": "string"},
+    "geometry": {"type": "object"},
+    "geometry_source": {"type": ["string", "null"]},
+    "geometry_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "required_capabilities": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "preferred_backend": {"type": ["string", "null"]},
+    "allowed_backends": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "fallback_policy": {"enum": ["blocked", "manual_tianzheng"]},
+    "selected_backend": {"type": ["string", "null"]},
+    "backend_selection_reason": {"type": "string"},
+    "backend_capability_evidence": {"type": "object"},
+    "execution_allowed": {"type": "boolean"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"professional_domain": {"const": "hvac"}}},
+      "then": {"properties": {"execution_allowed": {"const": false}}}
+    },
+    {
+      "if": {"properties": {"classification": {"enum": ["manual_tianzheng", "review_only", "blocked_geometry", "blocked_invalid_task"]}}},
+      "then": {"properties": {"execution_allowed": {"const": false}}}
+    }
+  ],
+  "additionalProperties": true
+}

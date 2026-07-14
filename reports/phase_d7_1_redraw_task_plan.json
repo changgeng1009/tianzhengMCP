@@ -1,0 +1,99 @@
+{
+  "phase": "D7.1",
+  "task_count": 15,
+  "add_task_count": 2,
+  "review_task_count": 13,
+  "executable_task_count": 2,
+  "tasks": [
+    {
+      "type": "add_missing",
+      "object_type": "AcDbPolyline",
+      "count": 1,
+      "strategy": "sandbox_dry_run"
+    },
+    {
+      "type": "add_missing",
+      "object_type": "TDbText",
+      "count": 2,
+      "strategy": "sandbox_dry_run"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "AcDbCircle",
+      "count": 10,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "AcDbLine",
+      "count": 12,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "AcDbText",
+      "count": 2,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbDimension2",
+      "count": 6,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbDrawingName",
+      "count": 1,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbEquipment",
+      "count": 2,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbPipe",
+      "count": 107,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbPipeFitting",
+      "count": 130,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbPipeValve",
+      "count": 88,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbPump",
+      "count": 6,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbSymbMultiLeader",
+      "count": 3,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbVPipeDim",
+      "count": 4,
+      "strategy": "review_only"
+    },
+    {
+      "type": "review_extra",
+      "object_type": "TDbWaterTank",
+      "count": 1,
+      "strategy": "review_only"
+    }
+  ]
+}

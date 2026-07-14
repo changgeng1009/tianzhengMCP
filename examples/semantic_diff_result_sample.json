@@ -1,0 +1,92 @@
+{
+  "add_pipe": [
+    {
+      "pipe_handle": "REF-P-003",
+      "reference_diameter": "DN150",
+      "reference_system_type": "消防",
+      "reference_layer": "PIPE-消防",
+      "reference_geometry": {
+        "orientation": "horizontal",
+        "start_point": [0.0, 2000.0, 0.0],
+        "end_point": [1000.0, 2000.0, 0.0],
+        "source": "bounding_box_inference"
+      },
+      "severity": "medium",
+      "reason": "reference_has_pipe_current_missing",
+      "automatic_execution_allowed": false
+    }
+  ],
+  "remove_pipe": [
+    {
+      "pipe_handle": "CUR-P-009",
+      "current_diameter": "DN50",
+      "current_system_type": "给水",
+      "current_layer": "PIPE-给水",
+      "current_geometry": {
+        "orientation": "horizontal",
+        "start_point": [0.0, 3000.0, 0.0],
+        "end_point": [1000.0, 3000.0, 0.0],
+        "source": "bounding_box_inference"
+      },
+      "severity": "medium",
+      "reason": "current_has_pipe_reference_missing",
+      "automatic_execution_allowed": false
+    }
+  ],
+  "modify_pipe": [
+    {
+      "pipe_handle": "CUR-P-001",
+      "reference_pipe_handle": "REF-P-001",
+      "change_type": "diameter_mismatch",
+      "changes": {
+        "diameter": {
+          "pipe_handle": "CUR-P-001",
+          "reference_pipe_handle": "REF-P-001",
+          "current": "DN100",
+          "reference": "DN200",
+          "severity": "high"
+        }
+      },
+      "severity": "high",
+      "automatic_execution_allowed": false
+    }
+  ],
+  "move_pipe": [
+    {
+      "pipe_handle": "CUR-P-002",
+      "reference_pipe_handle": "REF-P-002",
+      "distance": 120.0,
+      "current_geometry": {
+        "orientation": "horizontal",
+        "start_point": [120.0, 0.0, 0.0],
+        "end_point": [1120.0, 0.0, 0.0],
+        "source": "bounding_box_inference"
+      },
+      "reference_geometry": {
+        "orientation": "horizontal",
+        "start_point": [0.0, 0.0, 0.0],
+        "end_point": [1000.0, 0.0, 0.0],
+        "source": "bounding_box_inference"
+      },
+      "severity": "medium"
+    }
+  ],
+  "diameter_mismatch": [
+    {
+      "pipe_handle": "CUR-P-001",
+      "reference_pipe_handle": "REF-P-001",
+      "current": "DN100",
+      "reference": "DN200",
+      "severity": "high"
+    }
+  ],
+  "system_mismatch": [
+    {
+      "pipe_handle": "CUR-P-004",
+      "reference_pipe_handle": "REF-P-004",
+      "current": "给水",
+      "reference": "消防",
+      "severity": "high"
+    }
+  ]
+}

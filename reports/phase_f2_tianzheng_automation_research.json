@@ -1,0 +1,44 @@
+{
+  "phase": "F2",
+  "status": "PARTIAL",
+  "timestamp": "2026-07-08T16:17:16.066101+00:00",
+  "f2_0": {
+    "phase": "F2.0",
+    "status": "PASS",
+    "commands_known": 119,
+    "commands_plumbing": 88,
+    "commands_hvac": 31,
+    "direct_com_possible": 0,
+    "manual_assisted_possible": 6,
+    "fully_manual": 113,
+    "fully_automatic_possible": 0,
+    "note": "All Tianzheng commands are interactive; parameterized automation requires manual-assisted protocol"
+  },
+  "f2_1": {
+    "phase": "F2.1",
+    "status": "PASS",
+    "dry_command_plans": [
+      "hsxg_double_line_pipe",
+      "hzgx_pipe",
+      "gxlj_connect"
+    ],
+    "all_dry_run_only": true,
+    "no_auto_sendcommand": true
+  },
+  "f2_2": {
+    "phase": "F2.2",
+    "status": "USER_APPROVAL_REQUIRED",
+    "request": "Sandbox-only real Tianzheng command probe requires user approval. Send: \"我批准 F2.2 sandbox real probe\" to proceed.",
+    "auto_sendcommand_blocked": true
+  },
+  "f2_3": {
+    "phase": "F2.3",
+    "status": "PASS",
+    "strategy": "manual_assisted_protocol",
+    "description": "Keep manual-assisted hsxg workflow; before/after scan for TDb object detection"
+  },
+  "user_approval_required_for_probe": true,
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "d1_allowed": false
+}

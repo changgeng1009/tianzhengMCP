@@ -1,0 +1,340 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "STAGE3.1-R2-GEOMETRY-ONLY-ALIGNMENT-ACCEPTANCE",
+  "previous_status": "PARTIAL_LOW_CONFIDENCE",
+  "acceptance_rule_changed": true,
+  "evidence_mode": "GEOMETRY_DOMINANT",
+  "text_anchor_absence_expected": true,
+  "text_anchor_absence_reasons": [
+    "reference title and target title differ",
+    "target drawing is incomplete and lacks professional annotations",
+    "low-information 栓泵/喷泵 labels were excluded from safe pairing",
+    "title-block text was excluded from primary evidence"
+  ],
+  "accepted_text_anchor_count": 0,
+  "raw_anchor_count": 23,
+  "deduplicated_anchor_count": 22,
+  "independent_anchor_count": 14,
+  "anchor_type_counts": {
+    "unique_block_insertion": 1,
+    "rectangle_center": 7,
+    "long_line_midpoint": 6
+  },
+  "anchor_independence_audit": {
+    "raw_anchor_count": 23,
+    "deduplicated_anchor_count": 22,
+    "independent_anchor_count": 14,
+    "anchor_type_counts": {
+      "unique_block_insertion": 1,
+      "rectangle_center": 7,
+      "long_line_midpoint": 6
+    },
+    "raw_anchor_type_counts": {
+      "unique_block_insertion": 1,
+      "rectangle_center": 8,
+      "long_line_midpoint": 6,
+      "wall_corner": 8
+    },
+    "anchor_spatial_cells": {},
+    "duplicated_anchor_count": 1,
+    "correlated_anchor_groups": [
+      {
+        "kind": "identical_coordinate_pair",
+        "anchor_ids": [
+          "nontext_00026",
+          "nontext_00029"
+        ],
+        "retained_anchor_id": "nontext_00026"
+      },
+      {
+        "kind": "derived_corner_shares_line_entity",
+        "anchor_ids": [
+          "nontext_00404",
+          "nontext_00437",
+          "nontext_00470",
+          "nontext_00503",
+          "nontext_00536",
+          "nontext_00569",
+          "nontext_00602",
+          "nontext_00635"
+        ],
+        "shared_reference_handles": [],
+        "retained_anchor_id": null
+      }
+    ],
+    "correlated_anchor_count": 8,
+    "excluded_anchor_count": 9,
+    "exclusion_reasons": {
+      "derived_corner_shares_line_entity": 8,
+      "identical_coordinate_pair": 1
+    },
+    "forbidden_anchor_exclusions": [],
+    "reference_handle_pairing_unique": true,
+    "target_handle_pairing_unique": true,
+    "reference_top_level_block_handles": [],
+    "target_top_level_block_handles": [],
+    "all_from_one_block_reference": true,
+    "spatial_coverage": {}
+  },
+  "spatial_coverage": {},
+  "holdout_results": [
+    {
+      "name": "split_mod5_01",
+      "available": true,
+      "training_anchor_count": 8,
+      "validation_anchor_count": 6,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 2.9103830456733704e-11,
+      "normalized_validation_max_residual": 1.0185085459670712e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    },
+    {
+      "name": "split_mod5_13",
+      "available": true,
+      "training_anchor_count": 8,
+      "validation_anchor_count": 6,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 2.9103830456733704e-11,
+      "normalized_validation_max_residual": 1.0185085459670712e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    },
+    {
+      "name": "split_mod5_24",
+      "available": true,
+      "training_anchor_count": 9,
+      "validation_anchor_count": 5,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 5.820766091346741e-11,
+      "normalized_validation_max_residual": 2.0370170919341424e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    }
+  ],
+  "leave_one_type_out_results": [
+    {
+      "name": "leave_type:long_line_midpoint",
+      "available": true,
+      "training_anchor_count": 8,
+      "validation_anchor_count": 6,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 2.9103830456733704e-11,
+      "normalized_validation_max_residual": 1.0185085459670712e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    },
+    {
+      "name": "leave_type:rectangle_center",
+      "available": true,
+      "training_anchor_count": 7,
+      "validation_anchor_count": 7,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 5.820766091346741e-11,
+      "normalized_validation_max_residual": 2.0370170919341424e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    },
+    {
+      "name": "leave_type:unique_block_insertion",
+      "available": true,
+      "training_anchor_count": 13,
+      "validation_anchor_count": 1,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 2.9103830456733704e-11,
+      "normalized_validation_max_residual": 1.0185085459670712e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    }
+  ],
+  "leave_one_spatial_cell_out_results": [
+    {
+      "name": "leave_cell:r0c0",
+      "available": true,
+      "training_anchor_count": 9,
+      "validation_anchor_count": 5,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 2.9103830456733704e-11,
+      "normalized_validation_max_residual": 1.0185085459670712e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    },
+    {
+      "name": "leave_cell:r1c0",
+      "available": true,
+      "training_anchor_count": 8,
+      "validation_anchor_count": 6,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 2.9103830456733704e-11,
+      "normalized_validation_max_residual": 1.0185085459670712e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    },
+    {
+      "name": "leave_cell:r1c1",
+      "available": true,
+      "training_anchor_count": 11,
+      "validation_anchor_count": 3,
+      "fitted_translation": [],
+      "validation_median_residual": 2.9103830456733704e-11,
+      "validation_max_residual": 5.820766091346741e-11,
+      "normalized_validation_max_residual": 2.0370170919341424e-15,
+      "translation_deviation_from_selected": 0.0,
+      "absolute_residual_threshold": 142.87474843473058,
+      "normalized_residual_threshold": 0.005,
+      "passed": true
+    }
+  ],
+  "all_holdouts_passed": true,
+  "directional_overlap": {
+    "matching_method": "greedy_one_to_one_same_type_signature_ge_0.80_and_distance_within_stage3_1_threshold",
+    "absolute_match_threshold": 142.87474843473058,
+    "matched_feature_count": 53,
+    "reference_feature_count": 78,
+    "target_feature_count": 53,
+    "target_to_reference_overlap": 1.0,
+    "reference_to_target_overlap": 0.679487,
+    "target_geometry_explained_by_reference_ratio": 1.0,
+    "target_feature_counts": {
+      "unique_block_insertion": 1,
+      "rectangle_center": 8,
+      "long_line_midpoint": 12,
+      "wall_corner": 32
+    },
+    "reference_feature_counts": {
+      "unique_block_insertion": 1,
+      "circle_center": 10,
+      "long_line_midpoint": 19,
+      "rectangle_center": 8,
+      "wall_corner": 40
+    },
+    "matched_target_feature_counts": {
+      "unique_block_insertion": 1,
+      "rectangle_center": 8,
+      "long_line_midpoint": 12,
+      "wall_corner": 32
+    },
+    "matched_reference_feature_counts": {
+      "unique_block_insertion": 1,
+      "rectangle_center": 8,
+      "long_line_midpoint": 12,
+      "wall_corner": 32
+    },
+    "target_long_lines_explained_ratio": 1.0,
+    "target_wall_corners_explained_ratio": 1.0,
+    "target_rectangle_centers_explained_ratio": 1.0,
+    "target_block_insertions_explained_ratio": 1.0,
+    "target_feature_type_explained_ratios": {
+      "long_line_midpoint": 1.0,
+      "rectangle_center": 1.0,
+      "unique_block_insertion": 1.0,
+      "wall_corner": 1.0
+    },
+    "orientation_agreement": 1.0,
+    "line_length_agreement": 1.0,
+    "directional_overlap_score": 1.0,
+    "maximum_match_residual": 5.820766091346741e-11,
+    "passed": true
+  },
+  "target_to_reference_overlap": 1.0,
+  "reference_to_target_overlap": 0.679487,
+  "selected_translation": [],
+  "rotation_radians": 0.0,
+  "scale": null,
+  "residual_statistics": {},
+  "confidence": 0.806478,
+  "confidence_threshold": 0.72,
+  "hash_integrity_passed": true,
+  "final_status": "PARTIAL_GEOMETRY_EVIDENCE_CORRELATED",
+  "stage3_1_final_status": "PARTIAL_GEOMETRY_EVIDENCE_CORRELATED",
+  "stage3_2_allowed": false,
+  "acceptance_blockers": [
+    "all independent anchors originate from one top-level BlockReference pair"
+  ],
+  "repair_task_generated": false,
+  "stage3_2_executed": false,
+  "production_d1_allowed": false,
+  "deepseek_external_environment_reported_available": true,
+  "deepseek_codex_subprocess_available": false,
+  "deepseek_closure_deferred": true,
+  "safety_flags": {
+    "autocad_connected": false,
+    "dwg_opened": false,
+    "dwg_rescanned": false,
+    "safe_copy_created": false,
+    "dwg_saved": false,
+    "entities_created": false,
+    "entities_modified": false,
+    "entities_deleted": false,
+    "sendcommand_used": false,
+    "lisp_executed": false,
+    "netload_used": false,
+    "tianzheng_command_executed": false,
+    "repair_task_generated": false,
+    "stage3_2_executed": false,
+    "production_d1_allowed": false
+  },
+  "tests": {
+    "stage3_1_r2_targeted": "14 passed in 0.27s (final rerun)",
+    "stage3_1_r1_regression": "21 passed in 0.48s",
+    "stage3_1_regression": "18 passed in 0.52s",
+    "backend_safety_regression": "64 passed in 0.87s",
+    "stage1_regression": "21 passed in 0.39s",
+    "total": "138 passed",
+    "static_forbidden_call_audit": "no matches",
+    "report_schema_safety_assertions": "passed"
+  },
+  "input_artifacts": [
+    "D:\\ExampleWorkspace\\天正\\reports\\stage3_1_r1_target_scan_alignment.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\non_text_anchor_candidates.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\translation_delta_clusters.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\transform_candidates.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\geometry_overlap_validation.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\confidence_breakdown.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\selected_transform.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\reference_scan.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\target_scan.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\reference_region.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\target_region.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\reference_block_audit.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\target_block_audit.json",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage3_1_r1\\stage3_1_r1_20260711_002112\\text_anchor_classification.json"
+  ],
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 4
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

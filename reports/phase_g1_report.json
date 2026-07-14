@@ -1,0 +1,8 @@
+{
+  "phase": "G1",
+  "status": "PASS",
+  "timestamp": "2026-07-08T16:29:21.299018+00:00",
+  "description": "State machine: START,COMMAND_SENT,WAIT_POINT,OBJECT_CREATED,EXIT. Hsxg dry-run ready",
+  "source_dwg_opened": false,
+  "d1_allowed": false
+}

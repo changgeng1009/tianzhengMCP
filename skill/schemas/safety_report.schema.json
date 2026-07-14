@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "safety_report.schema.json",
+  "type": "object",
+  "required": ["autocad_connected", "source_dwg_opened", "source_dwg_saved", "source_modified", "sandbox_dwg_opened", "sandbox_saved", "drawing_executed", "sendcommand_used", "tianzheng_command_executed", "production_d1_allowed"],
+  "properties": {
+    "autocad_connected": {"const": false},
+    "source_dwg_opened": {"const": false},
+    "source_dwg_saved": {"const": false},
+    "source_modified": {"const": false},
+    "save_called_on_source": {"const": false},
+    "sandbox_dwg_opened": {"const": false},
+    "sandbox_saved": {"const": false},
+    "opened_test_drawings_accessed": {"const": false},
+    "opened_test_drawings_saved": {"const": false},
+    "drawing_executed": {"const": false},
+    "sendcommand_used": {"const": false},
+    "tianzheng_command_executed": {"const": false},
+    "dangerous_command_executed": {"const": false},
+    "production_d1_allowed": {"const": false}
+  },
+  "additionalProperties": false
+}

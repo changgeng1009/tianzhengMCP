@@ -1,0 +1,13 @@
+{
+  "phase": "MVP-1.3",
+  "mode": "dry_run_gpt_visual_decision",
+  "tasks": [],
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false
+}
+

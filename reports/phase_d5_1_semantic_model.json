@@ -1,0 +1,14 @@
+{
+  "ref": {
+    "pipe_candidates": 0,
+    "valve_candidates": 0,
+    "dn_labels": [],
+    "system_labels": []
+  },
+  "sbx": {
+    "pipe_candidates": 0,
+    "valve_candidates": 0,
+    "dn_labels": [],
+    "system_labels": []
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "summary": {
+    "add": 1,
+    "modify": 1,
+    "move": 1,
+    "delete_suggestion": 1
+  },
+  "items": [
+    {
+      "operation": "modify",
+      "entity_type": "pipe",
+      "reference_entity_id": "shared_pipe",
+      "current_entity_id": "shared_pipe",
+      "confidence": 0.95,
+      "reason": "匹配对象存在，但属性与 Reference Model 不一致。",
+      "changes": {
+        "properties": {
+          "from": {
+            "system": "排水",
+            "dn": 75
+          },
+          "to": {
+            "system": "排水",
+            "dn": 100
+          }
+        }
+      },
+      "entity": null,
+      "automatic_execution_allowed": true
+    },
+    {
+      "operation": "move",
+      "entity_type": "fixture",
+      "reference_entity_id": "moved_fixture",
+      "current_entity_id": "moved_fixture",
+      "confidence": 0.9,
+      "reason": "匹配对象存在，但位置差异超过移动容差。",
+      "changes": {
+        "coordinate_system": "normalized",
+        "from": {
+          "x_min": 0.5,
+          "y_min": 0.5,
+          "x_max": 0.6,
+          "y_max": 0.6,
+          "coordinate_system": "normalized"
+        },
+        "to": {
+          "x_min": 0.7,
+          "y_min": 0.7,
+          "x_max": 0.8,
+          "y_max": 0.8,
+          "coordinate_system": "normalized"
+        },
+        "distance": 0.28284271247461895
+      },
+      "entity": null,
+      "automatic_execution_allowed": true
+    },
+    {
+      "operation": "add",
+      "entity_type": "window",
+      "reference_entity_id": "missing_window",
+      "current_entity_id": null,
+      "confidence": 0.78,
+      "reason": "Reference Model 中存在该对象，Current CAD Model 中未找到匹配对象。",
+      "changes": {},
+      "entity": {
+        "id": "missing_window",
+        "type": "window",
+        "geometry": {
+          "coordinate_system": "normalized",
+          "points": [],
+          "bounding_box": {
+            "x_min": 0.2,
+            "y_min": 0.8,
+            "x_max": 0.3,
+            "y_max": 0.85,
+            "coordinate_system": "normalized"
+          }
+        },
+        "confidence": 0.78,
+        "status": "Need User Confirmation",
+        "evidence": "开口符号可见，但边界略受压缩影响。",
+        "uncertainties": [
+          "无法完全确认该对象是窗还是门洞。"
+        ],
+        "properties": {
+          "opening_type": "window"
+        }
+      },
+      "automatic_execution_allowed": true
+    },
+    {
+      "operation": "delete_suggestion",
+      "entity_type": "valve",
+      "reference_entity_id": null,
+      "current_entity_id": "obsolete_valve",
+      "confidence": 1.0,
+      "reason": "Current CAD Model 中存在该对象，但 Reference Model 中未找到匹配对象；仅建议删除，不允许自动执行。",
+      "changes": {},
+      "entity": {
+        "id": "obsolete_valve",
+        "type": "valve",
+        "geometry": {
+          "coordinate_system": "normalized",
+          "points": [],
+          "bounding_box": {
+            "x_min": 0.9,
+            "y_min": 0.9,
+            "x_max": 0.95,
+            "y_max": 0.95,
+            "coordinate_system": "normalized"
+          }
+        },
+        "confidence": 1.0,
+        "status": "Confirmed",
+        "evidence": "来自 Mock Current CAD Model，非图像识别。",
+        "uncertainties": [],
+        "properties": {
+          "system": "给水"
+        }
+      },
+      "automatic_execution_allowed": false
+    }
+  ]
+}

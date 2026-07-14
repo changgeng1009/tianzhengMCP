@@ -1,0 +1,23 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "STAGE6-P1-EMERGENCY-FULL-CLEAN-RERUN",
+  "status": "FAILED_FULL_RERUN_HARD_STOP",
+  "run_id": "stage6_p1_full_rerun_20260712_144848",
+  "work_file": "D:\\ExampleWorkspace\\天正\\图纸\\target_sample-应急提交版-R3.dwg",
+  "total_tasks": 4343,
+  "completed_task_count": 3802,
+  "uncompleted_task_count": 541,
+  "manual_completion_required": [],
+  "error": "com_error: (-2147418111, '被呼叫方拒绝接收呼叫。', None, None)",
+  "hard_stop": true,
+  "hard_stop_close_called": false,
+  "save_called": false,
+  "save_as_called": false,
+  "production_d1_allowed": false,
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

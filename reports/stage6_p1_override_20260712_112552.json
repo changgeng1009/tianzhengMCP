@@ -1,0 +1,444 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "STAGE6-P1-ONE-TIME-OVERRIDE",
+  "status": "FAILED_OVERRIDE_HARD_STOP",
+  "run_id": "stage6_p1_override_20260712_112552",
+  "main_run_id": "stage6_p1_20260712_010124",
+  "main_plan_paused": true,
+  "stage6_p1_status": "FAILED_REHEARSAL_STOP_GATE",
+  "one_time_rehearsal_override": true,
+  "allow_save_with_existing_modified": true,
+  "allow_save_with_unexpected_new": true,
+  "side_effects_unresolved": true,
+  "frozen_plan_sha256": "redacted_input_sha256",
+  "planned_task_count": 4343,
+  "executed_task_count": 4343,
+  "planned_created_handle_count": 4343,
+  "existing_modified": 6,
+  "unexpected_new": 33,
+  "existing_deleted": 0,
+  "protected_region_modified": 0,
+  "protected_region_intersection": 0,
+  "duplicate": 46,
+  "wrong_region_write": 17,
+  "saved": false,
+  "closed_and_reopened": false,
+  "persistence_qa": false,
+  "topology_qa": {
+    "passed": false,
+    "checked_relationship_count": 0,
+    "relationship_mismatch_count": 0
+  },
+  "duplicate_qa": {
+    "passed": false,
+    "items": [
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbLine",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbLine",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbLine",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbLine",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbCircle",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbLine",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbCircle",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbLine",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbCircle",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "AcDbPolyline",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbEquipment",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      },
+      {
+        "fingerprint": "redacted_input_sha256",
+        "object_name": "TDbPipeFitting",
+        "bbox": [],
+        "preexisting_handles": [],
+        "new_handles": []
+      }
+    ]
+  },
+  "dry_diff_path": null,
+  "override_dwg_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\override_rehearsal\\target_sample.override_rehearsal.dwg",
+  "override_initial_hash": "redacted_input_sha256",
+  "override_final_hash": "redacted_input_sha256",
+  "original_hashes": {},
+  "original_hashes_unchanged": true,
+  "existing_modified_evidence_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\evidence\\existing_modified_evidence.json",
+  "unexpected_new_evidence_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\evidence\\unexpected_new_evidence.json",
+  "preview_paths": [
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\full_drawing_before_after.png",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\target_region_0001_before_after.png",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\target_region_0002_before_after.png",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\target_region_0003_before_after.png",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\target_region_0004_before_after.png",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\target_region_0005_before_after.png",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\target_region_0006_before_after.png",
+    "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\previews\\target_region_0007_before_after.png"
+  ],
+  "previews_created": true,
+  "copyobjects_call_count": 350,
+  "live_documents_before_execution": [],
+  "hard_stop_reasons": [
+    "duplicate_visible_engineering_objects=46",
+    "wrong_region_write=17"
+  ],
+  "error": "RuntimeError: FAILED_OVERRIDE_HARD_STOP: ['duplicate_visible_engineering_objects=46', 'wrong_region_write=17']",
+  "original_target_write": false,
+  "original_target_save": false,
+  "reference_read_only": true,
+  "reference_save": false,
+  "sendcommand_used": false,
+  "lisp_executed": false,
+  "netload_used": false,
+  "tianzheng_command_executed": false,
+  "production_d1_allowed": false,
+  "mvp3_completed": false,
+  "mvp4_allowed": false,
+  "next_stage_pending": "Stage 6-P1-R1 — Rehearsal Side-Effect Forensics",
+  "wrong_region_items_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\evidence\\hard_stop_static_diagnostics.json",
+  "duplicate_items_path": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6_p1_override\\stage6_p1_override_20260712_112552\\evidence\\hard_stop_static_diagnostics.json",
+  "preview_state": "UNSAVED_MEMORY_STATE_DIAGNOSTIC_ONLY",
+  "override_dwg_remains_clean_baseline": true,
+  "override_dwg_contains_executed_tasks": false,
+  "tests": {
+    "command": "python -m pytest -q",
+    "passed": 1292,
+    "failed": 0,
+    "warnings": 1,
+    "status": "PASS",
+    "duration_seconds": 7.35
+  },
+  "manual_review_required": false,
+  "override_dwg_manual_review_available": false,
+  "static_unsaved_preview_review_available": true,
+  "manual_review_scope": [
+    "七张图是否进入正确图框",
+    "管线、阀门、设备是否明显错位",
+    "是否存在重复管道、重复阀门、重复文字",
+    "原有对象是否被移动或改色",
+    "水泵房是否完全没有变化",
+    "图框和标题栏是否未修改",
+    "天正对象是否可以正常选择和编辑",
+    "关闭重开后是否存在报错",
+    "是否有对象消失、错层或异常显示"
+  ],
+  "manual_acceptance_does_not_close_side_effects": true,
+  "side_effect_forensics_pending": true,
+  "main_plan_resume_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 99
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

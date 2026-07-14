@@ -1,0 +1,270 @@
+{
+  "schema_version": "0.1.0",
+  "status": "synthetic_offline_fixture_only",
+  "synthetic": true,
+  "execution_allowed": false,
+  "important_notes": [
+    "Original fictional offline fixtures, not Tianzheng commands. Never send to CAD.",
+    "Web compilations and installation-derived data removed; redistribution rights not established."
+  ],
+  "source_catalog": {
+    "original_synthetic_fixture": {
+      "title": "Original synthetic offline fixture",
+      "synthetic": true
+    }
+  },
+  "commands": [
+    {
+      "id": "plumbing_synthetic_01",
+      "domain": "plumbing",
+      "module": "synthetic fixture",
+      "label_zh": "合成测试命令1",
+      "primary_command": "SYNTHETIC_FIXTURE_01",
+      "aliases": [
+        "fixture1"
+      ],
+      "all_invocation_names": [
+        "SYNTHETIC_FIXTURE_01",
+        "fixture1"
+      ],
+      "category": "synthetic_test",
+      "expected_inputs": [],
+      "interactive": false,
+      "creates_or_edits": [],
+      "synthetic": true,
+      "execution_allowed": false,
+      "safety": {
+        "danger_level": "low",
+        "allow_dry_run": true,
+        "allow_sandbox": false,
+        "allow_production": false,
+        "requires_visual_review": true,
+        "notes": "Synthetic offline resolver fixture; never send to CAD."
+      },
+      "validation_status": {
+        "source_status": "synthetic",
+        "dry_run": "not_started",
+        "sandbox": "not_started",
+        "production": "forbidden"
+      },
+      "source_ids": [
+        "original_synthetic_fixture"
+      ],
+      "source_status": "synthetic",
+      "local_discovery_evidence": [],
+      "confirmed": false,
+      "confirmed_for_sandbox": false,
+      "notes": "Original fictional data; no vendor command or real-machine validation."
+    },
+    {
+      "id": "plumbing_synthetic_02",
+      "domain": "plumbing",
+      "module": "synthetic fixture",
+      "label_zh": "合成测试命令2",
+      "primary_command": "SYNTHETIC_FIXTURE_02",
+      "aliases": [
+        "fixture2"
+      ],
+      "all_invocation_names": [
+        "SYNTHETIC_FIXTURE_02",
+        "fixture2"
+      ],
+      "category": "synthetic_test",
+      "expected_inputs": [],
+      "interactive": false,
+      "creates_or_edits": [],
+      "synthetic": true,
+      "execution_allowed": false,
+      "safety": {
+        "danger_level": "review",
+        "allow_dry_run": true,
+        "allow_sandbox": false,
+        "allow_production": false,
+        "requires_visual_review": true,
+        "notes": "Synthetic offline resolver fixture; never send to CAD."
+      },
+      "validation_status": {
+        "source_status": "synthetic",
+        "dry_run": "not_started",
+        "sandbox": "not_started",
+        "production": "forbidden"
+      },
+      "source_ids": [
+        "original_synthetic_fixture"
+      ],
+      "source_status": "synthetic",
+      "local_discovery_evidence": [],
+      "confirmed": false,
+      "confirmed_for_sandbox": false,
+      "notes": "Original fictional data; no vendor command or real-machine validation."
+    },
+    {
+      "id": "plumbing_synthetic_03",
+      "domain": "plumbing",
+      "module": "synthetic fixture",
+      "label_zh": "合成测试命令3",
+      "primary_command": "SYNTHETIC_FIXTURE_03",
+      "aliases": [
+        "fixture3"
+      ],
+      "all_invocation_names": [
+        "SYNTHETIC_FIXTURE_03",
+        "fixture3"
+      ],
+      "category": "synthetic_test",
+      "expected_inputs": [],
+      "interactive": false,
+      "creates_or_edits": [],
+      "synthetic": true,
+      "execution_allowed": false,
+      "safety": {
+        "danger_level": "dangerous",
+        "allow_dry_run": true,
+        "allow_sandbox": false,
+        "allow_production": false,
+        "requires_visual_review": true,
+        "notes": "Synthetic offline resolver fixture; never send to CAD."
+      },
+      "validation_status": {
+        "source_status": "synthetic",
+        "dry_run": "not_started",
+        "sandbox": "not_started",
+        "production": "forbidden"
+      },
+      "source_ids": [
+        "original_synthetic_fixture"
+      ],
+      "source_status": "synthetic",
+      "local_discovery_evidence": [],
+      "confirmed": false,
+      "confirmed_for_sandbox": false,
+      "notes": "Original fictional data; no vendor command or real-machine validation."
+    },
+    {
+      "id": "hvac_synthetic_04",
+      "domain": "hvac",
+      "module": "synthetic fixture",
+      "label_zh": "合成测试命令4",
+      "primary_command": "SYNTHETIC_FIXTURE_04",
+      "aliases": [
+        "fixture4"
+      ],
+      "all_invocation_names": [
+        "SYNTHETIC_FIXTURE_04",
+        "fixture4"
+      ],
+      "category": "synthetic_test",
+      "expected_inputs": [],
+      "interactive": false,
+      "creates_or_edits": [],
+      "synthetic": true,
+      "execution_allowed": false,
+      "safety": {
+        "danger_level": "low",
+        "allow_dry_run": true,
+        "allow_sandbox": false,
+        "allow_production": false,
+        "requires_visual_review": true,
+        "notes": "Synthetic offline resolver fixture; never send to CAD."
+      },
+      "validation_status": {
+        "source_status": "synthetic",
+        "dry_run": "not_started",
+        "sandbox": "not_started",
+        "production": "forbidden"
+      },
+      "source_ids": [
+        "original_synthetic_fixture"
+      ],
+      "source_status": "synthetic",
+      "local_discovery_evidence": [],
+      "confirmed": false,
+      "confirmed_for_sandbox": false,
+      "notes": "Original fictional data; no vendor command or real-machine validation."
+    },
+    {
+      "id": "hvac_synthetic_05",
+      "domain": "hvac",
+      "module": "synthetic fixture",
+      "label_zh": "合成测试命令5",
+      "primary_command": "SYNTHETIC_FIXTURE_05",
+      "aliases": [
+        "fixture5"
+      ],
+      "all_invocation_names": [
+        "SYNTHETIC_FIXTURE_05",
+        "fixture5"
+      ],
+      "category": "synthetic_test",
+      "expected_inputs": [],
+      "interactive": false,
+      "creates_or_edits": [],
+      "synthetic": true,
+      "execution_allowed": false,
+      "safety": {
+        "danger_level": "dangerous",
+        "allow_dry_run": true,
+        "allow_sandbox": false,
+        "allow_production": false,
+        "requires_visual_review": true,
+        "notes": "Synthetic offline resolver fixture; never send to CAD."
+      },
+      "validation_status": {
+        "source_status": "synthetic",
+        "dry_run": "not_started",
+        "sandbox": "not_started",
+        "production": "forbidden"
+      },
+      "source_ids": [
+        "original_synthetic_fixture"
+      ],
+      "source_status": "synthetic",
+      "local_discovery_evidence": [],
+      "confirmed": false,
+      "confirmed_for_sandbox": false,
+      "notes": "Original fictional data; no vendor command or real-machine validation."
+    },
+    {
+      "id": "hvac_synthetic_06",
+      "domain": "hvac",
+      "module": "synthetic fixture",
+      "label_zh": "合成测试命令6",
+      "primary_command": "SYNTHETIC_FIXTURE_06",
+      "aliases": [
+        "fixture6"
+      ],
+      "all_invocation_names": [
+        "SYNTHETIC_FIXTURE_06",
+        "fixture6"
+      ],
+      "category": "synthetic_test",
+      "expected_inputs": [],
+      "interactive": false,
+      "creates_or_edits": [],
+      "synthetic": true,
+      "execution_allowed": false,
+      "safety": {
+        "danger_level": "dangerous",
+        "allow_dry_run": true,
+        "allow_sandbox": false,
+        "allow_production": false,
+        "requires_visual_review": true,
+        "notes": "Synthetic offline resolver fixture; never send to CAD."
+      },
+      "validation_status": {
+        "source_status": "synthetic",
+        "dry_run": "not_started",
+        "sandbox": "not_started",
+        "production": "forbidden"
+      },
+      "source_ids": [
+        "original_synthetic_fixture"
+      ],
+      "source_status": "synthetic",
+      "local_discovery_evidence": [],
+      "confirmed": false,
+      "confirmed_for_sandbox": false,
+      "notes": "Original fictional data; no vendor command or real-machine validation."
+    }
+  ]
+}

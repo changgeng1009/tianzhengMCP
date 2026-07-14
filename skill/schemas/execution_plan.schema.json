@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "execution_plan.schema.json",
+  "type": "object",
+  "required": ["run_id", "professional_domain", "working_copy", "tasks", "backend_selections", "production_d1_allowed"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "professional_domain": {"const": "water_supply_and_drainage"},
+    "working_copy": {"type": "string", "minLength": 1},
+    "tasks": {"type": "array", "items": {"$ref": "repair_task.schema.json"}},
+    "backend_selections": {"type": "array", "items": {"$ref": "backend_selection.schema.json"}},
+    "production_d1_allowed": {"const": false}
+  },
+  "additionalProperties": true
+}

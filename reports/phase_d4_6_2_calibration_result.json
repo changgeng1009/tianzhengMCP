@@ -1,0 +1,38 @@
+{
+  "transform_type": "3point_affine",
+  "scale_x": null,
+  "scale_y": null,
+  "rotation_deg": 0.0,
+  "translation": [],
+  "rms_error": 0.0,
+  "max_error": 0.0,
+  "confidence": 1.0,
+  "hardcoded_extent_used": false,
+  "source_dwg_opened": false,
+  "sendcommand_used": false,
+  "phase": "D4.6.2",
+  "timestamp": "2026-07-14T12:42:35.133317+00:00",
+  "stdin_used": false,
+  "input_function_used": false,
+  "anchor_count": 3,
+  "confidence_threshold": 0.85,
+  "alignment_status": "ready",
+  "can_enter_d9_1": true,
+  "source_dwg_saved": false,
+  "tianzheng_command_executed": false,
+  "production_d1_allowed": false,
+  "d1_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 2
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

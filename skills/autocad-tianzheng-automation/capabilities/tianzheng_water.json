@@ -1,0 +1,9 @@
+{
+  "runtime_mode":"tianzheng_water","product":"tianzheng_water","backend":"offline",
+  "capabilities":[
+    {"capability":"product_detection","support_level":"PARTIALLY_IMPLEMENTED","read_supported":false,"write_supported":false,"verification_level":"LEGACY_EVIDENCE_REQUIRED","approval_required":"L0_READ_ONLY","known_limitations":["当前离线入口不检测运行实例"],"evidence":["references/product_adapter_model.md"]},
+    {"capability":"tdb_tch_scan_contract","support_level":"PARTIALLY_IMPLEMENTED","read_supported":false,"write_supported":false,"verification_level":"CONTRACT_ONLY","approval_required":"L0_READ_ONLY","known_limitations":["本阶段不读取 DWG"],"evidence":["adapters/tianzheng_water/adapter.py"]},
+    {"capability":"system_and_object_classification","support_level":"PARTIALLY_IMPLEMENTED","read_supported":false,"write_supported":false,"verification_level":"LEGACY_EVIDENCE_REQUIRED","approval_required":"L0_READ_ONLY","known_limitations":["原生拓扑 NOT_VERIFIED","工程语义 MANUAL_REVIEW_REQUIRED"],"evidence":["references/known_limitations.md"]},
+    {"capability":"sandbox_completion","support_level":"INTERFACE_ONLY","read_supported":false,"write_supported":false,"verification_level":"CONTRACT_ONLY","approval_required":"L3_SANDBOX_WRITE","known_limitations":["真实天正后端不可用"],"evidence":["workflows/06_sandbox_completion.md"]}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "phase": "E1",
+  "timestamp": "2026-07-08T16:06:44.504027+00:00",
+  "before_count": 606,
+  "after_count": 607,
+  "qa_count": 607,
+  "new_handle": null,
+  "saved": true,
+  "persisted": true,
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "sendcommand_used": false,
+  "d1_allowed": false,
+  "production_d1_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 1
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

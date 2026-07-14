@@ -1,0 +1,111 @@
+{
+  "nodes": [
+    {
+      "id": "node_0001",
+      "node_type": "fitting",
+      "position": [0.0, 0.0, 0.0],
+      "system_type": "消防",
+      "source_handles": ["P1", "F1"],
+      "source_semantic_types": ["pipe", "fitting"],
+      "connected_edge_ids": ["edge_0001"],
+      "degree": 1,
+      "confidence": 0.85,
+      "evidence": "merged_by_endpoint_or_center_with_tolerance"
+    },
+    {
+      "id": "node_0002",
+      "node_type": "valve",
+      "position": [1000.0, 0.0, 0.0],
+      "system_type": "消防",
+      "source_handles": ["P1", "P2", "V1"],
+      "source_semantic_types": ["pipe", "valve"],
+      "connected_edge_ids": ["edge_0001", "edge_0002"],
+      "degree": 2,
+      "confidence": 0.85,
+      "evidence": "merged_by_endpoint_or_center_with_tolerance"
+    },
+    {
+      "id": "node_0003",
+      "node_type": "endpoint",
+      "position": [2000.0, 0.0, 0.0],
+      "system_type": "消防",
+      "source_handles": ["P2"],
+      "source_semantic_types": ["pipe"],
+      "connected_edge_ids": ["edge_0002"],
+      "degree": 1,
+      "confidence": 0.85,
+      "evidence": "merged_by_endpoint_or_center_with_tolerance"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_0001",
+      "semantic_type": "pipe",
+      "source_handle": "P1",
+      "object_name": "TDbPipe",
+      "system_type": "消防",
+      "layer": "PIPE-消防",
+      "diameter": "DN200",
+      "diameter_source": "TDbPipe.DNDiameter",
+      "start_node_id": "node_0001",
+      "end_node_id": "node_0002",
+      "length": 1000.0,
+      "geometry": {
+        "start_point": [0.0, 0.0, 0.0],
+        "end_point": [1000.0, 0.0, 0.0],
+        "source": "bounding_box_inference"
+      },
+      "source_entity": {
+        "handle": "P1",
+        "object_name": "TDbPipe",
+        "semantic_type": "pipe"
+      }
+    },
+    {
+      "id": "edge_0002",
+      "semantic_type": "pipe",
+      "source_handle": "P2",
+      "object_name": "TDbPipe",
+      "system_type": "消防",
+      "layer": "PIPE-消防",
+      "diameter": "DN200",
+      "diameter_source": "TDbPipe.DNDiameter",
+      "start_node_id": "node_0002",
+      "end_node_id": "node_0003",
+      "length": 1000.0,
+      "geometry": {
+        "start_point": [1000.0, 0.0, 0.0],
+        "end_point": [2000.0, 0.0, 0.0],
+        "source": "bounding_box_inference"
+      },
+      "source_entity": {
+        "handle": "P2",
+        "object_name": "TDbPipe",
+        "semantic_type": "pipe"
+      }
+    }
+  ],
+  "systems": [
+    {
+      "system_type": "消防",
+      "edge_count": 2,
+      "node_count": 3,
+      "diameters": ["DN200"],
+      "source_handles": ["P1", "P2"],
+      "node_ids": ["node_0001", "node_0002", "node_0003"]
+    }
+  ],
+  "subgraphs": [
+    {
+      "id": "subgraph_0001",
+      "system_type": "消防",
+      "node_ids": ["node_0001", "node_0002", "node_0003"],
+      "edge_ids": ["edge_0001", "edge_0002"],
+      "node_count": 3,
+      "edge_count": 2
+    }
+  ],
+  "diagnostics": {
+    "skipped_entities": []
+  }
+}

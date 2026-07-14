@@ -1,0 +1,62 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "MVP-2A-PREP",
+  "mode": "execution_plan_only",
+  "source_dwg_path": "D:\\ExampleWorkspace\\synthetic_sample_t8.dwg",
+  "sandbox_copy_path": "D:\\ExampleWorkspace\\天正\\artifacts\\sandbox\\mvp2a_test_copy_20260710_091816.dwg",
+  "confirmed_direct_com_tasks_only": true,
+  "review_only_items_excluded": true,
+  "excluded_review_only_task_ids": [
+    "mvp1_review_0001",
+    "mvp1_review_0002",
+    "mvp1_review_0003",
+    "mvp1_review_0004",
+    "mvp1_review_0005"
+  ],
+  "direct_com_task_count": 1,
+  "tasks": [
+    {
+      "execution_order": 1,
+      "task_id": "mvp1_task_208c4ccc9f",
+      "task_type": "direct_com_create",
+      "suggested_executor": "dry_run_direct_com_plan",
+      "source_object_id": null,
+      "geometry": {},
+      "semantic": {},
+      "confidence": 0.7,
+      "execution_scope": "sandbox_copy_only",
+      "requires_user_approval_before_execution": true,
+      "forbidden_actions": [
+        "SendCommand",
+        "hsxg",
+        "hzgx",
+        "gxlj",
+        "TSaveAs",
+        "tgbatplots",
+        "dcsz",
+        "save_source_dwg"
+      ]
+    }
+  ],
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "save_called_on_source": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 3
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

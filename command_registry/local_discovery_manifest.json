@@ -1,0 +1,14 @@
+{
+  "status": "not_scanned",
+  "synthetic": true,
+  "total_files": 0,
+  "by_domain": {
+    "plumbing": 0,
+    "hvac": 0
+  },
+  "all_read_only": true,
+  "any_executed": false,
+  "any_loaded": false,
+  "local_installation_scanned": false,
+  "files": []
+}

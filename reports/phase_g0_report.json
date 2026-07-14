@@ -1,0 +1,8 @@
+{
+  "phase": "G0",
+  "status": "PASS",
+  "timestamp": "2026-07-08T16:29:21.297887+00:00",
+  "description": "Interaction recorder: command name, prompt sequence, coordinate inputs, cancel strategy, created object types",
+  "source_dwg_opened": false,
+  "d1_allowed": false
+}

@@ -1,0 +1,36 @@
+{
+  "label": "reference",
+  "name": "target.dwg",
+  "modelspace_count": 237,
+  "enumerated": 237,
+  "object_name_counts": {
+    "AcDbPolyline": 25,
+    "AcDbLine": 167,
+    "AcDbCircle": 21,
+    "AcDbArc": 1,
+    "AcDbText": 20,
+    "AcDbBlockReference": 1,
+    "TDbText": 2
+  },
+  "extents": {},
+  "sample_objects": [],
+  "pipe_count": 0,
+  "valve_count": 0,
+  "fitting_count": 0,
+  "dlp_count": 0,
+  "source_dwg_opened": false,
+  "dwg_saved": false,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 2
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

@@ -1,0 +1,849 @@
+{
+  "phase": "STAGE3.3-CONTROLLED-MVP-REPAIR-AND-PERSISTENCE-QA",
+  "run_id": "stage3_3_20260711_090728",
+  "run_root": "artifacts\\stage3_3\\stage3_3_20260711_090728",
+  "stage3_2_status": "PASS_MISSING_DETECTION_EVIDENCE_READY",
+  "automatic_transition_gate": {
+    "checks": {
+      "stage3_2_formal_pass": true,
+      "alignment_contradiction_false": true,
+      "alignment_evidence_mode": true,
+      "user_authorized_stage3_2": true,
+      "user_authorized_automatic_stage3_3_transition": true,
+      "roles_preserved": true,
+      "translation_direction_preserved": true,
+      "stage1_seed_excluded": true,
+      "title_frame_drawing_name_excluded": true,
+      "target_virtual_entities_participated": true,
+      "matching_conflicts_handled": true,
+      "source_hashes_unchanged": true,
+      "safe_ordinary_task_exists": true,
+      "no_silent_fallback": true,
+      "production_d1_blocked": true
+    },
+    "passed": true,
+    "blockers": []
+  },
+  "user_authorized_automatic_stage3_3_transition": true,
+  "automatic_stage3_3_transition_scope": "mvp_safe_ordinary_cad_only",
+  "approved_task_count": 16,
+  "rejected_or_blocked_task_count": 347,
+  "repair_sandbox_path": "artifacts\\stage3_3\\stage3_3_20260711_090728\\copies\\target_stage3_3_repair_sandbox.dwg",
+  "attempted_task_count": 16,
+  "successful_task_count": 16,
+  "skipped_duplicate_count": 0,
+  "failed_task_count": 0,
+  "created_handles": [],
+  "geometry_match": true,
+  "layer_match": true,
+  "duplicate_check_passed": true,
+  "existing_object_modified_count": 0,
+  "existing_object_deleted_count": 0,
+  "unexpected_new_object_count": 0,
+  "sandbox_saved": true,
+  "sandbox_closed_and_reopened": true,
+  "persisted_task_count": 16,
+  "tdb_manual_task_count": 337,
+  "source_hashes_unchanged": true,
+  "real_sample_repair_completed": true,
+  "stage3_complete": true,
+  "stage4_allowed": true,
+  "stage4_executed": false,
+  "production_d1_allowed": false,
+  "safety_flags": {
+    "source_reference_opened": false,
+    "source_target_opened": false,
+    "source_reference_saved": false,
+    "source_target_saved": false,
+    "source_modified": false,
+    "saveas_used": false,
+    "copyobjects_used": false,
+    "explode_used": false,
+    "sendcommand_used": false,
+    "lisp_executed": false,
+    "netload_used": false,
+    "tianzheng_command_executed": false,
+    "tdb_modified": false,
+    "existing_entities_modified": false,
+    "existing_entities_deleted": false,
+    "automatic_fallback_used": false,
+    "production_d1_allowed": false,
+    "stage4_executed": false,
+    "autocad_connected": true,
+    "new_autocad_instance_created": false,
+    "repair_sandbox_opened": true,
+    "repair_sandbox_saved": true,
+    "repair_sandbox_reopened": true
+  },
+  "tests": {
+    "stage3_2_targeted": "10 passed in 0.34s (tests only; Stage 3.2 not re-executed)",
+    "stage3_3_targeted": "33 passed in 0.37s",
+    "backend_safety_regression": "67 passed in 0.82s",
+    "stage3_1_series_regression": "53 passed in 0.68s",
+    "stage1_regression": "21 passed in 0.34s",
+    "full_pytest": "1162 passed, 1 warning in 4.58s",
+    "warning": "PyPDF2 deprecation only"
+  },
+  "stage3_3_entered": true,
+  "automatic_stage3_3_transition_triggered": true,
+  "resumed_from_frozen_stage3_3_a": true,
+  "stage3_2_reexecuted": false,
+  "approved_tasks_refiltered": false,
+  "frozen_plan_integrity": {
+    "passed": true,
+    "errors": [],
+    "approved_task_count": 16,
+    "approved_task_ids_unchanged": true,
+    "task_artifact_hashes_match": true,
+    "semantic_gate_fields_match": true,
+    "stage3_2_report_hash_match": false,
+    "stage3_2_report_hash_difference_classification": "post_freeze_test_metadata_update_only; task artifacts and semantic gate fields unchanged",
+    "frozen_hashes": {},
+    "actual_hashes": {},
+    "plan_sha256": "redacted_input_sha256"
+  },
+  "status": "PASS_CONTROLLED_REPAIR_PERSISTED",
+  "preflight": {
+    "passed": true,
+    "errors": [],
+    "approved_task_count": 16,
+    "task_ids_unique": true,
+    "task_geometry_unique": true,
+    "source_path_will_not_be_opened": true,
+    "sandbox_differs_from_sources": true,
+    "backend_routing": [
+      {
+        "task_id": "repair_stage3_2_missing_0102",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0174",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0231",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0232",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0235",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0236",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0245",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0246",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0254",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0255",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0304",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0305",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0306",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0315",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0316",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      },
+      {
+        "task_id": "repair_stage3_2_missing_0321",
+        "requested_capabilities": [
+          "create_acdb_line"
+        ],
+        "candidate_backends": [
+          {
+            "backend_id": "com",
+            "available": true,
+            "missing_capabilities": [],
+            "sandbox_verified": true,
+            "capability_evidence": {
+              "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+              "scan_acdb_entities": "Stage 1 semantic scans completed",
+              "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+              "create_tdb_pipe": "unsupported and unverified",
+              "create_tdb_valve": "unsupported and unverified",
+              "create_tdb_fitting": "unsupported and unverified"
+            }
+          }
+        ],
+        "selected_backend": "com",
+        "selection_status": "selected",
+        "selection_reason": "backend is available, capability-complete, and sandbox-verified",
+        "fallback_used": false,
+        "backend_capability_evidence": {
+          "backend_id": "com",
+          "available": true,
+          "missing_capabilities": [],
+          "sandbox_verified": true,
+          "capability_evidence": {
+            "create_acdb_line": "Stage 1 controlled fixture: draw_delta=1 and persisted_delta=1",
+            "scan_acdb_entities": "Stage 1 semantic scans completed",
+            "scan_tianzheng_water_objects": "existing sandbox scan exposed TDb metadata; create capability not inferred",
+            "create_tdb_pipe": "unsupported and unverified",
+            "create_tdb_valve": "unsupported and unverified",
+            "create_tdb_fitting": "unsupported and unverified"
+          }
+        }
+      }
+    ],
+    "automatic_fallback": false,
+    "resume_integrity_passed": true,
+    "frozen_task_count": 16,
+    "frozen_task_ids_unchanged": true,
+    "stage3_2_reexecuted": false
+  },
+  "repair_sandbox_created": true,
+  "live_error": null,
+  "tests_passed": true,
+  "completion_audit": {
+    "phase": "STAGE3.3-COMPLETION-AUDIT",
+    "run_id": "stage3_3_20260711_090728",
+    "checks": {
+      "stage3_2_formal_pass": true,
+      "automatic_transition_gate_passed": true,
+      "approved_task_count_positive": true,
+      "successful_task_count_positive": true,
+      "only_whitelisted_ordinary_objects": true,
+      "no_tdb_executed": true,
+      "no_existing_modified_or_deleted": true,
+      "no_unexpected_new_objects": true,
+      "geometry_and_layer_match": true,
+      "no_duplicate_repair": true,
+      "sandbox_saved": true,
+      "sandbox_closed_and_reopened": true,
+      "persisted_count_matches_success": true,
+      "source_hashes_unchanged": true,
+      "no_forbidden_command_or_fallback": true,
+      "tests_passed": true,
+      "frozen_task_ids_exact": true,
+      "draw_delta_exact": true,
+      "all_required_outputs_exist": true,
+      "stage4_not_executed": true,
+      "production_d1_blocked": true,
+      "blocked_and_manual_outputs_partitioned": true
+    },
+    "passed": true,
+    "modelspace_count_before": 51,
+    "modelspace_count_after": 67,
+    "modelspace_count_after_reopen": 67,
+    "created_handles": [],
+    "required_outputs": {
+      "stage3_2_handoff.json": true,
+      "approved_execution_plan.json": true,
+      "rejected_execution_tasks.json": true,
+      "blocked_execution_tasks.json": true,
+      "target_source_integrity.json": true,
+      "copies/target_stage3_3_repair_sandbox.dwg": true,
+      "execution_before_scan.json": true,
+      "task_execution_results.json": true,
+      "execution_after_scan.json": true,
+      "duplicate_check.json": true,
+      "unexpected_change_check.json": true,
+      "persistence_before_close.json": true,
+      "persistence_after_reopen.json": true,
+      "persistence_qa.json": true,
+      "tianzheng_manual_review.json": true,
+      "tianzheng_manual_review.md": true,
+      "final_repair_preview.png": true,
+      "stage3_3_manifest.json": true
+    },
+    "tests": {
+      "stage3_2_targeted": "10 passed in 0.34s (tests only; Stage 3.2 not re-executed)",
+      "stage3_3_targeted": "33 passed in 0.37s",
+      "backend_safety_regression": "67 passed in 0.82s",
+      "stage3_1_series_regression": "53 passed in 0.68s",
+      "stage1_regression": "21 passed in 0.34s",
+      "full_pytest": "1162 passed, 1 warning in 4.58s",
+      "warning": "PyPDF2 deprecation only"
+    },
+    "blocked_execution_task_count": 10,
+    "manual_rejected_task_count": 337
+  },
+  "completion_audit_path": "artifacts\\stage3_3\\stage3_3_20260711_090728\\completion_audit.json",
+  "blocked_execution_task_count": 10,
+  "manual_rejected_task_count": 337,
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 4
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

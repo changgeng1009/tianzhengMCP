@@ -1,0 +1,8 @@
+{
+  "phase": "G2",
+  "status": "PASS",
+  "timestamp": "2026-07-08T16:29:21.299588+00:00",
+  "description": "Parameterized TDb: pipe task to hsgx plan with start_point, end_point, diameter, system, expected TDbDoubleLinePipe",
+  "source_dwg_opened": false,
+  "d1_allowed": false
+}

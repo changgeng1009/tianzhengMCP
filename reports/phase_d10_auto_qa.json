@@ -1,0 +1,52 @@
+{
+  "privacy_cleanup_notice": "Historical report retained for context. Personal identifiers and machine-specific paths were anonymized; paths are illustrative and referenced private inputs are not distributed. Original outcomes were not rerun or revalidated by this privacy cleanup, and are not evidence of synthetic-sample or current real-CAD acceptance.",
+  "phase": "D10",
+  "timestamp": "2026-07-08T15:58:07.274078+00:00",
+  "sandbox_path": "D:\\ExampleWorkspace\\天正\\artifacts\\sandbox\\sandbox_20260708_225154.dwg",
+  "source_path": "D:\\ExampleWorkspace\\synthetic_sample_t8.dwg",
+  "gate": {
+    "d4_6_2_confidence": 1.0,
+    "can_enter_d9_1": true,
+    "d9_1_passed": true,
+    "d9_2_passed": true
+  },
+  "source_hash_before": "redacted_input_sha256",
+  "source_hash_after": "redacted_input_sha256",
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "sandbox_opened": true,
+  "active_document_used": true,
+  "named_document_lookup_used": false,
+  "reopen_modelspace_workaround_used": false,
+  "modelspace_accessible": true,
+  "total_entities": 607,
+  "detected_handles": [],
+  "persisted_object_detected": true,
+  "visual_preview_created": false,
+  "visual_preview_skipped_reason": "No image rendering capability in CLI",
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "d1_allowed": false,
+  "production_d1_allowed": false,
+  "qa_passed": true,
+  "acceptance_decision": "PASS",
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 1
+  },
+  "input_fingerprint_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun"
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

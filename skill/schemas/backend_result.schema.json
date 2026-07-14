@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "backend_result.schema.json",
+  "type": "object",
+  "required": ["backend_id", "success", "task_id", "created_object_ids", "created_handles", "draw_delta", "real_cad_execution", "real_dwg_modified"],
+  "properties": {
+    "backend_id": {"type": "string"},
+    "success": {"type": "boolean"},
+    "task_id": {"type": "string"},
+    "created_object_ids": {"type": "array", "items": {"type": "string"}},
+    "created_handles": {"type": "array", "items": {"type": "string"}},
+    "draw_delta": {"type": "integer"},
+    "capability_evidence": {"type": "array", "items": {"type": "string"}},
+    "real_cad_execution": {"type": "boolean"},
+    "real_dwg_modified": {"type": "boolean"},
+    "error_code": {"type": ["string", "null"]},
+    "error_message": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

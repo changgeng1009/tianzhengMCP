@@ -1,0 +1,93 @@
+{
+  "phase": "MVP-1",
+  "mode": "dry_run_gpt_fallback",
+  "items": [
+    {
+      "item_id": "mvp1_visual_0001",
+      "source": "reference_dwg",
+      "reason": "low confidence or visual review required",
+      "related_object_ids": [],
+      "suggested_visual_review_method": "GPT visual review with source crop or overlay evidence",
+      "required_input_for_gpt": [
+        "reference crop",
+        "target crop",
+        "overlay snapshot"
+      ],
+      "priority": "normal"
+    },
+    {
+      "item_id": "mvp1_visual_0002",
+      "source": "reference_dwg",
+      "reason": "low confidence or visual review required",
+      "related_object_ids": [],
+      "suggested_visual_review_method": "GPT visual review with source crop or overlay evidence",
+      "required_input_for_gpt": [
+        "reference crop",
+        "target crop",
+        "overlay snapshot"
+      ],
+      "priority": "normal"
+    },
+    {
+      "item_id": "mvp1_visual_0003",
+      "source": "reference_dwg",
+      "reason": "low confidence or visual review required",
+      "related_object_ids": [],
+      "suggested_visual_review_method": "GPT visual review with source crop or overlay evidence",
+      "required_input_for_gpt": [
+        "reference crop",
+        "target crop",
+        "overlay snapshot"
+      ],
+      "priority": "normal"
+    },
+    {
+      "item_id": "mvp1_visual_0004",
+      "source": "reference_dwg",
+      "reason": "low confidence or visual review required",
+      "related_object_ids": [],
+      "suggested_visual_review_method": "GPT visual review with source crop or overlay evidence",
+      "required_input_for_gpt": [
+        "reference crop",
+        "target crop",
+        "overlay snapshot"
+      ],
+      "priority": "normal"
+    },
+    {
+      "item_id": "mvp1_visual_0005",
+      "source": "reference_pdf",
+      "reason": "low confidence or visual review required",
+      "related_object_ids": [],
+      "suggested_visual_review_method": "GPT visual review with source crop or overlay evidence",
+      "required_input_for_gpt": [
+        "reference crop",
+        "target crop",
+        "overlay snapshot"
+      ],
+      "priority": "high"
+    }
+  ],
+  "required_fields": [
+    "item_id",
+    "source",
+    "reason",
+    "related_object_ids",
+    "suggested_visual_review_method",
+    "required_input_for_gpt",
+    "priority"
+  ],
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 5
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

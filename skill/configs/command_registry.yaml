@@ -1,0 +1,7 @@
+{
+  "role": "tianzheng_command_knowledge_and_resolution_layer",
+  "execution_backend": false,
+  "allowed_evidence_states": ["public_seed", "locally_extracted", "sandbox_verified", "interaction_profiled", "controlled_execution_verified", "production_forbidden"],
+  "sendcommand_allowed": false,
+  "automatic_tianzheng_execution_allowed": false
+}

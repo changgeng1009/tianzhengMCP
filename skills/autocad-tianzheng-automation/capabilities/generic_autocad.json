@@ -1,0 +1,15 @@
+{
+  "runtime_mode": "plain_autocad",
+  "product": "autocad",
+  "backend": "offline",
+  "capabilities": [
+    {"capability":"inspect_drawing","support_level":"PARTIALLY_IMPLEMENTED","read_supported":false,"write_supported":false,"verification_level":"OFFLINE_PLAN_ONLY","approval_required":"L0_READ_ONLY","known_limitations":["当前统一入口不读取 DWG"],"evidence":["tests/test_skill.py"]},
+    {"capability":"analyze_reference","support_level":"IMPLEMENTED","read_supported":true,"write_supported":false,"verification_level":"MOCK_TESTED","approval_required":"L0_READ_ONLY","known_limitations":["PDF/PNG/JPG 解析由原始适配工作流提供"],"evidence":["references/original_skill_compatibility.md"]},
+    {"capability":"redraw_from_reference","support_level":"INTERFACE_ONLY","read_supported":true,"write_supported":false,"verification_level":"CONTRACT_ONLY","approval_required":"L3_SANDBOX_WRITE","known_limitations":["本阶段不执行写入"],"evidence":["workflows/04_redraw.md"]},
+    {"capability":"align_drawings","support_level":"PARTIALLY_IMPLEMENTED","read_supported":true,"write_supported":false,"verification_level":"OFFLINE_PLAN_ONLY","approval_required":"L1_DRY_RUN","known_limitations":["实体写入需已验证后端"],"evidence":["workflows/03_alignment.md"]},
+    {"capability":"compare_drawings","support_level":"PARTIALLY_IMPLEMENTED","read_supported":false,"write_supported":false,"verification_level":"OFFLINE_PLAN_ONLY","approval_required":"L0_READ_ONLY","known_limitations":["DWG 内容访问延后"],"evidence":["examples/plain_autocad_compare.json"]},
+    {"capability":"sandbox_edit","support_level":"INTERFACE_ONLY","read_supported":false,"write_supported":false,"verification_level":"CONTRACT_ONLY","approval_required":"L3_SANDBOX_WRITE","known_limitations":["只允许 job 创建的副本"],"evidence":["references/safety_model.md"]},
+    {"capability":"verify_output","support_level":"PARTIALLY_IMPLEMENTED","read_supported":true,"write_supported":false,"verification_level":"MOCK_TESTED","approval_required":"L0_READ_ONLY","known_limitations":["持久化验证依赖真实后端"],"evidence":["workflows/07_persistence_verification.md"]},
+    {"capability":"visual_review","support_level":"IMPLEMENTED","read_supported":true,"write_supported":false,"verification_level":"MANUAL_REVIEW","approval_required":"L0_READ_ONLY","known_limitations":[],"evidence":["workflows/08_visual_review.md"]}
+  ]
+}

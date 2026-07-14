@@ -1,0 +1,84 @@
+{
+  "source": {
+    "kind": "original_synthetic_fixture",
+    "active_document": "synthetic_sample.dwg",
+    "full_name": "synthetic_sample.dwg",
+    "reader": "not_run"
+  },
+  "layers": [
+    {
+      "name": "SYNTHETIC",
+      "color": 7,
+      "linetype": "Continuous"
+    }
+  ],
+  "global_uncertainties": [
+    "Original synthetic fixture, not a live-CAD read or acceptance result."
+  ],
+  "entities": [
+    {
+      "id": "synthetic_line_001",
+      "handle": "synthetic_line_001",
+      "type": "line",
+      "object_name": "AcDbLine",
+      "layer": "SYNTHETIC",
+      "geometry": {
+        "coordinate_system": "cad_world",
+        "points": [
+          {
+            "x": 0.0,
+            "y": 0.0,
+            "coordinate_system": "cad_world"
+          },
+          {
+            "x": 10.0,
+            "y": 0.0,
+            "coordinate_system": "cad_world"
+          }
+        ],
+        "start": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "end": [
+          10.0,
+          0.0,
+          0.0
+        ],
+        "bounding_box": {
+          "x_min": 0.0,
+          "y_min": 0.0,
+          "x_max": 10.0,
+          "y_max": 0.0,
+          "coordinate_system": "cad_world"
+        }
+      },
+      "bounding_box": {
+        "x_min": 0.0,
+        "y_min": 0.0,
+        "x_max": 10.0,
+        "y_max": 0.0,
+        "coordinate_system": "cad_world"
+      },
+      "properties": {
+        "handle": "synthetic_line_001",
+        "object_name": "AcDbLine",
+        "layer": "SYNTHETIC",
+        "color": 256,
+        "linetype": "ByLayer"
+      },
+      "confidence": 0.0,
+      "status": "not_run",
+      "evidence": "Original synthetic line defined directly in JSON; no CAD application or COM reader was used.",
+      "uncertainties": [
+        "No real-CAD validation has been performed."
+      ],
+      "source": "original_synthetic_fixture",
+      "reason": "Minimal authored schema example; identifiers are synthetic labels, not CAD handles."
+    }
+  ],
+  "fixture_kind": "original_synthetic",
+  "status": "not_run",
+  "fixture_notice": "Original single-line example authored from scratch. No source drawing, observed handles or captured geometry is included. Filename retained for compatibility; this is not evidence of real-CAD execution."
+}

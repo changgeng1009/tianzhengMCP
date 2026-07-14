@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "skill_run_manifest.schema.json",
+  "type": "object",
+  "required": ["run_id", "mode", "professional_domain", "reference_inputs", "source_dwg", "working_copy", "source_sha256_before", "source_sha256_after", "backend", "classification_counts", "execution", "qa", "safety", "real_sample_repair_completed", "production_d1_allowed", "status"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "mode": {"enum": ["dry_run", "sandbox_execute", "production_copy_execute", "fixture_validation"]},
+    "professional_domain": {"const": "water_supply_and_drainage"},
+    "reference_inputs": {"type": "array", "items": {"type": "object"}},
+    "source_dwg": {"type": ["string", "null"]},
+    "working_copy": {"type": ["string", "null"]},
+    "source_sha256_before": {"type": ["string", "null"]},
+    "source_sha256_after": {"type": ["string", "null"]},
+    "backend": {
+      "type": "object",
+      "required": ["requested_backend", "selected_backend", "backend_version", "backend_available", "capabilities", "fallback_used", "selection_reason"],
+      "properties": {
+        "requested_backend": {"type": ["string", "null"]},
+        "selected_backend": {"type": ["string", "null"]},
+        "backend_version": {"type": "string"},
+        "backend_available": {"type": "boolean"},
+        "capabilities": {"type": "object"},
+        "fallback_used": {"type": "boolean"},
+        "selection_reason": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "classification_counts": {
+      "type": "object",
+      "required": ["direct_com", "controlled_tianzheng_execution", "manual_tianzheng", "review_only", "blocked_geometry", "blocked_invalid_task"],
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "execution": {
+      "type": "object",
+      "required": ["planned", "executed", "skipped", "blocked"],
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "qa": {"$ref": "qa_report.schema.json"},
+    "safety": {"type": "object"},
+    "real_sample_repair_completed": {"const": false},
+    "production_d1_allowed": {"const": false},
+    "status": {"enum": ["PASS", "PARTIAL", "BLOCKED", "FAIL"]}
+  },
+  "additionalProperties": true
+}

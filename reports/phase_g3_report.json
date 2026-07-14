@@ -1,0 +1,8 @@
+{
+  "phase": "G3",
+  "status": "PARTIAL",
+  "timestamp": "2026-07-08T16:29:21.300205+00:00",
+  "description": "Sandbox auto TDb redraw blocked by hsgx interactivity. Framework ready.",
+  "source_dwg_opened": false,
+  "d1_allowed": false
+}

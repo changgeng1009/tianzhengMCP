@@ -1,0 +1,70 @@
+{
+  "environment_summary": {
+    "detected": false,
+    "message": "not_run: original empty synthetic fixture; no CAD application was contacted",
+    "caption": "",
+    "version": "",
+    "active_document": "synthetic_sample.dwg",
+    "menu_groups": []
+  },
+  "document_diagnostic": {
+    "app_caption": "",
+    "app_version": "",
+    "documents_count": 0,
+    "active_document_name": "synthetic_sample.dwg",
+    "active_document_full_name": "synthetic_sample.dwg",
+    "document_validation": {
+      "success": false,
+      "errors": [],
+      "available": []
+    },
+    "documents": []
+  },
+  "diagnostics": {
+    "active_document": "synthetic_sample.dwg",
+    "tianzheng_detected": false,
+    "selection_count": 0,
+    "pipe_count": 0,
+    "diameter_label_count": 0,
+    "association_count": 0,
+    "unmatched_pipe_count": 0,
+    "unmatched_label_count": 0,
+    "need_user_confirmation_count": 0,
+    "diameter_labels_sample": [],
+    "pipe_associations_sample": []
+  },
+  "semantic_model": {
+    "source": "original_synthetic_fixture",
+    "active_document": "synthetic_sample.dwg",
+    "selection_count": 0,
+    "entities": [],
+    "summary": {
+      "total": 0,
+      "pipe": 0,
+      "valve": 0,
+      "fitting": 0,
+      "dimension": 0,
+      "text": 0,
+      "block": 0,
+      "unknown_tianzheng": 0
+    }
+  },
+  "association_model": {
+    "source": "original_synthetic_fixture",
+    "active_document": "synthetic_sample.dwg",
+    "selection_count": 0,
+    "summary": {
+      "pipes": 0,
+      "diameter_labels": 0,
+      "associations": 0,
+      "unmatched_pipes": 0,
+      "unmatched_labels": 0,
+      "need_user_confirmation": 0
+    },
+    "diameter_labels": [],
+    "pipe_associations": []
+  },
+  "fixture_kind": "original_synthetic",
+  "status": "not_run",
+  "fixture_notice": "Original empty diagnostic-schema example. All observed entities, handles, geometry, machine details and execution claims were removed. No CAD application was contacted; this is not an acceptance result."
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "backend_selection.schema.json",
+  "type": "object",
+  "required": ["task_id", "requested_capabilities", "candidate_backends", "selected_backend", "selection_status", "selection_reason", "fallback_used"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "requested_capabilities": {"type": "array", "items": {"type": "string"}},
+    "candidate_backends": {"type": "array", "items": {"type": "object"}},
+    "selected_backend": {"type": ["string", "null"]},
+    "selection_status": {"enum": ["selected", "manual_fallback", "blocked"]},
+    "selection_reason": {"type": "string"},
+    "fallback_used": {"type": "boolean"},
+    "backend_capability_evidence": {"type": "object"}
+  },
+  "additionalProperties": false
+}

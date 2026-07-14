@@ -1,0 +1,15 @@
+{
+  "task_id": "fixture_line_001",
+  "classification": "confirmed_direct_com",
+  "object_type": "line",
+  "professional_domain": "water_supply_and_drainage",
+  "system_type": "unknown_water_system",
+  "domain_object_type": "line",
+  "geometry": {"start_point": [10, 20, 0], "end_point": [15, 20, 0]},
+  "required_capabilities": ["create_acdb_line"],
+  "preferred_backend": "com",
+  "allowed_backends": ["com"],
+  "fallback_policy": "blocked",
+  "execution_allowed": true,
+  "validation_fixture_only": true
+}

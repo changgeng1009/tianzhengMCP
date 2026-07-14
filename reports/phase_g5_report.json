@@ -1,0 +1,8 @@
+{
+  "phase": "G5",
+  "status": "PASS",
+  "timestamp": "2026-07-08T16:29:21.301063+00:00",
+  "description": "Mixed CAD+TDb dispatcher: AcDbLine-direct COM, TDb-tianzheng, review-report, dangerous-blocked",
+  "source_dwg_opened": false,
+  "d1_allowed": false
+}

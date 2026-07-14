@@ -1,0 +1,54 @@
+{
+  "phase": "S1-FIX",
+  "status": "PARTIAL",
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "source_dwg_saved": false,
+  "source_modified": false,
+  "save_called_on_source": false,
+  "sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "dangerous_command_executed": false,
+  "production_d1_allowed": false,
+  "drawing_executed": false,
+  "sandbox_saved": false,
+  "input_blocked_task_count": 1,
+  "executable_direct_com_task_count": 0,
+  "blocked_geometry_task_count": 1,
+  "geometry_fabrication_detected": false,
+  "can_enter_s1_sandbox_minimal_repair_loop": false,
+  "deepseek_worker_used": false,
+  "full_chat_sent_to_deepseek": false,
+  "api_key_sent_to_deepseek": false,
+  "task_pack_chars": 0,
+  "dwg_binary_sent_to_deepseek": false,
+  "source_file_sent_to_deepseek": false,
+  "full_history_sent_to_deepseek": false,
+  "tests_passed": true,
+  "blocked_task_ids": [
+    "mvp1_task_208c4ccc9f"
+  ],
+  "attempted_sources": [
+    "reference_objects",
+    "target_objects",
+    "alignment_transform",
+    "overlay_metadata",
+    "visual_evidence",
+    "semantic_model"
+  ],
+  "missing_geometry_fields": [
+    "insert_point",
+    "position",
+    "center",
+    "bbox",
+    "start_point",
+    "end_point",
+    "vertices"
+  ],
+  "final_rejection_reason": "only PDF page/width/height is present; no CAD coordinate geometry",
+  "pytest_result": "9 passed in 0.14s",
+  "new_test_files": [
+    "tests/repair_actions/test_s1_geometry_localizer.py"
+  ],
+  "modified_test_files": []
+}

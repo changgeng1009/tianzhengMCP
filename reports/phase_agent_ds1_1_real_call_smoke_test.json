@@ -1,0 +1,20 @@
+{
+  "phase": "AGENT-DS1.1",
+  "env_key_present": true,
+  "api_key_logged": false,
+  "full_chat_sent": false,
+  "task_pack_size_chars": 1309,
+  "task_pack_budget_valid": true,
+  "deepseek_real_call_attempted": true,
+  "deepseek_real_call_success": true,
+  "response_schema_valid": true,
+  "opened_source_dwg": false,
+  "saved_source_dwg": false,
+  "used_sendcommand": false,
+  "executed_tianzheng_command": false,
+  "dangerous_command_executed": false,
+  "notes": [
+    "real DeepSeek smoke call returned valid agent result schema"
+  ],
+  "acceptance_decision": "PASS"
+}

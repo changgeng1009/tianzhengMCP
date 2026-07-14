@@ -1,0 +1,27 @@
+{
+  "TDbPipe.Insert": {
+    "confirmed": false,
+    "object_type": "TDbPipe",
+    "method_name": "Insert",
+    "parameters": [],
+    "notes": "首轮 dry-run 未做人工 T30 COM 参数确认。"
+  },
+  "TDbPipeValve.Insert": {
+    "confirmed": false,
+    "object_type": "TDbPipeValve",
+    "method_name": "Insert",
+    "parameters": []
+  },
+  "TDbPipeFitting.Insert": {
+    "confirmed": false,
+    "object_type": "TDbPipeFitting",
+    "method_name": "Insert",
+    "parameters": []
+  },
+  "TDbSprinkler.Insert": {
+    "confirmed": false,
+    "object_type": "TDbSprinkler",
+    "method_name": "Insert",
+    "parameters": []
+  }
+}

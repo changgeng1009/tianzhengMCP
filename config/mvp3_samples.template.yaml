@@ -1,0 +1,30 @@
+# 将本文件复制为 mvp3_samples.yaml，并填写真实对应的完整 reference 与未完成 target。
+# 不得使用 MVP2 固定样本、程序修复结果或不相关图纸配对。
+samples:
+  - sample_id: pilot_01
+    reference_path: 'D:/path/to/new_sample_01_reference.dwg'
+    target_path: 'D:/path/to/new_sample_01_incomplete_target.dwg'
+    scope: water_supply_and_drainage
+    expected_region: null
+    allowed_differences: [TDbDimension2]
+    dimension2_required: false
+    blind_test: false
+    notes: 'pilot；target 必须是未由本程序修复的对应未完成版本'
+  - sample_id: blind_01
+    reference_path: 'D:/path/to/new_sample_02_reference.dwg'
+    target_path: 'D:/path/to/new_sample_02_incomplete_target.dwg'
+    scope: water_supply_and_drainage
+    expected_region: null
+    allowed_differences: [TDbDimension2]
+    dimension2_required: false
+    blind_test: true
+    notes: 'blind test 1'
+  - sample_id: blind_02
+    reference_path: 'D:/path/to/new_sample_03_reference.dwg'
+    target_path: 'D:/path/to/new_sample_03_incomplete_target.dwg'
+    scope: water_supply_and_drainage
+    expected_region: null
+    allowed_differences: [TDbDimension2]
+    dimension2_required: false
+    blind_test: true
+    notes: 'blind test 2'

@@ -1,0 +1,25 @@
+{
+  "production_d1_allowed": false,
+  "security_findings": [
+    {
+      "id": "SEC-FINAL-019",
+      "status": "CLOSED",
+      "closure_claim_allowed": true,
+      "baseline_id": "20260714T193554+0800_s2_1",
+      "default_test_real_dwg_access_count": 0,
+      "baseline_path": "artifacts/cad_safe_test_baseline/20260714T193554+0800_s2_1",
+      "verifier": "python -m scripts.verify_safe_test_baseline --baseline artifacts/cad_safe_test_baseline/20260714T193554+0800_s2_1 --project-root ."
+    }
+  ],
+  "backends": [
+    {"backend":"offline","support_level":"IMPLEMENTED","available":true,"execution_allowed":false,"notes":"Manifest、计划、报告和 Mock"},
+    {"backend":"original-redraw-adapter","support_level":"PARTIALLY_IMPLEMENTED","available":true,"execution_allowed":false,"notes":"只映射和隔离，不修改原 Skill"},
+    {"backend":"nextgen-mock","component":"NextGenMcpMockBackend","support_level":"IMPLEMENTED_BASELINE","available":true,"execution_allowed":false,"notes":"只提供 Mock；NextGenControlPlane=PARTIALLY_IMPLEMENTED；仅引用现有 mcp_nextgen"},
+    {"backend":"legacy-contract-disabled","component":"LegacyAdapter","support_level":"DISABLED_CONTRACT_ONLY","available":true,"execution_allowed":false,"notes":"仅合同，禁止执行"},
+    {"backend":"legacy-com","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"本阶段明确不可用"},
+    {"backend":"nextgen-real","component":"NextGenRealBackend","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"不得描述为真实 CAD 能力"},
+    {"backend":"autocad-dotnet-plugin","component":"AutoCadDotNetPlugin","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"进程内插件尚未实现"},
+    {"backend":"tianzheng-water-real","component":"TianzhengRealBackend","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"真实产品后端不可用"},
+    {"backend":"tianzheng-hvac-real","component":"TianzhengRealBackend","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"真实产品后端不可用"}
+  ]
+}

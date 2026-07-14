@@ -1,0 +1,27 @@
+{
+  "TDbPipe.Insert": {
+    "confirmed": false,
+    "object_type": "TDbPipe",
+    "method_name": "Insert",
+    "parameters": [],
+    "notes": "Fill this only after manual T30 COM verification"
+  },
+  "TDbPipeValve.Insert": {
+    "confirmed": false,
+    "object_type": "TDbPipeValve",
+    "method_name": "Insert",
+    "parameters": []
+  },
+  "TDbPipeFitting.Insert": {
+    "confirmed": false,
+    "object_type": "TDbPipeFitting",
+    "method_name": "Insert",
+    "parameters": []
+  },
+  "TDbSprinkler.Insert": {
+    "confirmed": false,
+    "object_type": "TDbSprinkler",
+    "method_name": "Insert",
+    "parameters": []
+  }
+}

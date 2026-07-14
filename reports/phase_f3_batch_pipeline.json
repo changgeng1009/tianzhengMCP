@@ -1,0 +1,13 @@
+{
+  "phase": "F3",
+  "status": "dry_run_validated",
+  "batch_manifest_schema_created": true,
+  "sample_manifest_created": true,
+  "batch_runner_created": true,
+  "batch_safety_gate_created": true,
+  "dry_run_job_count": 2,
+  "attempted": 0,
+  "passed": 0,
+  "failed": 0,
+  "blocked": 0
+}

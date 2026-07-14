@@ -1,0 +1,14 @@
+{
+  "phase": "MVP-1",
+  "mode": "dry_run_gpt_fallback",
+  "tasks": [],
+  "required_fields": [
+    "task_id",
+    "required_command",
+    "expected_tdb_object",
+    "geometry",
+    "semantic",
+    "user_instruction",
+    "before_after_scan_required"
+  ]
+}

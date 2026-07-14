@@ -1,0 +1,128 @@
+﻿{
+  "$schema": "tianzheng_interface/action_templates/v1",
+  "description": "天正给排水 Action 类型定义模板 — 定义操作参数结构和默认值",
+  "version": "1.0.0",
+  "last_updated": "2026-07-08",
+  "action_templates": {
+    "add_pipe": {
+      "description": "新增管道 (TDbPipe)",
+      "object_type": "TDbPipe",
+      "required_params": ["start_point", "end_point"],
+      "optional_params": ["dn", "system_type", "layer", "elevation_start", "elevation_end"],
+      "default_params": {
+        "dn": "DN100",
+        "system_type": "给水",
+        "layer": "PIPE-给水"
+      },
+      "geometry_type": "line",
+      "risk_level": "low"
+    },
+    "add_valve": {
+      "description": "新增阀门 (TDbPipeValve)",
+      "object_type": "TDbPipeValve",
+      "required_params": ["position"],
+      "optional_params": ["valve_type", "dn", "system_type", "layer", "angle"],
+      "default_params": {
+        "valve_type": "gate_valve",
+        "dn": "DN100",
+        "layer": "VALV-给水"
+      },
+      "geometry_type": "point",
+      "risk_level": "low"
+    },
+    "add_fitting": {
+      "description": "新增加管件 (TDbPipeFitting)",
+      "object_type": "TDbPipeFitting",
+      "required_params": ["position"],
+      "optional_params": ["fitting_type", "dn", "system_type", "layer", "angle"],
+      "default_params": {
+        "fitting_type": "elbow",
+        "dn": "DN100",
+        "layer": "FITT-给水"
+      },
+      "geometry_type": "point",
+      "risk_level": "low"
+    },
+    "add_label": {
+      "description": "新增标注 (TDbDimension2)",
+      "object_type": "TDbDimension2",
+      "required_params": ["text", "position"],
+      "optional_params": ["layer", "text_height", "angle"],
+      "default_params": {
+        "layer": "DIM-标注",
+        "text_height": 350.0
+      },
+      "geometry_type": "point",
+      "risk_level": "low"
+    },
+    "update_diameter": {
+      "description": "修改管径",
+      "object_type": "TDbPipe",
+      "required_params": ["target_handle", "dn"],
+      "optional_params": [],
+      "default_params": {},
+      "geometry_type": "none",
+      "risk_level": "medium"
+    },
+    "update_elevation": {
+      "description": "修改管道标高",
+      "object_type": "TDbPipe",
+      "required_params": ["target_handle"],
+      "optional_params": ["elevation_start", "elevation_end"],
+      "default_params": {},
+      "geometry_type": "none",
+      "risk_level": "medium"
+    },
+    "update_system_type": {
+      "description": "修改管道系统类型",
+      "object_type": "TDbPipe",
+      "required_params": ["target_handle", "system_type"],
+      "optional_params": [],
+      "default_params": {},
+      "geometry_type": "none",
+      "risk_level": "medium"
+    },
+    "connect_pipe": {
+      "description": "连接两段管道",
+      "object_type": "TDbPipe",
+      "required_params": ["pipe_a_handle", "pipe_b_handle"],
+      "optional_params": [],
+      "default_params": {},
+      "geometry_type": "none",
+      "risk_level": "medium"
+    },
+    "move_candidate": {
+      "description": "移动实体 (需人工审核)",
+      "object_type": "any",
+      "required_params": ["target_handle", "new_position"],
+      "optional_params": ["layer"],
+      "default_params": {},
+      "geometry_type": "transform",
+      "risk_level": "high"
+    },
+    "delete_candidate": {
+      "description": "删除实体 (需人工审核)",
+      "object_type": "any",
+      "required_params": ["target_handle"],
+      "optional_params": [],
+      "default_params": {},
+      "geometry_type": "none",
+      "risk_level": "critical"
+    },
+    "review_only": {
+      "description": "仅审核，不执行操作",
+      "object_type": "any",
+      "required_params": [],
+      "optional_params": ["notes"],
+      "default_params": {},
+      "geometry_type": "none",
+      "risk_level": "low"
+    }
+  },
+  "risk_levels": {
+    "low": {"requires_confirmation": true, "allow_batch": true, "max_batch_size": 50},
+    "medium": {"requires_confirmation": true, "allow_batch": true, "max_batch_size": 20},
+    "high": {"requires_confirmation": true, "allow_batch": false, "max_batch_size": 1},
+    "critical": {"requires_confirmation": true, "allow_batch": false, "max_batch_size": 1}
+  }
+}

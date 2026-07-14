@@ -1,0 +1,26 @@
+﻿{
+  "phase": "E3",
+  "timestamp": "2026-07-09T00:00:00Z",
+  "strategy": "manual_assisted_only",
+  "fully_automatic_tianzheng_object_creation": false,
+  "reason": "Tianzheng commands (hsxg etc.) are interactive and cannot be auto-executed via SendCommand. R4/R5 confirmed this limitation.",
+  "workflow": {
+    "step_1": "User manually executes hsxg in AutoCAD on sandbox/production-copy",
+    "step_2": "Codex scans before/after via COM (ModelSpace.Count diff)",
+    "step_3": "New TDbDoubleLinePipe/TDbPipe objects detected and verified",
+    "step_4": "Save production-copy with doc.Save()",
+    "step_5": "Close + reopen to verify persistence",
+    "step_6": "Run D10 QA validator"
+  },
+  "detected_tdb_types": ["TDbDoubleLinePipe", "TDbPipe", "TDbPipeValve", "TDbPipeFitting", "TDbPump", "TDbWaterTank", "TDbEquipment", "TDbDimension2", "TDbVPipeDim"],
+  "manual_assisted_tasks_count": 0,
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "d1_allowed": false,
+  "production_d1_allowed": false,
+  "limitations": [
+    "Tianzheng object creation requires user manual input in AutoCAD",
+    "DNDiameter/SysType may be null for newly created TDbDoubleLinePipe",
+    "Batch Tianzheng command execution not supported"
+  ]
+}

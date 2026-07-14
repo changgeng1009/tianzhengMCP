@@ -1,0 +1,50 @@
+{
+  "connection": {
+    "connected": false,
+    "successful_progid": "",
+    "version": "",
+    "active_document": "synthetic_sample.dwg"
+  },
+  "environment": {
+    "success": false,
+    "detected": false,
+    "message": "not_run: original empty synthetic fixture; no CAD application was contacted",
+    "signals": {
+      "caption": "",
+      "version": "",
+      "active_document": "synthetic_sample.dwg",
+      "menu_groups": [],
+      "support_path": "",
+      "trusted_paths": "",
+      "menuname": "",
+      "acadver": ""
+    },
+    "command_probe": {
+      "send_command_allowed": false,
+      "reserved_only": false,
+      "message": "not_run: original empty synthetic fixture; no CAD application was contacted"
+    }
+  },
+  "visibility_summary": {
+    "active_document": "synthetic_sample.dwg",
+    "total_entities": 0,
+    "object_name_counts": {
+      "AcDbLine": 0,
+      "AecDbProxyEntity": 0,
+      "TzDrainPipe": 0,
+      "AcDbTianzhengCustomObject": 0
+    },
+    "proxy_entities": 0,
+    "tianzheng_like_entities": 0,
+    "unknown_cad_entities": 0,
+    "visible_basic_entities": 0
+  },
+  "selected_entities": {
+    "success": false,
+    "selection_count": 0,
+    "entities": []
+  },
+  "fixture_kind": "original_synthetic",
+  "status": "not_run",
+  "fixture_notice": "Original empty diagnostic-schema example. All observed entities, handles, geometry, machine details and execution claims were removed. No CAD application was contacted; this is not an acceptance result."
+}

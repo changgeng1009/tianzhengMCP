@@ -1,0 +1,14 @@
+{
+  "source_open_allowed": false,
+  "source_save_allowed": false,
+  "source_modification_allowed": false,
+  "sendcommand_allowed": false,
+  "tianzheng_execution_allowed": false,
+  "controlled_tianzheng_execution_allowed": false,
+  "production_d1_allowed": false,
+  "allow_automatic_fallback": false,
+  "require_working_copy": true,
+  "require_source_hash_unchanged": true,
+  "require_geometry_evidence": true,
+  "review_and_blocked_execution_allowed": false
+}

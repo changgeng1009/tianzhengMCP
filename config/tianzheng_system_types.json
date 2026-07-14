@@ -1,0 +1,93 @@
+﻿{
+  "$schema": "tianzheng_interface/system_types/v1",
+  "description": "天正给排水系统类型定义 — 用于按 system_type 分组和分类",
+  "version": "1.0.0",
+  "last_updated": "2026-07-08",
+  "system_types": {
+    "给水": {
+      "code": "water_supply",
+      "label": "给水",
+      "aliases": ["给水", "供水", "生活给水", "WS", "冷水", "CW"],
+      "layer_patterns": ["*给水*", "*供水*", "*WS_*", "*CW_*"],
+      "default_color": "blue",
+      "priority": 1
+    },
+    "排水": {
+      "code": "drainage",
+      "label": "排水",
+      "aliases": ["排水", "污水", "废水", "重力排水", "WW", "DW"],
+      "layer_patterns": ["*排水*", "*污水*", "*WW_*", "*DW_*"],
+      "default_color": "green",
+      "priority": 2
+    },
+    "消防": {
+      "code": "fire_protection",
+      "label": "消防",
+      "aliases": ["消防", "消火栓", "消防栓", "FP", "FH"],
+      "layer_patterns": ["*消防*", "*消火栓*", "*FP_*", "*FH_*"],
+      "default_color": "red",
+      "priority": 3
+    },
+    "喷淋": {
+      "code": "sprinkler",
+      "label": "喷淋",
+      "aliases": ["喷淋", "自动喷淋", "SP", "SPK"],
+      "layer_patterns": ["*喷淋*", "*SP*", "*SPK*"],
+      "default_color": "magenta",
+      "priority": 4
+    },
+    "雨水": {
+      "code": "rainwater",
+      "label": "雨水",
+      "aliases": ["雨水", "屋面雨水", "RW", "RD"],
+      "layer_patterns": ["*雨水*", "*RW_*", "*RD_*"],
+      "default_color": "cyan",
+      "priority": 5
+    },
+    "中水": {
+      "code": "reclaimed_water",
+      "label": "中水",
+      "aliases": ["中水", "回用水", "RCW"],
+      "layer_patterns": ["*中水*", "*回用*", "*RCW*"],
+      "default_color": "olive",
+      "priority": 6
+    },
+    "热水": {
+      "code": "hot_water",
+      "label": "热水",
+      "aliases": ["热水", "HW"],
+      "layer_patterns": ["*热水*", "*HW_*"],
+      "default_color": "orange",
+      "priority": 7
+    },
+    "冷却水": {
+      "code": "cooling_water",
+      "label": "冷却水",
+      "aliases": ["冷却水", "冷却", "CLW"],
+      "layer_patterns": ["*冷却*", "*CLW*"],
+      "default_color": "teal",
+      "priority": 8
+    },
+    "凝结水": {
+      "code": "condensate",
+      "label": "凝结水",
+      "aliases": ["凝结水", "冷凝水", "COND"],
+      "layer_patterns": ["*凝结*", "*冷凝*", "*COND*"],
+      "default_color": "navy",
+      "priority": 9
+    },
+    "unknown": {
+      "code": "unknown",
+      "label": "未知",
+      "aliases": [],
+      "layer_patterns": [],
+      "default_color": "gray",
+      "priority": 99
+    }
+  },
+  "classification_rules": {
+    "source_priority": ["SysType", "system_type", "layer"],
+    "fallback_to_unknown": true,
+    "case_sensitive": false
+  }
+}

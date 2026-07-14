@@ -1,0 +1,26 @@
+{
+  "skill": {
+    "name": "tianzheng-water-repair",
+    "active_professional_domain": "water_supply_and_drainage",
+    "validation_mode": "stage2_static_packaging",
+    "real_sample_repair_completed": false
+  },
+  "backend": {
+    "default_backend": "com",
+    "allow_automatic_fallback": false
+  },
+  "stage3_sample": {
+    "enabled": false,
+    "professional_domain": "water_supply_and_drainage",
+    "reference_dwg": null,
+    "target_dwg": null,
+    "reference_role": "completed_reference",
+    "target_role": "incomplete_target",
+    "exact_paths_confirmed": false,
+    "source_hashes_recorded": false,
+    "safe_copies_created": false
+  },
+  "safety_config": "skill/configs/safety.yaml",
+  "backend_config": "skill/configs/backends.yaml",
+  "classification_config": "skill/configs/classification.yaml"
+}

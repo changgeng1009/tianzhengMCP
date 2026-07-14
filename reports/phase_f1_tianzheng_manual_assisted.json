@@ -1,0 +1,28 @@
+{
+  "phase": "F1",
+  "status": "PASS",
+  "timestamp": "2026-07-08T16:17:16.065094+00:00",
+  "tdb_scanner_enhanced": true,
+  "supported_types": [
+    "TDbDoubleLinePipe",
+    "TDbPipe",
+    "TDbPipeValve",
+    "TDbPipeFitting",
+    "TDbDimension2",
+    "TDbPump",
+    "TDbVPipeDim",
+    "TDbWaterTank",
+    "TDbEquipment"
+  ],
+  "manual_hsxg_workflow_ready": true,
+  "before_after_diff_supported": true,
+  "count_based_diff": true,
+  "handle_based_diff": true,
+  "auto_sendcommand_used": false,
+  "tianzheng_command_executed": false,
+  "source_hash_unchanged": true,
+  "source_dwg_opened": false,
+  "d1_allowed": false,
+  "production_d1_allowed": false,
+  "user_instruction": "Run hsxg manually in AutoCAD, then Codex scans before/after"
+}

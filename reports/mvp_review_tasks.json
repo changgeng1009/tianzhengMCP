@@ -1,0 +1,61 @@
+{
+  "phase": "MVP-1",
+  "mode": "dry_run_gpt_fallback",
+  "tasks": [
+    {
+      "task_id": "mvp1_review_0001",
+      "review_reason": "low confidence or visual review required",
+      "object_summary": {},
+      "suggested_review_method": "GPT visual review with source crop or overlay evidence",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0002",
+      "review_reason": "low confidence or visual review required",
+      "object_summary": {},
+      "suggested_review_method": "GPT visual review with source crop or overlay evidence",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0003",
+      "review_reason": "low confidence or visual review required",
+      "object_summary": {},
+      "suggested_review_method": "GPT visual review with source crop or overlay evidence",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0004",
+      "review_reason": "low confidence or visual review required",
+      "object_summary": {},
+      "suggested_review_method": "GPT visual review with source crop or overlay evidence",
+      "gpt_visual_review_required": true
+    },
+    {
+      "task_id": "mvp1_review_0005",
+      "review_reason": "low confidence or visual review required",
+      "object_summary": {},
+      "suggested_review_method": "GPT visual review with source crop or overlay evidence",
+      "gpt_visual_review_required": true
+    }
+  ],
+  "required_fields": [
+    "task_id",
+    "review_reason",
+    "object_summary",
+    "suggested_review_method",
+    "gpt_visual_review_required"
+  ],
+  "geometry_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "real_geometry_included": false,
+    "notice": "Real drawing-derived geometry, object records and alignment evidence removed because redistribution rights were not established. Remaining outcomes are historical assertions only, not current acceptance or synthetic execution evidence.",
+    "redacted_field_count": 5
+  },
+  "historical_distribution_cleanup": {
+    "status": "redacted",
+    "validation_status": "not_rerun",
+    "cad_connected_by_cleanup": false,
+    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
+  }
+}

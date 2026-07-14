@@ -1,0 +1,12 @@
+{
+  "task_id": "tdb_pipe_unverified",
+  "requested_capabilities": ["create_tdb_pipe", "persistence_qa"],
+  "candidate_backends": [
+    {"backend_id": "tianzheng_api", "available": false},
+    {"backend_id": "net_bridge", "available": false}
+  ],
+  "selected_backend": null,
+  "selection_status": "manual_fallback",
+  "selection_reason": "no verified backend supports TDbPipe creation",
+  "fallback_used": true
+}
