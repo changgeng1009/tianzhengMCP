@@ -1,0 +1,156 @@
+{
+  "schema_version": "1.0.0",
+  "entries": [
+    {
+      "template_id": "plain_autocad_redraw",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "generic_autocad_redraw_offline",
+      "required_capabilities": [
+        "redraw_from_reference_plan"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_OFFLINE_PLANNING"
+    },
+    {
+      "template_id": "plain_autocad_clone",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "generic_autocad_clone_plan",
+      "required_capabilities": [
+        "sandbox_edit_plan"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_OFFLINE_PLANNING"
+    },
+    {
+      "template_id": "tianzheng_water_scan",
+      "runtime_mode": "tianzheng_water",
+      "product": "tianzheng_water",
+      "backend": "offline",
+      "workflow_id": "tianzheng_water_scan_plan",
+      "required_capabilities": [
+        "tianzheng_water_scan_plan"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_OFFLINE_PLANNING"
+    },
+    {
+      "template_id": "tianzheng_water_completion",
+      "runtime_mode": "tianzheng_water",
+      "product": "tianzheng_water",
+      "backend": "offline",
+      "workflow_id": "tianzheng_water_completion_plan",
+      "required_capabilities": [
+        "tianzheng_water_completion_plan"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "BLOCKED_PLAN_ONLY"
+    },
+    {
+      "template_id": "tianzheng_hvac_scan",
+      "runtime_mode": "tianzheng_hvac",
+      "product": "tianzheng_hvac",
+      "backend": "offline",
+      "workflow_id": "tianzheng_hvac_scan_plan",
+      "required_capabilities": [
+        "tianzheng_hvac_scan_plan"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_OFFLINE_PLANNING"
+    },
+    {
+      "template_id": "tianzheng_hvac_write_placeholder",
+      "runtime_mode": "tianzheng_hvac",
+      "product": "tianzheng_hvac",
+      "backend": "offline",
+      "workflow_id": "tianzheng_hvac_write_placeholder",
+      "required_capabilities": [
+        "tianzheng_hvac_write_contract"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "BLOCKED_PLAN_ONLY"
+    },
+    {
+      "template_id": "pdf_to_dwg_plan",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "pdf_intermediate_dwg_plan",
+      "required_capabilities": [
+        "analyze_reference"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_OFFLINE_PLANNING"
+    },
+    {
+      "template_id": "image_parametric_redraw",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "image_dimension_parametric_redraw_plan",
+      "required_capabilities": [
+        "analyze_reference",
+        "redraw_from_reference_plan"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_OFFLINE_PLANNING"
+    },
+    {
+      "template_id": "offline_analysis",
+      "runtime_mode": "offline_analysis",
+      "product": "unknown",
+      "backend": "offline",
+      "workflow_id": "offline_document_comparison",
+      "required_capabilities": [
+        "offline_document_comparison"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_OFFLINE_PLANNING"
+    },
+    {
+      "template_id": "nextgen_mock_simulation",
+      "runtime_mode": "offline_analysis",
+      "product": "unknown",
+      "backend": "nextgen_mock",
+      "workflow_id": "nextgen_mock_job_simulation",
+      "required_capabilities": [
+        "deterministic_plan_build"
+      ],
+      "real_cad_read_supported": false,
+      "real_cad_write_supported": false,
+      "production_allowed": false,
+      "production_d1_allowed": false,
+      "status": "IMPLEMENTED_MOCK_BASELINE"
+    }
+  ]
+}

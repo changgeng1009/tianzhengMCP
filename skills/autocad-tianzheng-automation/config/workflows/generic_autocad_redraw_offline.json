@@ -1,0 +1,41 @@
+{
+  "workflow_id": "generic_autocad_redraw_offline",
+  "workflow_type": "redraw_plan",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "plain_autocad"
+  ],
+  "supported_products": [
+    "generic_autocad"
+  ],
+  "required_capabilities": [
+    "redraw_from_reference_plan"
+  ],
+  "required_backend_types": [
+    "offline",
+    "original_redraw_adapter"
+  ],
+  "minimum_approval_level": "L1_DRY_RUN",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "analyze_reference_metadata",
+    "build_redraw_plan",
+    "verify_plan",
+    "visual_review_required"
+  ],
+  "verification_requirements": [
+    "geometry_verified",
+    "visual_review_verified"
+  ],
+  "recovery_requirements": [
+    "checkpoint_enabled",
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "redraw_analysis.json",
+    "visual_review_checklist.json"
+  ],
+  "unavailable_reason": null
+}

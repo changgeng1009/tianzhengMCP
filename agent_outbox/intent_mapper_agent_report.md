@@ -6,101 +6,128 @@ intent_mapper_agent
 
 ## Assigned Task
 
-MUH-MIG-LAYERD-005 — 建立隔离、安全、可测试的 nextgen Layer D 最小基线。
+CAD-CONFIG-S2-WP3-PREP / WP3_IMPLEMENT — 配置驱动 Runtime、Workflow、Execution Plan 与离线模拟。
 
 ## Files Read
 
 - `agent_inbox/intent_mapper_agent.md`
-- `mcp_nextgen/protocol/models.py`
-- `mcp_nextgen/protocol/enums.py`
-- `mcp_nextgen/protocol/version.py`
-- 本报告“Files Modified”所列 Layer D 文件
+- `skills/autocad-tianzheng-automation/schemas/project_manifest.schema.json`
+- `skills/autocad-tianzheng-automation/config/**`
+- `skills/autocad-tianzheng-automation/adapters/registry.py`
+- `skills/autocad-tianzheng-automation/adapters/generic_autocad/**`
+- `skills/autocad-tianzheng-automation/adapters/tianzheng_water/**`
+- `skills/autocad-tianzheng-automation/adapters/tianzheng_hvac/**`
+- `skills/autocad-tianzheng-automation/capabilities/*.json`
+- 本报告“Files Modified”所列实现和配置文件
 
 ## Files Modified
 
-- `mcp_nextgen/jobs/__init__.py`
-- `mcp_nextgen/jobs/boundaries.py`
-- `mcp_nextgen/jobs/coordinator.py`
-- `mcp_nextgen/jobs/idempotency.py`
-- `mcp_nextgen/jobs/models.py`
-- `mcp_nextgen/jobs/state_machine.py`
-- `mcp_nextgen/jobs/store.py`
-- `mcp_nextgen/journal/__init__.py`
-- `mcp_nextgen/journal/checkpoint.py`
-- `mcp_nextgen/journal/models.py`
-- `mcp_nextgen/journal/store.py`
-- `mcp_nextgen/safety/__init__.py`
-- `mcp_nextgen/safety/approval.py`
-- `mcp_nextgen/safety/canonical.py`
-- `mcp_nextgen/safety/gate.py`
-- `mcp_nextgen/safety/paths.py`
+- `skills/autocad-tianzheng-automation/runtime/contracts.py`
+- `skills/autocad-tianzheng-automation/runtime/selector.py`
+- `skills/autocad-tianzheng-automation/runtime/planner.py`
+- `skills/autocad-tianzheng-automation/runtime/routing.py`
+- `skills/autocad-tianzheng-automation/runtime/backend_registry.py`
+- `skills/autocad-tianzheng-automation/runtime/workflow_registry.py`
+- `skills/autocad-tianzheng-automation/runtime/execution_plan.py`
+- `skills/autocad-tianzheng-automation/runtime/simulation.py`
+- `skills/autocad-tianzheng-automation/config/workflows/*.json`（11 项）
+- `skills/autocad-tianzheng-automation/templates/*/project_manifest.json`（10 项）
+- `skills/autocad-tianzheng-automation/templates/template_catalog.json`
+- `skills/autocad-tianzheng-automation/templates/template_capability_matrix.json`
 - `agent_outbox/intent_mapper_agent_report.md`
 
 ## Work Completed
 
-- 建立独立于旧 P4/P3/P2 执行器的 Layer D 状态与持久化基线。
-- 实现显式合法状态转换；终态不允许继续推进。
-- 实现 append-only JSONL journal：sequence 连续、完整 SHA-256 `previous_hash` 链、逐条重算校验、写后 `fsync`。
-- 实现原子 checkpoint：唯一临时文件、`fsync`、`os.replace`，并以 journal sequence/head hash 交叉校验。
-- 完成动态恢复字段：`last_completed_batch_id`、`completed_batch_count`、`completed_task_count` 均从实际完成 ID 集合计算，不含硬编码批次。
-- 实现 journal replay 恢复；resume 只返回未完成任务，已完成任务不会重复进入待执行集合。
-- 明确区分 `PLANNED` 与 `AUTO_DEPENDENCY`，恢复视图分别返回两类剩余任务。
-- 实现完整 canonical request SHA-256 的持久化幂等记录；相同 key 不重复创建，不同请求哈希触发冲突。
-- 实现审批绑定校验：job、DocumentIdentity、plan hash、allowed operations、等级、有效期；默认 `production_d1_allowed=false`。
-- 兼容 `mcp_nextgen.protocol` 的字符串审批等级与嵌套 DocumentIdentity，不修改协议包。
-- 实现保存失败 `MANUAL_SAVE_REQUIRED` 的 journal/checkpoint 持久化与恢复。
-- 实现超时/取消安全边界：持久化临界区内不抛出，离开临界区后生效。
-- 持久化 ID 使用 allowlist，所有路径做 resolve 后的根目录 containment 校验。
-- rollback 明确为 `NotImplementedError`，本阶段不包含任何 CAD/DWG 回滚写入。
+- 实现可解释的 Runtime Router 与冲突检测，按显式 override、Manifest、显式上下文、唯一离线元数据证据的优先级选择；不读取文档内容。
+- 保持旧 `select_runtime` 返回合同：`generic_autocad -> autocad`、`unknown -> offline`。
+- 保持旧 `build_offline_plan` 对 1.0/1.0.0/无版本 Manifest 的返回结构；仅 1.1.0 Canonical Manifest 进入新 PlanBuilder。
+- 复用 WP2 Product/Backend 静态注册表，不复制注册逻辑；不可用 backend 即 fail-closed，不使用 fallback 静默降级。
+- 建立 11 项机器可读 Workflow 合同：
+  - `generic_autocad_redraw_offline`
+  - `generic_autocad_clone_plan`
+  - `pdf_intermediate_dwg_plan`
+  - `image_dimension_parametric_redraw_plan`
+  - `tianzheng_water_scan_plan`
+  - `tianzheng_water_completion_plan`
+  - `tianzheng_hvac_scan_plan`
+  - `tianzheng_hvac_write_placeholder`
+  - `offline_document_comparison`
+  - `offline_capability_audit`
+  - `nextgen_mock_job_simulation`
+- 建立 10 项 Canonical 1.1.0 Manifest 模板、模板目录和能力矩阵；均使用虚构相对路径，未包含姓名、学号或项目绝对路径。
+- 实现确定性 Execution Plan：包含显式 runtime/product/backend/workflow、审批要求、文档声明、保护区域、阶段、验证/恢复要求、限制和阻断原因。
+- Plan/Manifest hash 排除 `created_at`、`generated_at`、`notes`、随机值、run id、临时目录，并复用 canonical 层完成 JSON 键序与路径斜杠归一化。
+- 写入、L3/L4 或 Real workflow 只生成 blocked plan；Water completion 与 HVAC write placeholder 均返回不可执行状态。
+- NextGen Mock simulation 只返回内存 Mock 证据；显式声明 `real_execution=false`、CAD/COM/天正连接均为 false，且不启动子进程。
+- 离线分析允许处理带产品声明的文档元数据，但不会把该声明解释为选择或连接相应 CAD 产品。
 
 ## Tests Run
 
-1. `python -m compileall -q mcp_nextgen\\jobs mcp_nextgen\\journal mcp_nextgen\\safety`
-2. 基于正式 `mcp_nextgen.protocol` dataclass 的临时目录端到端纯 Python 自检：
-   - 创建与重复创建；
-   - 非连续批次 ID `batch-7` / `batch-42` 动态计数；
-   - task duplicate suppression；
-   - journal/hash chain/checkpoint recovery；
-   - resume 跳过已完成任务；
-   - 自动依赖分类；
-   - `MANUAL_SAVE_REQUIRED` 恢复；
-   - timeout/cancellation 临界区；
-   - traversal ID 拒绝；
-   - 临时 checkpoint 文件无残留。
-3. `python -m compileall -q mcp_nextgen`
-4. Layer D 顶层 import smoke check。
+1. JSON Schema + PlanBuilder 离线自检：
+   - 11 个 Workflow 全部加载；
+   - 10 个模板全部通过 `project_manifest.schema.json`；
+   - 每个模板重复构建结果完全一致；
+   - 每个计划通过 plan hash / plan id 复核；
+   - 8 个离线或 Mock 模板可生成离线可执行计划；
+   - 2 个写入模板按预期 blocked；
+   - NextGen Mock 模拟通过。
+2. 安全路由/哈希自检：
+   - Owned Python 模块 AST 解析；
+   - runtime/product 冲突；
+   - auto_detect 多产品冲突；
+   - Legacy backend 不可用且不静默 fallback；
+   - 非语义字段和路径斜杠变化不改变 hash；
+   - 语义变更改变 hash；
+   - 篡改计划被 `PLAN_HASH_MISMATCH` 拦截。
+3. 旧兼容入口自检：
+   - plain/water/HVAC/offline 4 个旧示例选择结果兼容；
+   - 旧 planner 保留 `execution_allowed=false` 与 `PLAN_READY`。
+4. 静态约束检查：
+   - 模板/Workflow 无项目绝对路径、姓名、学号、Production=true 或 Real backend 请求；
+   - `git diff --check` 无空白错误。
+5. 未运行全量 pytest；按 WP3 授权留给 test_agent 统一回归。
 
 ## Test Result
 
-- 编译检查：PASS
-- 端到端自检：PASS（`LAYER_D_SELFCHECK_OK`）
-- 全包编译与 import：PASS（`IMPORT_OK`）
-- 未运行旧项目全量 pytest；该项由 test_agent 统一执行，避免本 Agent 越权修改或裁决旧测试。
+- Workflow 加载：PASS（11/11）
+- Manifest Schema：PASS（10/10）
+- 确定性 Plan/Hash：PASS（10/10）
+- 写入/Real 阻断：PASS（2/2）
+- NextGen Mock simulation：PASS
+- 冲突与 backend fail-closed：PASS
+- 旧 selector/planner compatibility：PASS
+- 静态安全检查：PASS
 
 ## Safety Check
 
 * Connected to AutoCAD: NO
 * Opened DWG: NO
 * Opened source DWG: NO
+* Read or hashed DWG/DXF content: NO
 * Used SendCommand: NO
 * Executed Tianzheng command: NO
+* Started subprocess from runtime simulation: NO
+* Enabled Legacy backend: NO
+* Enabled Real backend: NO
 * Saved DWG: NO
 * Modified source DWG: NO
 
 ## Risks Found
 
-- 当前文件锁只覆盖进程内线程；尚未实现多进程并发 writer 锁。正式接入多个 writer 前必须补充单写者约束或跨进程锁。
-- single-use 审批可校验 `used_at/consumed`，但本最小基线未建立独立的持久化审批消费账本。
-- `recover()` 可由 journal 重建状态和待执行集合，但不会自行把运行中作业改写为 `RECOVERY_REQUIRED`；该状态提升应由上层启动恢复流程显式完成。
-- Job 快照是性能/查询副本，journal 才是恢复事实来源；后续不得反向以快照覆盖 journal。
+- Workflow 与模板是离线配置合同；未证明任何真实 CAD 读取、写入或工程语义能力。
+- Water/HVAC 扫描项当前只构建扫描计划，真实产品实例检测和对象读取仍需未来 Real backend。
+- `tianzheng_water_completion_plan` 与 `tianzheng_hvac_write_placeholder` 仅为 blocked 合同；不得描述为已实现写入。
+- NextGen Mock 只证明 Mock 基线，不代表 NextGen Real、listener、AutoCAD .NET 插件或天正真实后端。
+- 全量 pytest、CLI 集成和安装同步不在本 Agent 的 Owned Files 轻量自检范围。
 
 ## Remaining Work
 
-- 由 test_agent 把本自检固化为 `tests/nextgen` 回归测试，特别是 checkpoint 非连续/非硬编码批次测试。
-- 由上层 integration 层接入 Legacy adapter；本 Agent 未触碰旧执行器。
-- 多进程 writer 互斥与持久化 single-use approval consumption 延期。
-- 真实 AutoCAD in-process plugin、COM、DWG 写入、Production D1 均未实现且不在本阶段范围。
+- test_agent 固化并运行 WP3 的 Schema、路由冲突、Plan hash、blocked workflow、simulation 与旧兼容回归。
+- docs_agent 更新配置驱动文档、模板说明与阶段报告。
+- Manager 在 WP1/WP2/WP3 合并后执行统一 CLI/安全回归和 Skill 同步。
+- Real/Legacy 后端、CAD/COM、DWG 访问及 Production D1 继续保持不可用。
 
 ## Recommendation
 
-建议将本模块按 `ACCEPT_WITH_ADAPTATION` 接入：它满足本轮最小 Layer D 安全基线并通过隔离自检，但在进入多进程或真实后端前，必须由 test_agent 固化回归测试，并补足跨进程单写者和审批消费账本。严禁把该模块描述为真实 AutoCAD/DWG 执行能力。
+WP3 实现可进入 test_agent 统一回归。验收时应重点核对：11/10 数量、旧 1.0 Planner 合同、backend 不静默 fallback、Water/HVAC 写入模板 blocked、NextGen Mock 不冒充 Real，以及同一 Canonical Manifest 的计划哈希稳定性。
+

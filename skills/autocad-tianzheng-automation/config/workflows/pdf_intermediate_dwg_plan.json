@@ -1,0 +1,42 @@
+{
+  "workflow_id": "pdf_intermediate_dwg_plan",
+  "workflow_type": "pdf_reference_plan",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "plain_autocad"
+  ],
+  "supported_products": [
+    "generic_autocad"
+  ],
+  "required_capabilities": [
+    "analyze_reference"
+  ],
+  "required_backend_types": [
+    "offline",
+    "original_redraw_adapter"
+  ],
+  "minimum_approval_level": "L1_DRY_RUN",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "inspect_pdf_declaration",
+    "build_intermediate_plan",
+    "define_scale_and_coordinate_checks",
+    "visual_review_required"
+  ],
+  "verification_requirements": [
+    "scale_review_required",
+    "coordinate_review_required",
+    "visual_review_verified"
+  ],
+  "recovery_requirements": [
+    "checkpoint_enabled",
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "pdf_intermediate_plan.json",
+    "visual_review_checklist.json"
+  ],
+  "unavailable_reason": null
+}

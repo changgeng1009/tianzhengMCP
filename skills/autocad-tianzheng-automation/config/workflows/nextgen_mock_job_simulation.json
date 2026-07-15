@@ -1,0 +1,40 @@
+{
+  "workflow_id": "nextgen_mock_job_simulation",
+  "workflow_type": "nextgen_mock_simulation",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "offline_analysis"
+  ],
+  "supported_products": [
+    "unknown"
+  ],
+  "required_capabilities": [
+    "deterministic_plan_build"
+  ],
+  "required_backend_types": [
+    "nextgen_mock"
+  ],
+  "minimum_approval_level": "L1_DRY_RUN",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "build_deterministic_plan",
+    "simulate_mock_job",
+    "verify_plan_hash",
+    "emit_mock_evidence"
+  ],
+  "verification_requirements": [
+    "plan_hash_verified",
+    "mock_only_verified"
+  ],
+  "recovery_requirements": [
+    "checkpoint_enabled",
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "nextgen_mock_simulation.json",
+    "mock_evidence.json"
+  ],
+  "unavailable_reason": null
+}

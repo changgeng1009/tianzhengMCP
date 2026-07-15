@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.1.0",
+  "project": {
+    "project_id": "demo-plain-autocad-redraw",
+    "project_name": "虚构示例：plain_autocad_redraw",
+    "description": "依据虚构参考文档构建普通 AutoCAD 离线重绘计划。",
+    "project_type": "configuration_template",
+    "tags": [
+      "synthetic-metadata-only",
+      "plain_autocad"
+    ]
+  },
+  "task": {
+    "task_id": "task-plain-autocad-redraw",
+    "task_type": "redraw_plan",
+    "task_description": "依据虚构参考文档构建普通 AutoCAD 离线重绘计划。",
+    "requested_operations": [
+      "validate_manifest",
+      "build_redraw_plan"
+    ],
+    "expected_outputs": [
+      "execution_plan.json",
+      "evidence.json",
+      "report.json"
+    ]
+  },
+  "runtime": {
+    "runtime_mode": "plain_autocad",
+    "auto_detect_policy": "explicit_metadata_only",
+    "conflict_policy": "fail_closed",
+    "offline_only": true
+  },
+  "documents": {
+    "reference_documents": [
+      {
+        "document_id": "reference-pdf",
+        "role": "reference",
+        "media_type": "pdf",
+        "path": "./inputs/reference.pdf",
+        "identity_policy": "declared_only",
+        "expected_product": "generic_autocad",
+        "readonly": true,
+        "required": true,
+        "synthetic_test_file": false,
+        "expected_filename": "reference.pdf",
+        "expected_extension": ".pdf",
+        "expected_sha256": null,
+        "expected_size": null,
+        "identity_status": "DECLARED"
+      }
+    ],
+    "target_documents": [
+      {
+        "document_id": "target-dwg",
+        "role": "target",
+        "media_type": "dwg",
+        "path": "./inputs/target.dwg",
+        "identity_policy": "require_runtime_verification",
+        "expected_product": "generic_autocad",
+        "readonly": true,
+        "required": true,
+        "synthetic_test_file": false,
+        "expected_filename": "target.dwg",
+        "expected_extension": ".dwg",
+        "expected_sha256": null,
+        "expected_size": null,
+        "identity_status": "RUNTIME_VERIFICATION_REQUIRED"
+      }
+    ],
+    "auxiliary_documents": []
+  },
+  "paths": {
+    "path_policy": "project_relative",
+    "allow_external": false,
+    "allow_unc": false
+  },
+  "product": {
+    "requested_product": "generic_autocad",
+    "required_capabilities": [
+      "redraw_from_reference_plan"
+    ],
+    "prohibited_products": [
+      "tianzheng_water",
+      "tianzheng_hvac"
+    ],
+    "product_detection_policy": "explicit_metadata_only"
+  },
+  "backend": {
+    "preferred_backend": "offline",
+    "fallback_backends": [],
+    "backend_selection_policy": "explicit_only",
+    "require_real_execution": false,
+    "mock_allowed": true
+  },
+  "workflow": {
+    "workflow_id": "generic_autocad_redraw_offline",
+    "workflow_type": "redraw_plan",
+    "stages": [],
+    "stage_policy": "registry_defined",
+    "dry_run": true,
+    "simulate_only": true
+  },
+  "safety": {
+    "requested_level": "L1_DRY_RUN",
+    "production_allowed": false,
+    "production_d1_allowed": false,
+    "sandbox_required": true,
+    "source_write_forbidden": true,
+    "protected_regions": [],
+    "operation_allowlist": [
+      "validate_manifest",
+      "build_redraw_plan"
+    ],
+    "operation_denylist": [
+      "connect_cad",
+      "real_cad_read",
+      "real_cad_write",
+      "source_dwg_write"
+    ],
+    "fail_closed": true,
+    "real_cad_access_allowed": false
+  },
+  "approval": {
+    "required_level": "L1_DRY_RUN",
+    "approval_reference": null,
+    "approval_required": false,
+    "single_use": true,
+    "expires_at": null
+  },
+  "verification": {
+    "entity_verification_required": false,
+    "visual_review_required": true,
+    "topology_verification_required": false,
+    "engineering_review_required": true,
+    "reopen_verification_required": false
+  },
+  "recovery": {
+    "checkpoint_enabled": true,
+    "journal_enabled": true,
+    "resume_enabled": true,
+    "manual_save_required": true,
+    "idempotency_required": true
+  },
+  "output": {
+    "output_root": "./output",
+    "artifact_root": "./artifacts",
+    "plan_output": "./artifacts/execution_plan.json",
+    "evidence_output": "./artifacts/evidence.json",
+    "report_output": "./artifacts/report.json",
+    "naming_policy": "deterministic"
+  },
+  "metadata": {
+    "created_at": null,
+    "created_by": null,
+    "source": "template:plain_autocad_redraw",
+    "notes": ""
+  },
+  "extensions": {}
+}

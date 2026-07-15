@@ -1,0 +1,141 @@
+{
+  "schema_version": "1.1.0",
+  "project": {
+    "project_id": "demo-tianzheng-hvac-write-placeholder",
+    "project_name": "虚构示例：tianzheng_hvac_write_placeholder",
+    "description": "生成天正暖通写入接口合同；真实写入保持不可用。",
+    "project_type": "configuration_template",
+    "tags": [
+      "synthetic-metadata-only",
+      "tianzheng_hvac"
+    ]
+  },
+  "task": {
+    "task_id": "task-tianzheng-hvac-write-placeholder",
+    "task_type": "tianzheng_hvac_write_contract",
+    "task_description": "生成天正暖通写入接口合同；真实写入保持不可用。",
+    "requested_operations": [
+      "validate_manifest",
+      "build_hvac_write_interface_contract"
+    ],
+    "expected_outputs": [
+      "execution_plan.json",
+      "evidence.json",
+      "report.json"
+    ]
+  },
+  "runtime": {
+    "runtime_mode": "tianzheng_hvac",
+    "auto_detect_policy": "explicit_metadata_only",
+    "conflict_policy": "fail_closed",
+    "offline_only": true
+  },
+  "documents": {
+    "reference_documents": [],
+    "target_documents": [
+      {
+        "document_id": "hvac-target",
+        "role": "target",
+        "media_type": "dwg",
+        "path": "./inputs/hvac_target.dwg",
+        "identity_policy": "require_runtime_verification",
+        "expected_product": "tianzheng_hvac",
+        "readonly": true,
+        "required": true,
+        "synthetic_test_file": false,
+        "expected_filename": "hvac_target.dwg",
+        "expected_extension": ".dwg",
+        "expected_sha256": null,
+        "expected_size": null,
+        "identity_status": "RUNTIME_VERIFICATION_REQUIRED"
+      }
+    ],
+    "auxiliary_documents": []
+  },
+  "paths": {
+    "path_policy": "project_relative",
+    "allow_external": false,
+    "allow_unc": false
+  },
+  "product": {
+    "requested_product": "tianzheng_hvac",
+    "required_capabilities": [
+      "tianzheng_hvac_write_contract"
+    ],
+    "prohibited_products": [
+      "tianzheng_water"
+    ],
+    "product_detection_policy": "explicit_metadata_only"
+  },
+  "backend": {
+    "preferred_backend": "offline",
+    "fallback_backends": [],
+    "backend_selection_policy": "explicit_only",
+    "require_real_execution": false,
+    "mock_allowed": true
+  },
+  "workflow": {
+    "workflow_id": "tianzheng_hvac_write_placeholder",
+    "workflow_type": "tianzheng_hvac_write_contract",
+    "stages": [],
+    "stage_policy": "registry_defined",
+    "dry_run": true,
+    "simulate_only": true
+  },
+  "safety": {
+    "requested_level": "L3_SANDBOX_WRITE",
+    "production_allowed": false,
+    "production_d1_allowed": false,
+    "sandbox_required": true,
+    "source_write_forbidden": true,
+    "protected_regions": [],
+    "operation_allowlist": [
+      "validate_manifest",
+      "build_hvac_write_interface_contract"
+    ],
+    "operation_denylist": [
+      "connect_cad",
+      "real_cad_read",
+      "real_cad_write",
+      "source_dwg_write"
+    ],
+    "fail_closed": true,
+    "real_cad_access_allowed": false
+  },
+  "approval": {
+    "required_level": "L3_SANDBOX_WRITE",
+    "approval_reference": null,
+    "approval_required": true,
+    "single_use": true,
+    "expires_at": null
+  },
+  "verification": {
+    "entity_verification_required": false,
+    "visual_review_required": true,
+    "topology_verification_required": false,
+    "engineering_review_required": true,
+    "reopen_verification_required": false
+  },
+  "recovery": {
+    "checkpoint_enabled": true,
+    "journal_enabled": true,
+    "resume_enabled": true,
+    "manual_save_required": true,
+    "idempotency_required": true
+  },
+  "output": {
+    "output_root": "./output",
+    "artifact_root": "./artifacts",
+    "plan_output": "./artifacts/execution_plan.json",
+    "evidence_output": "./artifacts/evidence.json",
+    "report_output": "./artifacts/report.json",
+    "naming_policy": "deterministic"
+  },
+  "metadata": {
+    "created_at": null,
+    "created_by": null,
+    "source": "template:tianzheng_hvac_write_placeholder",
+    "notes": ""
+  },
+  "extensions": {}
+}

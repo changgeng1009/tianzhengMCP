@@ -27,7 +27,10 @@ def select_runtime(
         context_mode=context_mode,
         detected_product=detected_product,
     )
-    legacy_product = "autocad" if result.product == "generic_autocad" else result.product
+    legacy_product = {
+        "generic_autocad": "autocad",
+        "unknown": "offline",
+    }.get(result.product, result.product)
     return RuntimeSelection(result.mode, legacy_product, result.source)
 
 

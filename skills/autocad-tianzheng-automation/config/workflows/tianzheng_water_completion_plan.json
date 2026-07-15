@@ -1,0 +1,46 @@
+{
+  "workflow_id": "tianzheng_water_completion_plan",
+  "workflow_type": "tianzheng_water_completion_write_contract",
+  "status": "NOT_EXECUTABLE_CURRENTLY",
+  "supported_runtime_modes": [
+    "tianzheng_water"
+  ],
+  "supported_products": [
+    "tianzheng_water"
+  ],
+  "required_capabilities": [
+    "tianzheng_water_completion_plan"
+  ],
+  "required_backend_types": [
+    "offline"
+  ],
+  "minimum_approval_level": "L3_SANDBOX_WRITE",
+  "real_execution_required": true,
+  "stages": [
+    "validate_manifest",
+    "verify_product_declaration",
+    "build_missing_detection_plan",
+    "review_protected_regions",
+    "build_sandbox_completion_contract",
+    "manual_review_required"
+  ],
+  "verification_requirements": [
+    "object_type_verification_required",
+    "properties_verification_required",
+    "display_environment_review_required",
+    "engineering_review_required"
+  ],
+  "recovery_requirements": [
+    "checkpoint_enabled",
+    "journal_enabled",
+    "resume_enabled",
+    "manual_save_required",
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "water_completion_contract.json",
+    "blocked_execution_evidence.json"
+  ],
+  "unavailable_reason": "天正给排水真实写入后端未实现且 Production D1 未授权"
+}

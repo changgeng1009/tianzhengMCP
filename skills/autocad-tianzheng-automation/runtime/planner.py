@@ -5,8 +5,6 @@ import json
 from collections.abc import Mapping
 from typing import Any
 
-from config.migrator import ManifestMigrator
-
 from .execution_plan import ExecutionPlanBuilder
 from .selector import select_runtime
 
@@ -14,15 +12,10 @@ from .selector import select_runtime
 def build_offline_plan(manifest: Mapping[str, Any]) -> dict[str, Any]:
     """旧兼容入口；canonical Manifest 委托新确定性 PlanBuilder。"""
     version = str(manifest.get("schema_version") or "")
-    if version in {"1.0", "1.0.0", "1.1.0"}:
-        canonical = (
-            dict(manifest)
-            if version == "1.1.0"
-            else ManifestMigrator().migrate(manifest)
-        )
-        return ExecutionPlanBuilder().build(canonical)
+    if version == "1.1.0":
+        return ExecutionPlanBuilder().build(dict(manifest))
 
-    # 保留无 schema_version 的早期调用行为，供旧 Adapter/测试兼容。
+    # 1.0/1.0.0 与无 schema_version 都保留早期返回合同；迁移由显式配置入口负责。
     selection = select_runtime(manifest)
     backend = str(manifest.get("preferred_backend") or "offline")
     if backend not in {"offline", "nextgen-mock", "original-redraw-adapter"}:

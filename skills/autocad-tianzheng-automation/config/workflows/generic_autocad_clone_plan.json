@@ -1,0 +1,41 @@
+{
+  "workflow_id": "generic_autocad_clone_plan",
+  "workflow_type": "sandbox_clone_plan",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "plain_autocad"
+  ],
+  "supported_products": [
+    "generic_autocad"
+  ],
+  "required_capabilities": [
+    "sandbox_edit_plan"
+  ],
+  "required_backend_types": [
+    "offline"
+  ],
+  "minimum_approval_level": "L2_SANDBOX_PREP",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "verify_declared_identity",
+    "build_clone_plan",
+    "review_protected_regions",
+    "verify_plan"
+  ],
+  "verification_requirements": [
+    "document_identity_declared",
+    "visual_review_verified"
+  ],
+  "recovery_requirements": [
+    "checkpoint_enabled",
+    "journal_enabled",
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "sandbox_clone_plan.json",
+    "protected_region_review.json"
+  ],
+  "unavailable_reason": null
+}

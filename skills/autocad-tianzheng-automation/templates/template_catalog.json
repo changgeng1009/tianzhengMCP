@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "templates": [
+    {
+      "template_id": "plain_autocad_redraw",
+      "path": "plain_autocad_redraw/project_manifest.json",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "generic_autocad_redraw_offline",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    },
+    {
+      "template_id": "plain_autocad_clone",
+      "path": "plain_autocad_clone/project_manifest.json",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "generic_autocad_clone_plan",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    },
+    {
+      "template_id": "tianzheng_water_scan",
+      "path": "tianzheng_water_scan/project_manifest.json",
+      "runtime_mode": "tianzheng_water",
+      "product": "tianzheng_water",
+      "backend": "offline",
+      "workflow_id": "tianzheng_water_scan_plan",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    },
+    {
+      "template_id": "tianzheng_water_completion",
+      "path": "tianzheng_water_completion/project_manifest.json",
+      "runtime_mode": "tianzheng_water",
+      "product": "tianzheng_water",
+      "backend": "offline",
+      "workflow_id": "tianzheng_water_completion_plan",
+      "expected_plan_state": "BLOCKED"
+    },
+    {
+      "template_id": "tianzheng_hvac_scan",
+      "path": "tianzheng_hvac_scan/project_manifest.json",
+      "runtime_mode": "tianzheng_hvac",
+      "product": "tianzheng_hvac",
+      "backend": "offline",
+      "workflow_id": "tianzheng_hvac_scan_plan",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    },
+    {
+      "template_id": "tianzheng_hvac_write_placeholder",
+      "path": "tianzheng_hvac_write_placeholder/project_manifest.json",
+      "runtime_mode": "tianzheng_hvac",
+      "product": "tianzheng_hvac",
+      "backend": "offline",
+      "workflow_id": "tianzheng_hvac_write_placeholder",
+      "expected_plan_state": "BLOCKED"
+    },
+    {
+      "template_id": "pdf_to_dwg_plan",
+      "path": "pdf_to_dwg_plan/project_manifest.json",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "pdf_intermediate_dwg_plan",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    },
+    {
+      "template_id": "image_parametric_redraw",
+      "path": "image_parametric_redraw/project_manifest.json",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "backend": "offline",
+      "workflow_id": "image_dimension_parametric_redraw_plan",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    },
+    {
+      "template_id": "offline_analysis",
+      "path": "offline_analysis/project_manifest.json",
+      "runtime_mode": "offline_analysis",
+      "product": "unknown",
+      "backend": "offline",
+      "workflow_id": "offline_document_comparison",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    },
+    {
+      "template_id": "nextgen_mock_simulation",
+      "path": "nextgen_mock_simulation/project_manifest.json",
+      "runtime_mode": "offline_analysis",
+      "product": "unknown",
+      "backend": "nextgen_mock",
+      "workflow_id": "nextgen_mock_job_simulation",
+      "expected_plan_state": "EXECUTABLE_OFFLINE_OR_MOCK"
+    }
+  ]
+}

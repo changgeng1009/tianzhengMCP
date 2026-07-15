@@ -1,0 +1,41 @@
+{
+  "workflow_id": "tianzheng_water_scan_plan",
+  "workflow_type": "tianzheng_water_readonly_scan_plan",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "tianzheng_water"
+  ],
+  "supported_products": [
+    "tianzheng_water"
+  ],
+  "required_capabilities": [
+    "tianzheng_water_scan_plan"
+  ],
+  "required_backend_types": [
+    "offline"
+  ],
+  "minimum_approval_level": "L0_READ_ONLY",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "verify_product_declaration",
+    "build_object_scan_plan",
+    "define_display_environment_checks",
+    "manual_review_required"
+  ],
+  "verification_requirements": [
+    "object_type_verification_required",
+    "display_environment_review_required",
+    "engineering_review_required"
+  ],
+  "recovery_requirements": [
+    "checkpoint_enabled",
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "water_scan_plan.json",
+    "manual_review_checklist.json"
+  ],
+  "unavailable_reason": null
+}

@@ -68,7 +68,10 @@ class RuntimeConflictDetector:
                 f"所选产品 {expected} 位于 prohibited_products",
                 field="product.prohibited_products",
             )
-        conflicts = sorted({item for item in document_products if item != expected})
+        # 离线分析可处理带产品声明的元数据；它不等同于选择或连接该产品。
+        conflicts = [] if mode is RuntimeMode.OFFLINE_ANALYSIS else sorted(
+            {item for item in document_products if item != expected}
+        )
         if conflicts:
             raise ProductModeConflict(
                 "文档 expected_product 与所选 runtime/product 冲突",

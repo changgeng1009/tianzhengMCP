@@ -6,43 +6,67 @@ docs_agent
 
 ## Assigned Task
 
-CAD-BASELINE-REFREEZE — 汇总终稿并验证指定阶段根目录交付完整性。
+CAD-CONFIG-S2-WP5-DRAFT — 基于 WP1/WP2 和当前 WP3 实际源码编写 13 份配置架构文档草稿。
 
 ## Files Read
 
-- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/git_state.json`
-- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/agents_md_old_new_hashes.json`
-- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/agents_md_semantic_diff.md`
-- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/agents_md_security_review.json`
-- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/explained_source_drift.json`
-- 守卫、NextGen、Skill、CLI/安全验证、默认回归、文件访问摘要证据
-- 新基线 manifest/reference/verifier、Skill 同步及独立终审证据
+- `agent_inbox/docs_agent.md`
+- WP1 `config/**`、Manifest/Plan Schemas、`runtime/errors.py` 与 command_registry outbox
+- WP2 `adapters/registry.py`、Product/Backend matrices 与 cad_bridge outbox
+- WP3 当前 `runtime/contracts.py`、`routing.py`、`backend_registry.py`、`workflow_registry.py`、`execution_plan.py`、`simulation.py`、`selector.py`、`planner.py`
+- 当前 11 个 `config/workflows/*.json`
+- 当前 10 个 templates、`template_catalog.json`、`template_capability_matrix.json`
+- 当前 `scripts/skill_cli.py`
+- `skill-creator/SKILL.md`
 
 ## Files Modified
 
-- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/stage_final_report.md`
-- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/stage_final_report.json`
-- `agent_outbox/docs_agent_report.md`
+仅以下 13 个 Owned Files及本 outbox：
+
+1. `skills/autocad-tianzheng-automation/docs/configuration_driven_architecture.md`
+2. `docs/project_manifest_reference.md`
+3. `docs/manifest_versioning_and_migration.md`
+4. `docs/config_merge_precedence.md`
+5. `docs/path_resolution_policy.md`
+6. `docs/runtime_and_product_routing.md`
+7. `docs/backend_selection_policy.md`
+8. `docs/workflow_registry.md`
+9. `docs/execution_plan_determinism.md`
+10. `docs/config_cli_reference.md`
+11. `docs/config_security_boundaries.md`
+12. `docs/template_guide.md`
+13. `docs/s2_known_limitations.md`
+14. `agent_outbox/docs_agent_report.md`
+
+未修改 `SKILL.md`、`README.md`、`CHANGELOG.md`、源码、Schema、测试、安装目录或 artifacts。
 
 ## Work Completed
 
-- 按用户要求生成严格 24 项最终汇报。
-- 固化权威 baseline ID `CAD-SAFE-20260714T220937+0800` 与最终 bundle SHA256 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。
-- 引用独立终审 `PASS_WITH_EXPLICIT_SELF_REFERENCE_LIMITATION`，并明确 `blocking_failure=false`。
-- 明确披露 `NON_BLOCKING_PROVENANCE_LIMITATION`：Skill 内 `13dc72b6...` 为 freeze 前 provenance，不等于最终 bundle SHA，CAD-CONFIG-S2 不得使用该值替代权威最终值。
-- 列出阶段根目录 16 项必需报告与 10 项补充证据。
+- 记录 canonical 1.1.0 Manifest、1.0/1.0.0 迁移、16 个顶层域和身份声明边界。
+- 记录六层配置优先级、限制性安全合并和 source/merge trace。
+- 记录纯词法路径策略，不把 symlink/runtime identity 写成已验证。
+- 记录 5 个 runtime mode、4 个 Product Adapter 和 9 个 Backend 静态合同。
+- 记录 WP3 已生成的 11 个 Workflow 源码定义：9 个 offline、2 个不可执行。
+- 记录 WP3 已生成的 10 个模板及 catalog/matrix，明确仍待测试。
+- 记录 Execution Plan/hash/simulation 源码合同，并标记 WP3/test_agent 验证待完成。
+- 单独记录 CLI 当前实际只有 5 个旧入口；S2 分组 CLI 尚未实现。
+- 明确 Legacy、所有 Real backend、L3/L4、Production D1 均不可用。
 
 ## Tests Run
 
-- `stage_final_report.json` JSON parse。
-- `final_report_item_count=24` 与编号 1..24 连续性检查。
-- 16 项必需报告根目录存在性检查。
-- 权威 baseline ID、最终 bundle SHA、final status、blocking failure 与独立终审一致性检查。
-- 终稿当前结论状态检查，未将候选阶段的 `PENDING` 或旧问题 `OPEN` 误报为当前状态。
+未运行 pytest、CLI、quick_validate、安装同步或任何外部集成。
+
+仅进行文档静态检查：
+
+- 13/13 文件存在。
+- 13/13 文件以一级标题开始，UTF-8 可读且无 NUL。
+- 实际 workflow JSON 计数：11。
+- 实际 template 文件计数：12（10 个 Manifest + catalog + matrix）。
+- 实际新分组 CLI 计数：0。
 
 ## Test Result
 
-PASS — 16 项必需报告全部位于阶段根目录；`stage_final_report.json` 可解析，声明及实际均为 24 项，编号 1..24 连续；权威 baseline ID、最终 SHA、最终状态和 `blocking_failure=false` 均与独立终审一致；终稿无当前 `PENDING`/`OPEN` 误报。
+`WP5_DRAFT_DOCUMENTATION_COMPLETE_PENDING_IMPLEMENTATION_VALIDATION`
 
 ## Safety Check
 
@@ -50,22 +74,29 @@ PASS — 16 项必需报告全部位于阶段根目录；`stage_final_report.jso
 * Connected to Tianzheng: NO
 * Used COM: NO
 * Opened DWG: NO
-* Opened source DWG: NO
+* Read/Parsed/Scanned/Hashed DWG or DXF: NO
 * Used SendCommand: NO
 * Executed Tianzheng command: NO
 * Saved DWG: NO
 * Modified source DWG: NO
-* Modified project source/baseline/Skill/installation: NO
-* Modified original GitHub Skill: NO
+* Ran tests or installation sync: NO
+* Modified code, Schema, tests, SKILL.md, README or CHANGELOG: NO
 
 ## Risks Found
 
-- `NON_BLOCKING_PROVENANCE_LIMITATION`：Skill 内 freeze 前 SHA 与最终 bundle SHA 不相等；已在终稿中明确权威使用规则，不构成安全或 verifier 阻断。
+1. 当前 `scripts/skill_cli.py` 仍直接用已升级的 canonical 1.1.0 Schema 验证输入，未接入 `ManifestLoader/Migrator`；旧扁平 examples 的 CLI 兼容链存在明确待修复缺口。
+2. WP3 源码、11 个 workflow 和 10 个模板在本任务期间并发落盘，但 intent_mapper_agent 的 WP3 最终报告与正式验证尚未就绪；文档只写“源码已生成、待验证”。
+3. `executable=true` 是离线合同状态，不是 Real CAD 能力；最终文档必须继续保留该语义。
+4. CLI 需求命令、exit code、JSON 输出和安装态示例全部待实现/测试，不能提前改为“已验证”。
 
 ## Remaining Work
 
-- 无终稿文档剩余工作；CAD-CONFIG-S2 可在 Manager 使用权威新基线预检后恢复，仅限离线配置驱动。
+- WP3 完成后回填其自检结果、Workflow/Template 最终状态及接口差异。
+- CLI Agent 完成 S2 分组命令后回填真实命令、exit code 和输出示例。
+- test_agent 完成 config/Skill/NextGen/CLI/default regression 后回填测试数字。
+- 安装同步后回填安装态 CLI、模板验证和源/安装 SHA。
+- 待 Manager 另行授权后再修改 `SKILL.md`、`README.md`、`CHANGELOG.md`。
 
 ## Recommendation
 
-接受最终状态 `SAFE_TEST_BASELINE_REFROZEN_AFTER_INTENTIONAL_SOURCE_CHANGE`；CAD-CONFIG-S2 必须使用 baseline ID `CAD-SAFE-20260714T220937+0800` 和最终 SHA256 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。
+接受 13 份文档作为 WP5 草稿。优先修复旧 CLI 与 canonical 1.1.0/migration 的集成缺口，再由 test_agent 验证 11 个 Workflow、10 个模板和 Execution Plan；在证据完成前保持所有“待验证”标记。

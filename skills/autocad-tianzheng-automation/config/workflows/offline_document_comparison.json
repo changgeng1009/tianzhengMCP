@@ -1,0 +1,38 @@
+{
+  "workflow_id": "offline_document_comparison",
+  "workflow_type": "offline_document_comparison",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "offline_analysis"
+  ],
+  "supported_products": [
+    "unknown"
+  ],
+  "required_capabilities": [
+    "offline_document_comparison"
+  ],
+  "required_backend_types": [
+    "offline"
+  ],
+  "minimum_approval_level": "L0_READ_ONLY",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "compare_declared_metadata",
+    "build_difference_report",
+    "manual_review_required"
+  ],
+  "verification_requirements": [
+    "visual_review_verified",
+    "engineering_review_required"
+  ],
+  "recovery_requirements": [
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "document_comparison_plan.json",
+    "difference_report.json"
+  ],
+  "unavailable_reason": null
+}

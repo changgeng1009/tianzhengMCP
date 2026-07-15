@@ -1,0 +1,43 @@
+{
+  "workflow_id": "image_dimension_parametric_redraw_plan",
+  "workflow_type": "image_parametric_redraw_plan",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "plain_autocad"
+  ],
+  "supported_products": [
+    "generic_autocad"
+  ],
+  "required_capabilities": [
+    "analyze_reference",
+    "redraw_from_reference_plan"
+  ],
+  "required_backend_types": [
+    "offline",
+    "original_redraw_adapter"
+  ],
+  "minimum_approval_level": "L1_DRY_RUN",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "inspect_image_declaration",
+    "collect_authoritative_dimensions",
+    "build_parametric_plan",
+    "visual_review_required"
+  ],
+  "verification_requirements": [
+    "dimension_authority_review",
+    "geometry_verified",
+    "visual_review_verified"
+  ],
+  "recovery_requirements": [
+    "checkpoint_enabled",
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "dimension_input_contract.json",
+    "parametric_redraw_plan.json"
+  ],
+  "unavailable_reason": null
+}

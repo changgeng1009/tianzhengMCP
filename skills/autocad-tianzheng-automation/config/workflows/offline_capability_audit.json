@@ -1,0 +1,37 @@
+{
+  "workflow_id": "offline_capability_audit",
+  "workflow_type": "offline_capability_audit",
+  "status": "AVAILABLE_OFFLINE",
+  "supported_runtime_modes": [
+    "offline_analysis"
+  ],
+  "supported_products": [
+    "unknown"
+  ],
+  "required_capabilities": [
+    "offline_capability_audit"
+  ],
+  "required_backend_types": [
+    "offline"
+  ],
+  "minimum_approval_level": "L0_READ_ONLY",
+  "real_execution_required": false,
+  "stages": [
+    "validate_manifest",
+    "resolve_static_capabilities",
+    "audit_backend_status",
+    "emit_capability_report"
+  ],
+  "verification_requirements": [
+    "capability_status_verified",
+    "real_backend_status_verified"
+  ],
+  "recovery_requirements": [
+    "idempotency_required"
+  ],
+  "expected_artifacts": [
+    "execution_plan.json",
+    "capability_audit.json"
+  ],
+  "unavailable_reason": null
+}
