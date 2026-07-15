@@ -1,99 +1,251 @@
 # Agent Report
+
 ## Agent Name
 
 test_agent
 
 ## Assigned Task
 
-CAD-SAFETY-S2.1-GUARD
+`CAD-CONFIG-S2-TEST-PLAN-001`
 
 ## Files Read
-
-- `pytest.ini`
-- `tests/conftest.py`
-- `tests/acceptance/test_stage6_p1_accelerated_r4_preflight.py`
-- `scripts/run_stage6_p1_accelerated_r4.py`（仅源码静态读取）
-
-## Files Modified
 
 - `agent_inbox/test_agent.md`
 - `pytest.ini`
 - `tests/conftest.py`
-- `tests/safety/__init__.py`
+- `tests/safety/pytest_plugin.py`
 - `tests/safety/real_cad_access_guard.py`
 - `tests/safety/test_real_cad_access_guard.py`
-- `tests/fixtures/synthetic_cad_identity/*`
-- `tests/acceptance/test_stage6_p1_accelerated_r4_preflight.py`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/file_access_guard_implementation.json`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/file_access_guard_test_results.json`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/subprocess_guard_test_results.json`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/default_test_file_access_log.jsonl`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/default_test_file_access_summary.json`
+- `tests/skill/test_skill_cli.py`
+- `tests/skill/test_skill_package.py`
+- `tests/nextgen/test_nextgen_handoff.py`
+- `skills/autocad-tianzheng-automation/tests/conftest.py`
+- `skills/autocad-tianzheng-automation/tests/test_skill.py`
+- `skills/autocad-tianzheng-automation/scripts/skill_cli.py`
+- `skills/autocad-tianzheng-automation/schemas/project_manifest.schema.json`
+- `artifacts/cad_safe_test_baseline/20260714T220937+0800/test_command_manifest.json`
+- `artifacts/cad_safe_test_baseline/20260714T220937+0800/pytest_marker_policy.json`
+- `artifacts/cad_safe_test_baseline/20260714T220937+0800/file_access_guard_policy.json`
+- `artifacts/cad_safe_test_baseline/20260714T220937+0800/synthetic_fixture_manifest.json`
+- `artifacts/cad_safe_test_baseline/20260714T220937+0800/test_inventory.json`
+- `artifacts/cad_safe_test_baseline/20260714T220937+0800/default_test_file_access_summary.json`
+- CAD-CONFIG-S2 用户需求附件 `pasted-text.txt`
+
+仅读取文本源码、JSON、Markdown、Schema 和路径名；未读取、解析、扫描或哈希任何 DWG/DXF。
+
+## Files Modified
+
+- `agent_outbox/test_agent_report.md`
+
+未修改测试、守卫、业务代码、Schema、Skill 或配置。
 
 ## Work Completed
 
-- 注册 `real_dwg`、`external_integration`、`autocad_required`、`tianzheng_required`、`com_required`、`production_only` 和 `guard_self_test` marker。
-- 建立测试会话默认启用的真实 CAD 文件访问守卫，覆盖 `builtins.open`、`Path.open/read_bytes/read_text`、`os.open`、`shutil.copy/copy2/copyfile`、自定义受守卫 SHA256 入口和 `subprocess.Popen`。
-- 守卫记录 test id、访问路径/命令、模式、调用堆栈和当前 marker。
-- CAD/DXF 写入默认阻断；`tmp_path` 内动态 synthetic CAD 必须显式登记；external 只读需要 `real_dwg` 与 `external_integration` 双 marker 及环境门同时满足。
-- 创建 5 个非 CAD 扩展静态 synthetic fixtures，内容均为新生成的虚构数据/占位文本。
-- 新增 38 个守卫专项测试，覆盖用户要求的 17 类场景、复审绕过路径及双 marker 五类组合。
-- 将 R4 preflight 旧测试从固定生产 DWG 改为 `tmp_path` 动态 random synthetic DWG，并 patch 测试输入/哈希；未修改 R4 业务脚本。根据 Manager 的测试阶段限制，本轮尚未运行该旧测试。
+### 1. 现有安全测试基线
+
+- 当前冻结基线目录：`artifacts/cad_safe_test_baseline/20260714T220937+0800`。
+- 当前基线 SHA256：`87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。
+- 历史默认安全回归：1603 collected / 1602 passed / 0 failed / 1 skipped。
+- 历史 Skill 定向测试：64/64 passed。
+- 历史 NextGen 定向测试：47/47 passed。
+- 历史真实 DWG 成功读取/写入、CAD 进程、COM、天正和 Real backend 执行均为 0。
+
+### 2. 守卫启用方式
+
+- 根 `pytest.ini` 通过 `addopts = -p tests.safety.pytest_plugin` 强制加载项目级守卫。
+- 守卫在 `pytest_configure` 阶段安装，覆盖测试收集和 import-time 访问。
+- 每条测试命令必须从项目根执行，并显式携带 `-c pytest.ini --strict-markers`。
+- 每个 pytest 进程启动前必须设置独立 `CAD_SAFE_TEST_RUN_DIR`；该环境变量必须在 Python 启动前设置。
+- 每个 pytest 进程启动前必须清除 `CAD_TEST_ALLOW_EXTERNAL_READONLY`，禁止启用真实外部只读门。
+- 不得传入 `-p no:tests.safety.pytest_plugin`，不得另建会遮蔽根 `pytest.ini` 的配置文件。
+
+统一 marker 表达式：
+
+```text
+not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only
+```
+
+### 3. 现有可复用测试路径
+
+- `skills/autocad-tianzheng-automation/tests`：统一 Skill、Manifest、runtime、adapter、approval、capability 和离线计划兼容性。
+- `tests/nextgen`：NextGen Mock、控制面、checkpoint/journal、幂等、保护区域及真实能力隔离。
+- `tests/skill/test_skill_cli.py`：现有旧 CLI 兼容性及不连接 AutoCAD 约束。
+- `tests/skill/test_skill_package.py`：既有 Skill 包结构和安全默认值。
+- `tests/safety/test_real_cad_access_guard.py`：守卫自身有效性；不应混入新增配置单元测试的违规统计。
+
+当前 `tests/config_driven` 不存在，必须作为 S2 新测试域创建；本规划阶段不创建该目录。
+
+### 4. 建议新增测试文件边界
+
+配置核心测试放入 `tests/config_driven/`：
+
+- `conftest.py`：仅定义虚构 Manifest、固定时钟和 deterministic serializer fixture；不得覆盖或放宽项目级守卫。
+- `test_manifest_schema.py`：需求 1～10，覆盖最小/完整 Manifest、必填项、未知字段、UTF-8、canonical JSON 和 round-trip。
+- `test_manifest_versioning.py`：需求 4～7，覆盖兼容矩阵、旧版本迁移、过新/过旧版本和迁移失败。
+- `test_defaults_and_merge.py`：需求 11～24，覆盖六层优先级、来源追踪、限制性安全合并、数组策略、backend 和 approval 不可继承。
+- `test_path_resolution.py`：需求 25～34，仅验证字符串、规范化和边界；不得调用真实 CAD 文件的 `exists/stat/open/read/hash`。
+- `test_runtime_product_routing.py`：需求 35～42，覆盖五种 runtime、产品冲突、prohibited product 和 fail-closed。
+- `test_backend_selection.py`：需求 43～52，覆盖 offline/nextgen_mock 可用、contract/real backend 禁用及 Mock 不冒充 Real。
+- `test_workflow_registry.py`：需求 53～61，覆盖 11 类 workflow、能力冲突和写入 placeholder 不可执行。
+- `test_execution_plan.py`：需求 62～73，覆盖 deterministic plan、canonical hash、时间/键序/斜杠归一化、blocked reason 和 hash mismatch。
+- `test_templates.py`：验证至少 10 个模板全部为虚构相对路径、安全默认值且可生成离线或 blocked plan。
+- `test_security_boundaries.py`：需求 91～100，覆盖无 CAD/COM/子进程、无真实 CAD 读取/哈希、Manifest 不授予 L4、生产默认 false、Real backend 不提升。
+
+CLI 测试单独放入 `tests/config_cli/`，避免阶段 A 运行整个 `tests/config_driven` 时与阶段 D 重复：
+
+- `test_manifest_cli.py`：validate、normalize、explain、migrate、diff。
+- `test_routing_cli.py`：config/runtime/product/backend/workflow select。
+- `test_plan_cli.py`：plan build/verify/hash、offline/nextgen_mock simulate。
+- `test_template_cli.py`：templates list/create。
+- `test_cli_contract.py`：需求 89～90，覆盖 `--json`、统一 error model 和 exit code 0/2/3/4/5/6/7/8/9。
+- `test_legacy_cli_compatibility.py`：只验证现有兼容命令未被删除，不复制旧测试实现。
+
+### 5. Synthetic fixture 策略
+
+优先复用：
+
+- pytest 内置 `tmp_path`、`monkeypatch`；
+- 项目插件提供的 `cad_access_guard`；
+- 项目插件提供的 `synthetic_cad_factory`，仅在必须验证 `.dwg/.dxf` 扩展名的运行时临时文件行为时使用；
+- `tests/fixtures/synthetic_cad_identity/fake_document_identity.json` 和 `fake_checkpoint.json` 中可复用的虚构身份/checkpoint 数据。
+
+新增 fixture 限制：
+
+- 静态 fixture 只允许 `.json`、`.bin`、`.txt`，不得新增静态 `.dwg/.dxf`。
+- Manifest 内的 CAD 路径默认只作为虚构字符串，不创建文件、不检查存在性、不跟随打开。
+- 若必须创建 CAD 扩展名文件，只能通过 `synthetic_cad_factory` 在当前测试 `tmp_path` 内动态创建，显式登记 `synthetic_test_file=true`，并由 owner-scoped teardown 自动撤销。
+- 不得从真实 CAD 文件截取字节，不得把真实文件改扩展名。
+- 现有 `fake_manifest.json` 和 Skill `synthetic_manifest.json` 不是 S2 canonical Manifest；只可用于迁移/拒绝测试，不可直接声明为新 Schema 的正例。
+
+### 6. 分阶段安全测试命令计划
+
+以下命令仅为实施完成后的计划，本任务未执行。每阶段先清除外部放行变量，并使用独立访问日志目录。
+
+#### Phase 0 — 冻结基线预检
+
+```powershell
+python -m scripts.verify_safe_test_baseline --baseline "artifacts\cad_safe_test_baseline\20260714T220937+0800" --project-root "."
+```
+
+必须 exit 0，且 source manifest、checksum、closure conditions 全为 true；否则停止并返回 `CAD_CONFIG_S2_BLOCKED_BY_BASELINE_DRIFT`。
+
+#### Phase A — 新增配置单元测试
+
+```powershell
+Remove-Item Env:CAD_TEST_ALLOW_EXTERNAL_READONLY -ErrorAction SilentlyContinue
+$env:CAD_SAFE_TEST_RUN_DIR="artifacts\cad_config_driven_s2\<run_id>\test_logs\phase_a_config_unit"
+python -m pytest -q -c pytest.ini --strict-markers tests/config_driven -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"
+```
+
+#### Phase B — 统一 Skill 定向测试
+
+```powershell
+Remove-Item Env:CAD_TEST_ALLOW_EXTERNAL_READONLY -ErrorAction SilentlyContinue
+$env:CAD_SAFE_TEST_RUN_DIR="artifacts\cad_config_driven_s2\<run_id>\test_logs\phase_b_skill"
+python -m pytest -q -c pytest.ini --strict-markers skills/autocad-tianzheng-automation/tests -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"
+```
+
+#### Phase C — NextGen 定向测试
+
+```powershell
+Remove-Item Env:CAD_TEST_ALLOW_EXTERNAL_READONLY -ErrorAction SilentlyContinue
+$env:CAD_SAFE_TEST_RUN_DIR="artifacts\cad_config_driven_s2\<run_id>\test_logs\phase_c_nextgen"
+python -m pytest -q -c pytest.ini --strict-markers tests/nextgen -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"
+```
+
+#### Phase D — 新旧 CLI 定向测试
+
+```powershell
+Remove-Item Env:CAD_TEST_ALLOW_EXTERNAL_READONLY -ErrorAction SilentlyContinue
+$env:CAD_SAFE_TEST_RUN_DIR="artifacts\cad_config_driven_s2\<run_id>\test_logs\phase_d_cli"
+python -m pytest -q -c pytest.ini --strict-markers tests/config_cli tests/skill/test_skill_cli.py -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"
+```
+
+#### Phase E — 默认安全回归
+
+```powershell
+Remove-Item Env:CAD_TEST_ALLOW_EXTERNAL_READONLY -ErrorAction SilentlyContinue
+$env:CAD_SAFE_TEST_RUN_DIR="artifacts\cad_config_driven_s2\<run_id>\test_logs\phase_e_default_safe_regression"
+python -m pytest -q -c pytest.ini --strict-markers -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"
+```
+
+执行规则：Phase 0/A/B/C/D/E 严格串行；任一阶段失败或出现 unexpected guard block，停止后续阶段，不得用 marker 隐藏普通失败。
+
+### 7. 计数和证据采集方式
+
+每阶段采集：
+
+- pytest exit code；
+- collected / passed / failed / skipped / warning / deselected；
+- 当前阶段 `CAD_SAFE_TEST_RUN_DIR/default_test_file_access_log.jsonl`；
+- 当前阶段 `CAD_SAFE_TEST_RUN_DIR/default_test_file_access_summary.json`；
+- error code、失败 test id 和首个安全阻断栈；
+- 使用的 marker expression、工作目录、Python/pytest 版本。
+
+阶段结果分别写入：
+
+- `config_unit_test_results.json`
+- `skill_test_results.json`
+- `nextgen_test_results.json`
+- `cli_test_results.json`
+- `safe_default_regression_results.json`
+
+默认回归的最终访问摘要复制到阶段根 `default_test_file_access_summary.json`。不得把守卫专项测试的预期阻断混入 S2 违规计数；新增配置、Skill、NextGen 和 CLI 阶段的 unexpected 阻断必须为 0。
+
+### 8. 真实 CAD 零访问验收点
+
+每阶段以及最终汇总必须满足：
+
+- `real_dwg_successful_reads = 0`
+- `real_dwg_successful_writes = 0`
+- `cad_processes_started = 0`
+- `autocad_com_connections = 0`
+- `tianzheng_connections = 0`
+- `real_backend_executions = 0`
+- `external_processes_started = 0`，除非是经 Manager 单独批准且不含 CAD 路径的安装态 CLI 子进程；此类事件必须单独解释，不得计作 CAD 执行。
+- `unexpected_default_blocks = 0`
+- 新增 S2 测试不得设置 `CAD_TEST_ALLOW_EXTERNAL_READONLY=1`。
+
+任一真实 CAD 成功访问、CAD 进程/COM/天正连接或 Real backend 执行，立即停止并输出 `CAD_CONFIG_S2_REAL_CAD_ACCESS_VIOLATION`。
 
 ## Tests Run
 
-`python -m pytest -q tests/safety/test_real_cad_access_guard.py`
-
-经 Safety Audit `APPROVE_C` 后另运行阶段 C：
-
-`python -m pytest -q tests/nextgen skills/autocad-tianzheng-automation/tests -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"`
+未运行任何测试；未运行 pytest、collect-only、CLI、subprocess 或 verifier。本任务仅做只读规划。
 
 ## Test Result
 
-- 38 collected / 37 passed / 0 failed / 1 skipped；skip 为当前 Windows 权限不允许创建 symlink/junction，等价的 `resolve(strict=False)+..` 越界测试已通过。
-- 22 次守卫专项预期阻断，3 次已登记 synthetic CAD 允许访问。
-- 7 次危险子进程预期阻断，实际启动外部进程 0。
-- 默认违规阻断 0；真实 CAD 成功读取 0；真实 CAD 成功写入 0。
-- 阶段 C：111 collected / 111 passed / 0 failed / 0 skipped / 0 warnings；CAD 扩展访问尝试、守卫阻断、外部进程、CAD 进程、COM 和天正连接均为 0。
-- 阶段 D：修复后的单节点 1/1 通过；13 个精确旧失败/改造节点复跑 13/13 通过。最终真实 CAD 尝试、阻断、成功读写均为 0。
-- 阶段 E：1599 collected / 1530 passed / 68 failed / 1 skipped / 1 warning。守卫阻断 51 次默认测试真实 CAD 边界尝试，另有守卫专项预期阻断 22 次；真实 CAD 成功读写仍为 0。按安全停止规则结果为 `VIOLATION_BLOCKED_REAL_CAD_ATTEMPTS`，未继续修复或运行其他测试。
-- 阶段 E 修复定向验证：51 个 synthetic CAD 节点第二轮 51/51 通过；9 个 COM 与 8 个 D2 节点 17/17 通过。两组非专项阻断、真实 CAD 成功读写、CAD/COM/天正连接均为 0；尚未重新运行默认全量回归。
-- 会话隔离复审：synthetic 登记已按 owner test id 隔离并在 fixture teardown/clear context 撤销；跨测试复用和 owner 错配测试通过。守卫专项 41 passed / 1 skipped，51 与 17 节点复验分别 51/51、17/17，通过且非专项阻断为 0；未进入 E。
-- 阶段 E 最终重跑：1603 collected / 1602 passed / 0 failed / 1 skipped / 1 warning / 0 deselected，22.79s。默认意外阻断、真实 CAD 尝试/成功读写、CAD/COM/天正连接均为 0；23 次文件与 7 次子进程阻断均为守卫专项预期事件。
+`TEST_PLAN_READY_NOT_EXECUTED`
 
 ## Safety Check
 
 * Connected to AutoCAD: NO
-* Opened DWG: NO（仅在 tmp_path 动态创建并读取 synthetic 随机字节 `.dwg`）
+* Opened DWG: NO
 * Opened source DWG: NO
 * Used SendCommand: NO
 * Executed Tianzheng command: NO
-* Saved DWG: NO（未保存任何真实 DWG）
+* Saved DWG: NO
 * Modified source DWG: NO
+* Read, parsed, scanned or hashed DWG/DXF: NO
+* Ran pytest or test collection: NO
+* Ran external integration tests: NO
+* Modified file access guard: NO
 
 ## Risks Found
 
-- 守卫依赖 pytest 会话插件；非 pytest 直接运行不受其保护。
-- external 双 marker 的真实只读放行分支仅做策略级专项验证，本阶段未运行任何 external 测试。
-- R4 preflight synthetic 修复需由 Manager 在旧失败定向测试阶段放行后验证。
+- `tests/config_driven` 和 `tests/config_cli` 当前尚不存在；测试计数只能在实现完成后采集，规划阶段不得预报新增 collected 数。
+- 现有 `tests/skill/test_skill_cli.py` 包含 `.dwg` 路径字符串，但只构造参数/Manifest，不打开文件；新实现不得把这些字符串自动解析为文件访问。
+- 新 `ManifestPathResolver` 若使用 `exists()`、`stat()`、`resolve(strict=True)`、`read_bytes()` 或文件哈希验证 CAD 身份，将违反本阶段“只做字符串、结构和边界检查”的要求并触发守卫。
+- `tests/config_driven/conftest.py` 若定义同名 fixture 覆盖 `cad_access_guard` 或 `synthetic_cad_factory`，可能削弱 owner-scoped 登记；禁止重定义这两个 fixture。
+- 当前旧 Manifest Schema 为扁平 `schema_version = 1.0`；S2 canonical 顶层模型更复杂，迁移测试必须同时验证兼容性和不静默丢字段，不能只验证新 Schema 正例。
+- CLI 存在统一 Skill 离线 CLI 与项目旧 `mcp.skill_cli` 两套表面，阶段 D 必须同时验证新命令和旧兼容命令，防止误删已发布入口。
 
 ## Remaining Work
 
-- 等待 Manager 放行 NextGen、Skill、旧失败定向测试及默认安全回归。
-- 默认回归完成后应覆盖当前日志/摘要，最终证明非守卫自测的 blocked attempt 为 0。
+- 等待配置系统实现后创建上述测试文件。
+- 由 Safety Audit 审核新增测试边界、fixture 和命令计划。
+- Manager 明确放行后才可按 Phase 0/A/B/C/D/E 串行执行。
+- 执行后生成各阶段结果 JSON、访问日志和最终零访问摘要。
 
 ## Recommendation
 
-下一步先运行修复后的 R4 preflight 单测，再按阶段执行 NextGen/Skill 和默认安全回归；始终设置 `CAD_SAFE_TEST_RUN_DIR` 并排除六类外部 marker。
-
-## Post-Closure Skill Update and Sync
-
-- Skill 守卫下重测：64/64 通过。
-- `PYTHONUTF8=1` 的 `quick_validate.py`：PASS（`Skill is valid!`）。
-- 九项后端状态、`production_d1_allowed=false`、`SEC-FINAL-019=CLOSED` 与 `baseline_id=20260714T193554+0800_s2_1`：全部核对通过。
-- 同步 dry-run：70 个受管文件，8 UPDATE、62 UNCHANGED、0 ADD，`DeletesUnknownFiles=false`。
-- `-Apply -VerifyHash`：PASS；安装后规范源与安装目录 70/70 文件哈希一致，0 mismatch，0 unknown。
-- 原始 GitHub Skill 非 CAD 树前后均为 327 文件，聚合 SHA256 均为 `e8ac23a732d0d98b47872ddb173acfc94faf07bd1c5730af6044d88519641dcb`，保持 unchanged。
-- 仅清理规范源内 10 个已知 `__pycache__`；未删除未知文件。
-- 本步骤读取/哈希 DWG/DXF 数量为 0；未连接 AutoCAD、天正或 COM。
-- 证据：`artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/skill_post_closure_update_and_sync.json`（PASS）。
+`TEST_PLAN_READY；WAITING_FOR_IMPLEMENTATION_AND_SECURITY_APPROVAL`

@@ -105,7 +105,10 @@ def test_security_finding_closed_with_frozen_baseline():
     assert finding["id"] == "SEC-FINAL-019"
     assert finding["status"] == "CLOSED"
     assert finding["closure_claim_allowed"] is True
-    assert finding["baseline_id"] == "20260714T193554+0800_s2_1"
+    assert finding["baseline_id"] == "20260714T220937+0800"
+    assert finding["baseline_sha256"] == "13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9"
+    assert finding["parent_baseline_id"] == "20260714T193554+0800_s2_1"
+    assert finding["triggering_change"] == "intentional AGENTS.md update"
     assert finding["default_test_real_dwg_access_count"] == 0
 
 

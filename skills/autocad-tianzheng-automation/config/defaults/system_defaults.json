@@ -1,0 +1,52 @@
+{
+  "runtime": {
+    "runtime_mode": "auto_detect",
+    "auto_detect_policy": "explicit_metadata_only",
+    "conflict_policy": "fail_closed",
+    "offline_only": true
+  },
+  "paths": {
+    "path_policy": "project_relative",
+    "allow_external": false,
+    "allow_unc": false
+  },
+  "backend": {
+    "preferred_backend": "offline",
+    "fallback_backends": [],
+    "backend_selection_policy": "explicit_only",
+    "require_real_execution": false,
+    "mock_allowed": false
+  },
+  "workflow": {
+    "dry_run": true,
+    "simulate_only": true,
+    "stage_policy": "registry_defined"
+  },
+  "safety": {
+    "requested_level": "L1_DRY_RUN",
+    "production_allowed": false,
+    "production_d1_allowed": false,
+    "sandbox_required": true,
+    "source_write_forbidden": true,
+    "protected_regions": [],
+    "operation_allowlist": [],
+    "operation_denylist": [],
+    "fail_closed": true,
+    "real_cad_access_allowed": false
+  },
+  "approval": {},
+  "verification": {
+    "entity_verification_required": true,
+    "visual_review_required": true,
+    "topology_verification_required": false,
+    "engineering_review_required": true,
+    "reopen_verification_required": false
+  },
+  "recovery": {
+    "checkpoint_enabled": true,
+    "journal_enabled": true,
+    "resume_enabled": true,
+    "manual_save_required": true,
+    "idempotency_required": true
+  }
+}

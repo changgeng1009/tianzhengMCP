@@ -136,3 +136,40 @@ Action 模板配置，定义 add_pipe / add_valve / add_fitting / update_diamete
 ## Expected Output
 
 - 最小业务修复与标准 outbox，说明确定性时钟策略。
+# Task for cad_bridge_agent
+## Assigned by: Manager
+## Phase: CAD-CONFIG-S2
+## Task ID: CAD-CONFIG-S2-WP2
+
+## Dependency
+仅在 Manager 明确通知 `s2_implementation_gate=PASS` 后开始。
+
+## Task Description
+实现 WP2 的纯离线 Product Adapter / Backend 静态能力合同。不得连接或导入 COM，不得调用现有真实执行器。
+
+## Owned Files
+- `skills/autocad-tianzheng-automation/adapters/registry.py`
+- 仅在必要时最小修改 `adapters/generic_autocad/adapter.py`
+- 仅在必要时最小修改 `adapters/tianzheng_water/adapter.py`
+- 仅在必要时最小修改 `adapters/tianzheng_hvac/adapter.py`
+- 仅在必要时最小修改相关 `__init__.py`
+- `skills/autocad-tianzheng-automation/capabilities/backend_matrix.json`
+- `skills/autocad-tianzheng-automation/capabilities/product_adapter_matrix.json`
+
+## Required Status
+- Generic=`OFFLINE_PLANNING_IMPLEMENTED`
+- Water=`OFFLINE_PLANNING_IMPLEMENTED`; real=`NOT_IMPLEMENTED`; topology/engineering=`NOT_VERIFIED`
+- HVAC read=`PARTIALLY_IMPLEMENTED`; write=`INTERFACE_ONLY`; real=`NOT_IMPLEMENTED`
+- Offline Analysis=`IMPLEMENTED`
+- offline=`AVAILABLE`; original_redraw_adapter=`AVAILABLE_FOR_OFFLINE_PLANNING`; nextgen_mock=`AVAILABLE_FOR_MOCK`
+- legacy_contract_disabled=`DISABLED_CONTRACT_ONLY`
+- legacy_com/nextgen_real/autocad_dotnet_plugin/tianzheng_*_real=`NOT_AVAILABLE`
+
+Manifest 不得提升 backend availability；require_real_execution 必须返回 `BACKEND_NOT_AVAILABLE`。不得把 Mock/Contract/Interface/Placeholder 描述为真实执行能力。
+
+## Constraints
+使用 apply_patch；不得访问 DWG/DXF，不修改预存删除、安全守卫、mcp_nextgen、P2/P3/P4.1、安装目录或原始 GitHub Skill。
+
+## Expected Output
+- 实现上述 Owned Files。
+- 更新 `agent_outbox/cad_bridge_agent_report.md`，含离线自检和安全检查。

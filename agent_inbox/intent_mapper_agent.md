@@ -116,3 +116,33 @@
 
 - 上述隔离实现与标准 `agent_outbox/intent_mapper_agent_report.md`。
 - 报告列出状态机、恢复/幂等/原子性自检与未实现能力。
+# Task for intent_mapper_agent
+## Assigned by: Manager
+## Phase: CAD-CONFIG-S2
+## Task ID: CAD-CONFIG-S2-WP3-PREP
+
+## Task Description
+在 WP1/WP2 完成前，仅读取现有 runtime/adapter/capability 文件和规划报告，准备 WP3 的精确 API/文件实施清单，不编辑实现。目标覆盖 Runtime/Product/Backend/Workflow 路由、11 个 workflow、10 个模板、确定性 Execution Plan、Offline/NextGen Mock simulation 和旧 selector/planner compatibility wrapper。
+
+## Constraints
+- 当前只读准备；收到 Manager 的 WP3_IMPLEMENT 指令前不得编辑任何实现。
+- 不访问 DWG/DXF，不连接 CAD/COM/天正，不触发 Real/Legacy。
+- 计划必须与 WP1/WP2 实际接口对齐后再实施。
+
+## Expected Output
+- 先向 Manager 回传 API 准备摘要；WP1/WP2 完成后等待正式实施指令。
+
+## WP3_IMPLEMENT Authorization
+
+Manager 已确认 WP2 完成且 WP1 公共 API 稳定，可开始实施。必须重新读取实际 `config/**`、`adapters/registry.py` 和能力矩阵后编码，不得复制或重写 WP1/WP2。
+
+独占修改：
+- `runtime/contracts.py`、`runtime/selector.py`、`runtime/planner.py`
+- 新增 `runtime/routing.py`、`runtime/backend_registry.py`、`runtime/workflow_registry.py`、`runtime/execution_plan.py`、`runtime/simulation.py`
+- `config/workflows/*.json`（11 项）
+- `templates/<template_id>/project_manifest.json`（10 项）
+- `templates/template_catalog.json`、`templates/template_capability_matrix.json`
+
+强制要求：旧 selector/planner 保持兼容；runtime/product 冲突 fail-closed；Backend 不可用不自动替代；写入/L3/L4/Real workflow 生成 blocked plan；nextgen_mock 不冒充 Real；plan/hash 排除时间、notes、随机值和临时目录并归一化 JSON 键序及路径斜杠；simulation 只返回离线/Mock 证据，不启动子进程。
+
+只运行 Owned Files 的轻量离线自检，不运行全量 pytest。完成后更新 `agent_outbox/intent_mapper_agent_report.md`。

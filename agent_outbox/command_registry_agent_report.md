@@ -6,113 +6,190 @@ command_registry_agent
 
 ## Assigned Task
 
-CAD-SKILL-S1-CURRENT-PROJECT-AUDIT — 当前正式项目真实代码能力审计
+CAD-CONFIG-S2-WP1 — 实现 canonical Manifest 1.1.0、1.0/1.0.0 兼容迁移、canonical serialization、六层默认值、限制性安全合并、纯词法路径解析、统一错误模型及 Execution Plan Schema。
 
 ## Files Read
 
-- `D:\CodexWork\天正\AGENTS.md`
-- `D:\CodexWork\天正\cad\**\*.py`
-- `D:\CodexWork\天正\cad_compare\**\*.py`
-- `D:\CodexWork\天正\command_registry\**\*.py|*.json|*.md`
-- `D:\CodexWork\天正\coordinate\**\*.py`
-- `D:\CodexWork\天正\execution\**\*.py`
-- `D:\CodexWork\天正\mcp\**\*.py`（代码优先定向审计）
-- `D:\CodexWork\天正\mcp_nextgen\**\*.py`
-- `D:\CodexWork\天正\mcp_service\**\*.py`
-- `D:\CodexWork\天正\pipe_network\**\*.py`
-- `D:\CodexWork\天正\reference\**\*.py`
-- `D:\CodexWork\天正\roi\**\*.py`
-- `D:\CodexWork\天正\semantic_diff\**\*.py`
-- `D:\CodexWork\天正\tianzheng\**\*.py`
-- `D:\CodexWork\天正\tianzheng_interface\**\*.py`
-- `D:\CodexWork\天正\vision\**\*.py`
-- 与能力相关的 `tests/**/*.py` 和 `docs/**/*.md`
-- `D:\CodexWork\天正\artifacts\mcp_upgrade_handoff\mcp_upgrade_handoff_final_report.json`（Manager 指定既有验收结论）
-- `D:\CodexWork\天正\artifacts\mcp_upgrade_handoff\security_findings.json`（仅核对 `SEC-FINAL-019`）
-
-未读取任何 `.dwg`、`.dxf`、PDF/PNG/JPG 内容或大型二进制；未重新审计 `D:\CodexWork\天正-mcp-lab`。
+- `agent_inbox/command_registry_agent.md`
+- `skills/autocad-tianzheng-automation/schemas/project_manifest.schema.json`（旧 1.0）
+- `skills/autocad-tianzheng-automation/runtime/errors.py`
+- `skills/autocad-tianzheng-automation/examples/*.json`
+- `skills/autocad-tianzheng-automation/runtime/selector.py`
+- `skills/autocad-tianzheng-automation/runtime/planner.py`
+- `skills/autocad-tianzheng-automation/scripts/skill_cli.py`
+- `skills/autocad-tianzheng-automation/safety/approval.py`
+- `skill-creator/SKILL.md`
 
 ## Files Modified
 
-- `D:\CodexWork\天正\agent_inbox\command_registry_agent.md`
-- `D:\CodexWork\天正\agent_outbox\command_registry_agent_report.md`
-- `D:\CodexWork\天正\artifacts\cad_skill_packaging\20260714T000000Z_s0s1\current_project_capability_inventory.json`
-- `D:\CodexWork\天正\artifacts\cad_skill_packaging\20260714T000000Z_s0s1\current_project_capability_matrix.md`
+共 20 个 Owned Files：
 
-未修改任何现有执行器、测试、MCP/NextGen 源码、ROADMAP、TASK_BOARD 或 DWG。
+1. `schemas/project_manifest.schema.json`
+2. `schemas/project_manifest_v1_0.schema.json`
+3. `schemas/execution_plan.schema.json`
+4. `runtime/errors.py`
+5. `config/__init__.py`
+6. `config/models.py`
+7. `config/errors.py`
+8. `config/canonical.py`
+9. `config/versioning.py`
+10. `config/migrator.py`
+11. `config/manifest_loader.py`
+12. `config/merge.py`
+13. `config/default_registry.py`
+14. `config/path_resolver.py`
+15. `config/defaults/system_defaults.json`
+16. `config/defaults/skill_defaults.json`
+17. `config/defaults/plain_autocad_defaults.json`
+18. `config/defaults/tianzheng_water_defaults.json`
+19. `config/defaults/tianzheng_hvac_defaults.json`
+20. `config/defaults/offline_analysis_defaults.json`
+
+另按任务要求更新本报告：`agent_outbox/command_registry_agent_report.md`。
+
+未修改 CLI、Adapters、tests、`config/workflows/**`、`mcp_nextgen`、P2/P3/P4.1、安全守卫、安装目录、冻结基线或原始 GitHub Skill。
 
 ## Work Completed
 
-1. 完成正式项目代码能力递归盘点，按 `GENERIC_AUTOCAD`、`TIANZHENG_WATER`、`TIANZHENG_HVAC`、`SHARED_ORCHESTRATION`、`SAFETY`、`PROJECT_SPECIFIC`、`EXPERIMENTAL`、`DEPRECATED` 分类。
-2. 普通 AutoCAD 已确认：运行实例附着接口、文档解析、常用 AcDb 对象读取、Line/Polyline/Text 创建、图层/块属性读取、CAD 模型比较、坐标标定与空间对齐。
-3. 给排水已确认：产品/环境接口、TDb/TCH/Proxy 扫描模型、Pipe/Valve/Fitting/Dimension、给排水/消防/喷淋/消火栓分类、DNDiameter、语义 diff、几何管网图、missing、review-only 与人工视觉验收。
-4. 给排水边界：`native_topology_verified=false`，`engineering_semantic_completeness_verified=false`；通用 COM backend 不支持原生创建 TDb pipe/valve/fitting，项目专用写入不可泛化。
-5. 暖通已确认仅为 `INTERFACE_ONLY`：31 条未实测命令种子和 disabled domain placeholder。真实产品检测、暖通对象类型、只读 scanner、房间/风管/暖通水管/设备/风口/标注语义及写入均 `NOT_IMPLEMENTED`。
-6. Checkpoint/Resume 已确认 NextGen Mock-only 基线支持 append-only hash chain、atomic checkpoint、动态批次、三计数、resume 去重、自动依赖、`MANUAL_SAVE_REQUIRED`；跨进程锁、持久化审批消费及完整互校验仍有限制，旧 P4.1 未被改写。
-7. 固化 NextGen 边界：现有 `mcp_nextgen` 是唯一安全基线，protocol `1.0.0`、Mock-only；Control Plane `PARTIALLY_IMPLEMENTED`；Legacy `DISABLED_CONTRACT_ONLY`；Real/COM/.NET/Tianzheng NextGen backend `NOT_IMPLEMENTED`；`production_d1_allowed=false`。
-8. `SEC-FINAL-019` 保持 `OPEN`；未运行全量 pytest，未触发间接 DWG hash helper。
+### Manifest 与版本
+
+- canonical version 固定为 `1.1.0`。
+- 保存独立的 1.0/1.0.0 compatibility Schema；原 5 个示例均可验证并迁移。
+- `ManifestVersionPolicy` 明确区分 unsupported、too old、too new。
+- `ManifestMigrator.preview()` 输出字段变化、deprecated、unmigrated 和 warnings；`migrate()` 返回 canonical Manifest。
+- 未知 1.0 顶层字段报 `MANIFEST_UNKNOWN_FIELD`；只有 canonical `extensions` 允许扩展。
+- 不继承旧 approval；发现旧审批对象报 `CONFIG_APPROVAL_INHERITANCE_FORBIDDEN`。
+- 旧 checkpoint、identity、options 等不静默丢失，进入显式 `extensions.legacy_*`。
+- 迁移不生成时间、UUID、approval 或真实身份验证结论。
+
+### Canonical serialization
+
+- `canonicalize()`、`canonical_dumps()`、`canonical_hash()` 提供 UTF-8、稳定键序、紧凑 JSON 和 SHA256。
+- 路径字段统一 `/`；支持排除生成时间和临时目录等非语义字段。
+- 相同语义 JSON 的 canonical hash 可重复。
+
+### 六层默认值与安全合并
+
+- 顺序固定为：`system_default → skill_default → product_default → workflow_default → project_manifest → run_override`；即高优先级为 run override > project > workflow > product > skill > system。
+- `DefaultRegistry.describe()` 输出层级与默认文件来源。
+- `DefaultResolver.resolve()` 返回 resolved value、逐叶字段 source trace 和 merge trace。
+- `production_allowed`、`production_d1_allowed`、`real_cad_access_allowed`、外部/UNC 权限按 AND 收紧。
+- `offline_only`、`dry_run`、`simulate_only`、source write 禁止、sandbox、fail-closed、视觉/工程复核、manual save 按 OR 保持强制。
+- L0/L1/L2 可声明离线计划；L3/L4 配置请求直接报 `CONFIG_PRIVILEGE_ESCALATION_BLOCKED`，不形成批准。
+- denylist、protected regions、prohibited products、required capabilities 取确定性并集；allowlist 采用 fail-closed 交集。
+- 默认/workflow/run override 不得携带 approval；backend availability/support/execution 字段不得由配置覆盖。
+
+### 纯词法路径解析
+
+- `ManifestPathResolver` 只使用 `ntpath` 进行字符串规范化，从不调用 `open/read/stat/exists/hash/resolve`。
+- 相对路径锚定 Manifest 目录，不依赖 PowerShell cwd。
+- 支持声明 `project_relative`、`workspace_relative`、`absolute_explicit`、`external_readonly`。
+- 默认阻断 `..`、UNC、外部绝对路径、项目/workspace 越界、source/output collision、Skill 安装或原始 Skill 输出根。
+- 输出 `ResolvedPathRecord.filesystem_accessed=false` 和 `runtime_boundary_verification_required=true`。
+- 符号链接/junction 由外部安全层观察后调用 `validate_runtime_boundary_observation()`；本层不探测文件系统。
+
+### Schema 与错误模型
+
+- canonical Schema 含 16 个规定顶层域和显式 extensions。
+- Safety const 保持 production/real access=false，source write/sandbox/fail-closed/visual/engineering review=true。
+- Execution Plan Schema 覆盖计划身份、路由、审批、文档、保护区、操作、阶段、证据、验证、恢复、阻断、manifest hash 与 plan hash。
+- `runtime.errors.SkillRuntimeError` 现提供统一 `to_error_payload()` 和结构化 exit code，同时保留原有异常类兼容性。
+
+## Public APIs for WP3
+
+- `ManifestLoader.load(path)`
+- `ManifestLoader.validate(manifest)`
+- `ManifestLoader.load_canonical(path)`
+- `ManifestMigrator.preview(manifest, to_version="1.1.0")`
+- `ManifestMigrator.migrate(manifest, to_version="1.1.0")`
+- `ManifestVersionPolicy.normalize(version)`
+- `ManifestVersionPolicy.migration_path(version)`
+- `ManifestVersionPolicy.compatibility_matrix`
+- `DefaultRegistry.system_defaults()` / `skill_defaults()` / `product_defaults()` / `describe()`
+- `DefaultResolver.resolve(project_manifest, product_or_mode=..., workflow_defaults=..., run_override=...)`
+- `ConfigMerger.merge_layers([(source, mapping), ...])`
+- `ManifestPathResolver.resolve_one(...)`
+- `ManifestPathResolver.resolve_manifest(manifest, manifest_directory=...)`
+- `ManifestPathResolver.validate_runtime_boundary_observation(...)`
+- `canonicalize()` / `canonical_dumps()` / `canonical_hash()`
+- 所有 `SkillRuntimeError` 子类：`.code`、`.exit_code`、`.to_error_payload()`。
+
+## Compatibility
+
+- 旧 `runtime.errors` 导入类名保持存在。
+- 旧扁平 `schema_version=1.0` 与规范化 `1.0.0` 均支持。
+- 原 5 个示例不要求立即改写；WP3/CLI 可在入口自动验证、迁移后再路由。
+- 当前 `runtime.selector.select_runtime`、`runtime.planner.build_offline_plan` 和旧 CLI 未修改；WP3 应以 wrapper 委托新 API，避免破坏旧调用。
+- Canonical backend 使用下划线名称；迁移器已映射旧连字符名称。WP3 BackendRegistry 应消费 canonical 名称并在兼容输出层映射旧名称。
+
+## Safety Invariants
+
+- `production_allowed=false`
+- `production_d1_allowed=false`
+- `real_cad_access_allowed=false`
+- `source_write_forbidden=true`
+- `sandbox_required=true`
+- `fail_closed=true`
+- `dry_run=true`
+- `simulate_only=true`
+- `manual_save_required=true`
+- `visual_review_required=true`
+- `engineering_review_required=true`
+- approval 不继承、不生成、不验证为有效授权
+- L3/L4 不可由配置授予
+- backend capability/availability 不可由 Manifest 提升
+- 路径解析不访问文件系统，CAD identity 仅保持声明状态
 
 ## Tests Run
 
-```text
-python -m pytest -q \
-  tests/skill/test_professional_domain.py \
-  tests/backends/test_backend_architecture.py \
-  tests/backends/test_backend_router.py \
-  tests/backends/test_mock_backend.py \
-  tests/nextgen/test_nextgen_handoff.py \
-  tests/test_tianzheng_interface_action_schema.py \
-  tests/test_tianzheng_interface_dry_run_engine.py \
-  tests/test_tianzheng_interface_model.py \
-  tests/test_tianzheng_interface_proxy_handler.py \
-  tests/test_tianzheng_interface_scanner.py \
-  tests/test_semantic_diff_engine.py \
-  tests/test_cad_to_cad_diff.py \
-  tests/test_cad_to_cad_matcher.py \
-  tests/test_phase11_spatial_alignment.py \
-  tests/test_phase12_missing_detector.py \
-  tests/test_phase13_sandbox.py
-```
+未运行 pytest 或外部集成。执行两组 PowerShell here-string → Python 内存自检，均设置 `PYTHONDONTWRITEBYTECODE=1`：
 
-以上测试在执行前按模块和调用边界筛选，不连接 AutoCAD，不读取 DWG，只使用纯数据、Fake、Mock 或临时目录。
+1. JSON/AST/API 自检：9 个 Owned JSON 解析、11 个 Owned Python 模块 AST、1.0→1.1.0 迁移及双 Schema 验证、canonical hash 重复性、3 类安全降级阻断、纯词法路径、traversal 与 source/output collision。
+2. 边界矩阵自检：3 个 Schema `Draft202012Validator.check_schema`；5 个旧 example 全部验证→迁移→canonical Schema 验证；too old/new、未知字段、approval 继承、backend capability override、限制性数组、UNC/外部路径阻断。
 
 ## Test Result
 
-- `197 passed in 4.98s`
-- JSON inventory 解析校验：通过；`schema_version=1.0.0`，共 35 项能力，8 类分类齐全。
-- 未运行当前项目全量回归，因为 `SEC-FINAL-019` 明确要求隔离会间接读取真实 DWG 的 acceptance 路径。
+PASS：
+
+- JSON parse：9/9
+- Python AST/import：11/11
+- Schema metaschema：3/3
+- 旧 example migration：5/5
+- canonical determinism：PASS
+- security downgrade/privilege/backend/approval blocks：PASS
+- lexical path/traversal/UNC/external/collision：PASS
+- CAD/DWG/DXF 文件创建、打开、读取、解析、扫描或哈希：0
+- AutoCAD、天正、COM、Real backend：0
 
 ## Safety Check
 
 * Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
 * Opened DWG: NO
-* Opened source DWG: NO
+* Read/Parsed/Scanned/Hashed DWG or DXF: NO
 * Used SendCommand: NO
 * Executed Tianzheng command: NO
 * Saved DWG: NO
 * Modified source DWG: NO
-
-补充：未读取任何 DWG 字节；未使用 COM、CopyObjects、LISP、NETLOAD；未运行 P4.1；未运行 Production D1。
+* Ran full pytest: NO
+* Modified tests or safety guard: NO
+* Modified installation or original GitHub Skill: NO
 
 ## Risks Found
 
-1. `SEC-FINAL-019` 仍为 `OPEN`：全量测试存在经间接 helper 读取真实 DWG 字节的路径。
-2. `mcp/backends/com_backend.py` 在 `attach_only=false` 时可 Dispatch AutoCAD；统一 Skill 必须默认 offline 且显式禁止自动启动。
-3. 旧 P4.1 executor 具有真实 COM、CopyObjects、保存和项目路径/plan 耦合，只能列为 `PROJECT_SPECIFIC/UNSAFE`，不能作为默认 Skill backend。
-4. 暖通命令种子未经过本机验证，不能被 Capability Registry 提升为 `IMPLEMENTED`。
-5. 几何管网图、视觉重合和对象类型识别均不能替代原生拓扑、显示环境和工程语义完整性验证。
-6. NextGen approval consumption、跨进程 idempotency/locking、完整 checkpoint/journal 互校验仍有开放项。
+- WP3 必须在调用 runtime selector/backend/workflow 前先执行 `load → validate old → migrate → validate canonical → resolve defaults → resolve paths`。
+- 词法解析不能证明磁盘上的 symlink/junction 身份；真实运行前仍必须由独立安全后端观察并回传边界结果。本阶段不得据此声明 runtime identity verified。
+- Allowlist 从系统空 trust root 开始时始终为空，这是 fail-closed 行为；未来 workflow 若需操作，必须由权威 registry 定义基础 allowlist，而不是由 Manifest 自行扩大。
+- Canonical Schema 强制视觉/工程复核为 true；若未来确有安全的离线例外，需要单独版本和安全审计，不得由 override 放宽。
 
 ## Remaining Work
 
-- 由 Manager/skill 封装 Agent 将本 inventory 映射到统一 Capability Registry、Product Adapter 和 Backend Adapter。
-- 暖通仅建立独立接口与明确状态，不启用真实命令或写入。
-- SEC-FINAL-019 需在后续独立安全阶段满足完整新证据后才能关闭；本阶段不处理。
+- WP3 实现 Runtime/Product/Backend/Workflow 路由、ExecutionPlanBuilder、simulation 和 legacy wrappers。
+- CLI 在 WP3 接口冻结后另派；当前未修改。
+- test_agent 为本 API 增加正式 `tests/config_driven`、Skill/CLI/安全回归测试。
+- docs_agent 在实现冻结后回填版本、合并、路径和 CLI 文档。
 
 ## Recommendation
 
-1. `plain_autocad` 复用读取、比较、坐标、计划能力；真实 COM 只能经显式 Legacy adapter 与 L3 Sandbox 审批。
-2. `tianzheng_water` 复用 scanner/semantic/diff/graph/review-only；原生写入继续降级并要求人工复核。
-3. `tianzheng_hvac` 保持 `INTERFACE_ONLY`，不得复制给排水对象规则。
-4. NextGen 仅接入现有 Mock-only protocol `1.0.0` 合同，禁止覆盖 `mcp_nextgen` 或重新引入 rejected Layer D/TCP/exec/shell。
-5. Skill 默认 `offline_analysis`、`production_allowed=false`、`production_d1_allowed=false`。
+WP1 可交付 WP3。WP3 应直接使用上述公共 API，并维持 canonical 1.1.0、结构化错误、零 CAD 文件访问和所有安全不变量；不得复制一套相互冲突的配置加载/合并/路径实现。

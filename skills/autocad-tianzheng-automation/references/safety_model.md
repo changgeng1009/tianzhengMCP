@@ -12,14 +12,18 @@
 
 `SEC-FINAL-019` 已关闭，冻结基线：
 
-- `baseline_id=20260714T193554+0800_s2_1`
+- `current_safe_baseline_id=20260714T220937+0800`
+- `baseline_sha256=13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`
+- `parent_baseline_id=20260714T193554+0800_s2_1`
+- `parent_baseline_sha256=226281f3a2bb29e72fe9978d6cffcd0fe84c83be1d7f7091ee95df5361f3bcf1`
+- `triggering_change=intentional AGENTS.md update`
 - `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`
-- 项目相对路径：`artifacts/cad_safe_test_baseline/20260714T193554+0800_s2_1`
-- 明确路径：`D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T193554+0800_s2_1`
+- 项目相对路径：`artifacts/cad_safe_test_baseline/20260714T220937+0800`
+- 明确路径：`D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`
 - 正式复核：
 
 ```powershell
-python -m scripts.verify_safe_test_baseline --baseline "artifacts/cad_safe_test_baseline/20260714T193554+0800_s2_1" --project-root "."
+python -m scripts.verify_safe_test_baseline --baseline "artifacts/cad_safe_test_baseline/20260714T220937+0800" --project-root "."
 ```
 
 该结论仅适用于冻结的默认 pytest 命令和守卫策略。它不授权 external/real CAD 测试，不启用 Legacy、Real backend 或 Production D1；非 pytest 入口仍须独立安全门。

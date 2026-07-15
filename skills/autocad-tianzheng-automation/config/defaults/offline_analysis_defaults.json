@@ -1,0 +1,21 @@
+{
+  "runtime": {
+    "runtime_mode": "offline_analysis",
+    "offline_only": true
+  },
+  "product": {
+    "requested_product": "unknown",
+    "required_capabilities": [],
+    "prohibited_products": [],
+    "product_detection_policy": "disabled"
+  },
+  "backend": {
+    "preferred_backend": "offline",
+    "fallback_backends": [],
+    "require_real_execution": false,
+    "mock_allowed": false
+  },
+  "safety": {
+    "requested_level": "L0_READ_ONLY"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "runtime": {
+    "offline_only": true
+  },
+  "backend": {
+    "preferred_backend": "offline",
+    "require_real_execution": false
+  },
+  "workflow": {
+    "dry_run": true,
+    "simulate_only": true
+  },
+  "safety": {
+    "production_allowed": false,
+    "production_d1_allowed": false,
+    "sandbox_required": true,
+    "source_write_forbidden": true,
+    "fail_closed": true,
+    "real_cad_access_allowed": false
+  },
+  "verification": {
+    "visual_review_required": true,
+    "engineering_review_required": true
+  },
+  "recovery": {
+    "manual_save_required": true
+  }
+}

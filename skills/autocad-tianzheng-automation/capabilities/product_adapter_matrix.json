@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "real_cad_execution_allowed": false,
+  "production_allowed": false,
+  "production_d1_allowed": false,
+  "adapters": [
+    {
+      "adapter": "GenericAutoCadAdapter",
+      "runtime_mode": "plain_autocad",
+      "product": "generic_autocad",
+      "status": "OFFLINE_PLANNING_IMPLEMENTED",
+      "read_supported": true,
+      "write_supported": false,
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "limitations": [
+        "仅离线规划",
+        "对象级真实能力需未来安全 Real backend 独立验证"
+      ]
+    },
+    {
+      "adapter": "TianzhengWaterAdapter",
+      "runtime_mode": "tianzheng_water",
+      "product": "tianzheng_water",
+      "status": "OFFLINE_PLANNING_IMPLEMENTED",
+      "read_supported": true,
+      "write_supported": false,
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "native_topology_status": "NOT_VERIFIED",
+      "engineering_semantics_status": "NOT_VERIFIED",
+      "limitations": [
+        "Real backend 未实现",
+        "原生拓扑未验证",
+        "工程语义完整性未验证"
+      ]
+    },
+    {
+      "adapter": "TianzhengHvacAdapter",
+      "runtime_mode": "tianzheng_hvac",
+      "product": "tianzheng_hvac",
+      "status": "READ_INTERFACE_PARTIALLY_IMPLEMENTED",
+      "read_status": "PARTIALLY_IMPLEMENTED",
+      "write_status": "INTERFACE_ONLY",
+      "read_supported": true,
+      "write_supported": false,
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "limitations": [
+        "只读接口部分实现",
+        "写入仅接口占位",
+        "Real backend 未实现"
+      ]
+    },
+    {
+      "adapter": "OfflineAnalysisAdapter",
+      "runtime_mode": "offline_analysis",
+      "product": "unknown",
+      "status": "IMPLEMENTED",
+      "read_supported": true,
+      "write_supported": false,
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "limitations": [
+        "不读取真实 CAD 文件",
+        "不提供真实执行能力"
+      ]
+    }
+  ]
+}

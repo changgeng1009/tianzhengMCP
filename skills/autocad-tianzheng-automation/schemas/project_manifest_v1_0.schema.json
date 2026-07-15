@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/autocad-tianzheng/project_manifest_v1_0.schema.json",
+  "title": "AutoCAD 与天正自动化项目 Manifest 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "project_id", "project_name", "task_type", "runtime_mode", "product", "workflow", "approval_level", "production_allowed", "preferred_backend", "visual_review_required", "engineering_review_required"],
+  "properties": {
+    "schema_version": {"enum": ["1.0", "1.0.0"]},
+    "project_id": {"type": "string", "minLength": 1},
+    "project_name": {"type": "string", "minLength": 1},
+    "task_type": {"type": "string"},
+    "runtime_mode": {"enum": ["plain_autocad", "tianzheng_water", "tianzheng_hvac", "auto_detect", "offline_analysis"]},
+    "product": {"enum": ["autocad", "tianzheng_water", "tianzheng_hvac", "offline", "auto"]},
+    "reference_documents": {"type": "array", "items": {"$ref": "#/$defs/document"}, "default": []},
+    "target_documents": {"type": "array", "items": {"$ref": "#/$defs/document"}, "default": []},
+    "output_root": {"type": "string"},
+    "artifact_root": {"type": "string"},
+    "document_identities": {"type": "array", "items": {"type": "object"}, "default": []},
+    "expected_sha256": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}},
+    "input_roles": {"type": "object", "additionalProperties": {"type": "string"}},
+    "reference_types": {"type": "array", "items": {"enum": ["DWG", "DXF", "PDF", "PNG", "JPG"]}, "uniqueItems": true},
+    "workflow": {"type": "string", "minLength": 1},
+    "approval_level": {"enum": ["L0_READ_ONLY", "L1_DRY_RUN", "L2_SANDBOX_PREP", "L3_SANDBOX_WRITE", "L4_CONTROLLED_PRODUCTION"]},
+    "approval": {"type": "object"},
+    "production_allowed": {"const": false},
+    "production_d1_allowed": {"const": false, "default": false},
+    "protected_regions": {"type": "array", "items": {"type": "object"}, "default": []},
+    "excluded_layers": {"type": "array", "items": {"type": "string"}, "default": []},
+    "excluded_objects": {"type": "array", "items": {"type": "string"}, "default": []},
+    "preferred_backend": {"type": "string"},
+    "fallback_backend": {"type": "string"},
+    "visual_review_required": {"type": "boolean"},
+    "engineering_review_required": {"type": "boolean"},
+    "checkpoint": {"type": "object"},
+    "options": {"type": "object", "additionalProperties": true}
+  },
+  "$defs": {
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "path"],
+      "properties": {
+        "id": {"type": "string"},
+        "type": {"enum": ["DWG", "DXF", "PDF", "PNG", "JPG"]},
+        "path": {"type": "string"},
+        "role": {"type": "string"},
+        "read_only": {"type": "boolean", "default": true}
+      }
+    }
+  }
+}

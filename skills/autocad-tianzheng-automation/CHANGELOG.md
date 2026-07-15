@@ -1,5 +1,10 @@
 # 变更记录
 
+## 0.1.2
+
+- 因 `intentional AGENTS.md update` 将当前安全基线更新为 `20260714T220937+0800`（SHA256：`13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`），父基线保留为 `20260714T193554+0800_s2_1`。
+- 未改变 runtime mode、capability support level、Legacy/Real backend 状态、`production_allowed=false` 或 `production_d1_allowed=false`。
+
 ## 0.1.1
 
 - 将 `SEC-FINAL-019` 更新为 `CLOSED`，引用冻结基线 `baseline_id=20260714T193554+0800_s2_1`。

@@ -1,42 +1,54 @@
 # Task for test_agent
 ## Assigned by: Manager
-## Phase: CAD-SAFETY-S2.1
-## Task ID: CAD-SAFETY-S2.1-GUARD
+## Phase: CAD-BASELINE-REFREEZE
+## Task ID: REFREEZE-TEST-PREPARE-20260714T220937+0800
+## Task Description
+仅准备安全测试执行清单。只读核对现有文件访问守卫、pytest marker、旧安全基线测试命令/结果和测试目录结构，按用户要求生成精确测试命令计划；不得运行 pytest，等待 Safety Agent 明确 `APPROVE_TESTS`。
+## Input Files
+- `D:\CodexWork\天正\pytest.ini`
+- `D:\CodexWork\天正\conftest.py`
+- `D:\CodexWork\天正\tests`
+- `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T193554+0800_s2_1\test_command_manifest.json`
+- 旧基线中的测试结果与 marker/守卫策略 JSON
+## Constraints
+- 禁止运行任何 pytest。
+- 禁止连接 AutoCAD、天正或 COM。
+- 禁止读取、解析、扫描或哈希任何真实 DWG/DXF。
+- 所有命令必须加载项目根守卫。
+- 所有外部集成/真实 CAD 放行环境变量必须保持关闭。
+- 必须排除 `real_dwg`、`external_integration`、`autocad_required`、`tianzheng_required`、`com_required`、`production_only`。
+## Expected Output
+- `artifacts/baseline_refreeze_after_agents_update/20260714T220937+0800/run/refreeze_test_command_plan.json`
+- `agent_outbox/test_agent_report.md`
+- 状态：`WAITING_FOR_SECURITY_APPROVAL`
+# Task for test_agent
+## Assigned by: Manager
+## Phase: CAD-CONFIG-S2
+## Task ID: CAD-CONFIG-S2-TEST-PLAN-001
 
 ## Task Description
-
-建立项目级默认启用的真实 CAD 文件访问守卫、子进程审计、pytest marker 注册、纯 synthetic fixtures 及守卫自身测试，为关闭 `SEC-FINAL-019` 提供可重复的零访问安全基线。
-
-## Input Files
-
-- `pytest.ini`
-- `tests/conftest.py`
-- `tests/**`
-- `mcp_nextgen/**`
-- `skills/autocad-tianzheng-automation/**`
+只读审计现有 pytest 配置、守卫、Skill/NextGen/CLI 测试路径，制定 CAD-CONFIG-S2 的分阶段安全测试计划和新增测试文件边界。识别最小可复用 synthetic fixture 与现有 marker 表达式，不运行测试、不修改测试。
 
 ## Constraints
-
-- 禁止连接或启动 AutoCAD、天正、COM。
-- 禁止打开、读取、扫描、哈希、修改、移动或删除任何现存 DWG/DXF。
-- 禁止运行 P4.1、真实后端、外部集成测试及默认全量回归。
-- 不修改 P2、P3、P4.1 业务执行逻辑。
-- 当前只允许运行守卫专项自测；NextGen、Skill 和默认回归等待 Manager 放行。
-- synthetic CAD 扩展测试文件只能在 pytest 临时目录动态生成随机内容并显式注册。
-- 所有文本读写显式使用 UTF-8。
+- 不读取、解析、扫描或哈希 DWG/DXF。
+- 不连接 AutoCAD、天正或 COM；不运行 external/real/production 测试。
+- 不修改守卫以放宽安全规则。
 
 ## Expected Output
+- `D:\CodexWork\天正\agent_outbox\test_agent_report.md`
+- 报告包含现有测试路径、建议新增路径、命令、守卫启用方式、计数采集方式和真实 CAD 零访问验收点。
 
-- `tests/safety/real_cad_access_guard.py`
-- 项目级 pytest guard 插件与 marker 政策
-- `tests/safety/test_real_cad_access_guard.py`
-- `tests/fixtures/synthetic_cad_identity/**`（仅非 CAD 扩展）
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/file_access_guard_implementation.json`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/file_access_guard_test_results.json`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/subprocess_guard_test_results.json`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/default_test_file_access_log.jsonl`
-- `artifacts/sec_final_019_closure/20260714T193554+0800_s2_1/default_test_file_access_summary.json`
+## WP4 Implementation Authorization
 
-## Dependency / Stop Rule
+### Task ID: CAD-CONFIG-S2-WP4
 
-守卫专项自测完成后停止并向 Manager 汇报，不自行运行 NextGen、Skill、旧失败测试或默认安全回归。
+WP1 公共配置 API 已稳定，WP2 已完成，WP3 正在实施。现在创建新增测试，但在 WP3 完成前不得运行阶段 A–E 命令。
+
+独占修改：
+- `tests/config_driven/**`
+- `tests/config_cli/**`
+- 必要时仅追加兼容断言到 `skills/autocad-tianzheng-automation/tests/test_skill.py`、`tests/skill/test_skill_cli.py`、`tests/skill/test_skill_package.py`；不得删除或弱化现有断言。
+
+覆盖原需求 100 项测试域，允许按参数化方式合并用例；必须能形成需求编号到 test id 的映射。静态 fixture 不得包含 `.dwg/.dxf`；CAD 路径仅作虚构字符串；不得调用 exists/stat/read/hash/strict resolve；不得覆盖项目级 guard fixture。
+
+先写测试并做语法检查。待 WP3/CLI 完成及 Manager 发出 `RUN_PHASED_TESTS` 后，才按 Phase A–E 顺序运行。更新 outbox，明确已写/未运行状态。

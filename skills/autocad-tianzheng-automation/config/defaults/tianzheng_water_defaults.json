@@ -1,0 +1,20 @@
+{
+  "runtime": {
+    "runtime_mode": "tianzheng_water",
+    "offline_only": true
+  },
+  "product": {
+    "requested_product": "tianzheng_water",
+    "required_capabilities": [],
+    "prohibited_products": ["tianzheng_hvac"],
+    "product_detection_policy": "explicit_metadata_only"
+  },
+  "backend": {
+    "preferred_backend": "offline",
+    "require_real_execution": false
+  },
+  "verification": {
+    "topology_verification_required": true,
+    "engineering_review_required": true
+  }
+}

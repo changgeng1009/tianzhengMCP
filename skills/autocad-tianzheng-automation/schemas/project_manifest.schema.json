@@ -1,80 +1,201 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.invalid/autocad-tianzheng/project_manifest.schema.json",
-  "title": "AutoCAD 与天正自动化项目 Manifest",
+  "title": "AutoCAD 与天正自动化 Canonical Project Manifest 1.1.0",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "project_id", "project_name", "task_type", "runtime_mode", "product", "workflow", "approval_level", "production_allowed", "preferred_backend", "visual_review_required", "engineering_review_required"],
+  "required": ["schema_version", "project", "task", "runtime", "documents", "paths", "product", "backend", "workflow", "safety", "approval", "verification", "recovery", "output", "metadata", "extensions"],
   "properties": {
-    "schema_version": {"const": "1.0"},
-    "project_id": {"type": "string", "minLength": 1},
-    "project_name": {"type": "string", "minLength": 1},
-    "task_type": {"type": "string", "enum": ["inspect_drawing", "analyze_reference", "redraw_from_reference", "align_drawings", "compare_drawings", "sandbox_edit", "verify_output", "visual_review", "missing_detection", "resume_job"]},
-    "runtime_mode": {"enum": ["plain_autocad", "tianzheng_water", "tianzheng_hvac", "auto_detect", "offline_analysis"]},
-    "product": {"enum": ["autocad", "tianzheng_water", "tianzheng_hvac", "offline", "auto"]},
-    "reference_documents": {"type": "array", "items": {"$ref": "#/$defs/document"}, "default": []},
-    "target_documents": {"type": "array", "items": {"$ref": "#/$defs/document"}, "default": []},
-    "output_root": {"type": "string"},
-    "artifact_root": {"type": "string"},
-    "document_identities": {"type": "array", "items": {"$ref": "#/$defs/documentIdentity"}, "default": []},
-    "expected_sha256": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}},
-    "input_roles": {"type": "object", "additionalProperties": {"type": "string"}},
-    "reference_types": {"type": "array", "items": {"enum": ["DWG", "DXF", "PDF", "PNG", "JPG"]}, "uniqueItems": true},
-    "workflow": {"enum": ["00_select_runtime", "01_inspect", "02_reference_analysis", "03_alignment", "04_redraw", "05_missing_detection", "06_sandbox_completion", "07_persistence_verification", "08_visual_review", "09_manual_save_required", "10_failure_recovery"]},
-    "approval_level": {"enum": ["L0_READ_ONLY", "L1_DRY_RUN", "L2_SANDBOX_PREP", "L3_SANDBOX_WRITE", "L4_CONTROLLED_PRODUCTION"]},
+    "schema_version": {"const": "1.1.0"},
+    "project": {"$ref": "#/$defs/project"},
+    "task": {"$ref": "#/$defs/task"},
+    "runtime": {"$ref": "#/$defs/runtime"},
+    "documents": {"$ref": "#/$defs/documents"},
+    "paths": {"$ref": "#/$defs/paths"},
+    "product": {"$ref": "#/$defs/product"},
+    "backend": {"$ref": "#/$defs/backend"},
+    "workflow": {"$ref": "#/$defs/workflow"},
+    "safety": {"$ref": "#/$defs/safety"},
     "approval": {"$ref": "#/$defs/approval"},
-    "production_allowed": {"const": false, "description": "本版本固定为 false；L4 未来需单次外部授权。"},
-    "production_d1_allowed": {"const": false, "default": false},
-    "protected_regions": {"type": "array", "items": {"$ref": "#/$defs/protectedRegion"}, "default": []},
-    "excluded_layers": {"type": "array", "items": {"type": "string"}, "default": []},
-    "excluded_objects": {"type": "array", "items": {"type": "string"}, "default": []},
-    "preferred_backend": {"enum": ["offline", "original-redraw-adapter", "nextgen-mock", "legacy-contract-disabled", "legacy-com", "nextgen-real", "autocad-dotnet-plugin", "tianzheng-water-real", "tianzheng-hvac-real"]},
-    "fallback_backend": {"enum": ["offline", "original-redraw-adapter", "nextgen-mock", "legacy-contract-disabled"]},
-    "visual_review_required": {"type": "boolean"},
-    "engineering_review_required": {"type": "boolean"},
-    "checkpoint": {"$ref": "#/$defs/checkpoint"},
-    "options": {"type": "object", "additionalProperties": true}
+    "verification": {"$ref": "#/$defs/verification"},
+    "recovery": {"$ref": "#/$defs/recovery"},
+    "output": {"$ref": "#/$defs/output"},
+    "metadata": {"$ref": "#/$defs/metadata"},
+    "extensions": {"type": "object", "additionalProperties": true}
   },
   "$defs": {
+    "project": {
+      "type": "object", "additionalProperties": false,
+      "required": ["project_id", "project_name", "description", "project_type", "tags"],
+      "properties": {
+        "project_id": {"type": "string", "minLength": 1},
+        "project_name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "project_type": {"type": "string", "minLength": 1},
+        "tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "task": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "task_type", "task_description", "requested_operations", "expected_outputs"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "task_type": {"type": "string", "minLength": 1},
+        "task_description": {"type": "string"},
+        "requested_operations": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "expected_outputs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "runtime": {
+      "type": "object", "additionalProperties": false,
+      "required": ["runtime_mode", "auto_detect_policy", "conflict_policy", "offline_only"],
+      "properties": {
+        "runtime_mode": {"enum": ["plain_autocad", "tianzheng_water", "tianzheng_hvac", "auto_detect", "offline_analysis"]},
+        "auto_detect_policy": {"enum": ["explicit_metadata_only", "disabled"]},
+        "conflict_policy": {"const": "fail_closed"},
+        "offline_only": {"type": "boolean"}
+      }
+    },
     "document": {
-      "type": "object", "additionalProperties": false, "required": ["id", "type", "path"],
-      "properties": {"id": {"type": "string"}, "type": {"enum": ["DWG", "DXF", "PDF", "PNG", "JPG"]}, "path": {"type": "string"}, "role": {"type": "string"}, "read_only": {"type": "boolean", "default": true}}
+      "type": "object", "additionalProperties": false,
+      "required": ["document_id", "role", "media_type", "path", "identity_policy", "expected_product", "readonly", "required", "synthetic_test_file"],
+      "properties": {
+        "document_id": {"type": "string", "minLength": 1},
+        "role": {"type": "string", "minLength": 1},
+        "media_type": {"enum": ["dwg", "dxf", "pdf", "png", "jpg", "jpeg", "json", "none"]},
+        "path": {"type": "string"},
+        "identity_policy": {"enum": ["declared_only", "synthetic_verified", "require_runtime_verification", "unavailable"]},
+        "expected_product": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "unknown"]},
+        "readonly": {"type": "boolean"},
+        "required": {"type": "boolean"},
+        "synthetic_test_file": {"type": "boolean"},
+        "expected_filename": {"type": ["string", "null"]},
+        "expected_extension": {"type": ["string", "null"]},
+        "expected_sha256": {"type": ["string", "null"], "pattern": "^[A-Fa-f0-9]{64}$"},
+        "expected_size": {"type": ["integer", "null"], "minimum": 0},
+        "identity_status": {"enum": ["DECLARED", "SYNTHETIC_VERIFIED", "RUNTIME_VERIFICATION_REQUIRED", "UNAVAILABLE"]}
+      }
     },
-    "documentIdentity": {
-      "type": "object", "additionalProperties": false, "required": ["document_id", "identity", "sha256"],
-      "properties": {"document_id": {"type": "string"}, "identity": {"type": "string"}, "sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}, "is_source": {"type": "boolean"}}
+    "documents": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_documents", "target_documents", "auxiliary_documents"],
+      "properties": {
+        "reference_documents": {"type": "array", "items": {"$ref": "#/$defs/document"}},
+        "target_documents": {"type": "array", "items": {"$ref": "#/$defs/document"}},
+        "auxiliary_documents": {"type": "array", "items": {"$ref": "#/$defs/document"}}
+      }
     },
-    "protectedRegion": {
-      "type": "object", "additionalProperties": false, "required": ["id", "rule"],
-      "properties": {"id": {"type": "string"}, "rule": {"enum": ["NO_WRITE", "REVIEW_ONLY"]}, "geometry": {"type": "object"}}
+    "paths": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path_policy", "allow_external", "allow_unc"],
+      "properties": {
+        "path_policy": {"enum": ["project_relative", "workspace_relative", "absolute_explicit", "external_readonly"]},
+        "allow_external": {"type": "boolean"},
+        "allow_unc": {"type": "boolean"}
+      }
+    },
+    "product": {
+      "type": "object", "additionalProperties": false,
+      "required": ["requested_product", "required_capabilities", "prohibited_products", "product_detection_policy"],
+      "properties": {
+        "requested_product": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "unknown"]},
+        "required_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "prohibited_products": {"type": "array", "items": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac"]}, "uniqueItems": true},
+        "product_detection_policy": {"enum": ["explicit_metadata_only", "disabled"]}
+      }
+    },
+    "backend": {
+      "type": "object", "additionalProperties": false,
+      "required": ["preferred_backend", "fallback_backends", "backend_selection_policy", "require_real_execution", "mock_allowed"],
+      "properties": {
+        "preferred_backend": {"enum": ["offline", "original_redraw_adapter", "nextgen_mock", "legacy_contract_disabled", "legacy_com", "nextgen_real", "autocad_dotnet_plugin", "tianzheng_water_real", "tianzheng_hvac_real"]},
+        "fallback_backends": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "backend_selection_policy": {"enum": ["explicit_only", "ordered_fallback"]},
+        "require_real_execution": {"type": "boolean"},
+        "mock_allowed": {"type": "boolean"}
+      }
+    },
+    "workflow": {
+      "type": "object", "additionalProperties": false,
+      "required": ["workflow_id", "workflow_type", "stages", "stage_policy", "dry_run", "simulate_only"],
+      "properties": {
+        "workflow_id": {"type": "string", "minLength": 1},
+        "workflow_type": {"type": "string", "minLength": 1},
+        "stages": {"type": "array", "items": {"type": "string"}},
+        "stage_policy": {"enum": ["registry_defined", "manifest_declared"]},
+        "dry_run": {"type": "boolean"},
+        "simulate_only": {"type": "boolean"}
+      }
+    },
+    "safety": {
+      "type": "object", "additionalProperties": false,
+      "required": ["requested_level", "production_allowed", "production_d1_allowed", "sandbox_required", "source_write_forbidden", "protected_regions", "operation_allowlist", "operation_denylist", "fail_closed", "real_cad_access_allowed"],
+      "properties": {
+        "requested_level": {"enum": ["L0_READ_ONLY", "L1_DRY_RUN", "L2_SANDBOX_PREP", "L3_SANDBOX_WRITE", "L4_CONTROLLED_PRODUCTION"]},
+        "production_allowed": {"const": false},
+        "production_d1_allowed": {"const": false},
+        "sandbox_required": {"const": true},
+        "source_write_forbidden": {"const": true},
+        "protected_regions": {"type": "array", "items": {"type": "object"}},
+        "operation_allowlist": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "operation_denylist": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "fail_closed": {"const": true},
+        "real_cad_access_allowed": {"const": false}
+      }
     },
     "approval": {
       "type": "object", "additionalProperties": false,
-      "required": ["job_id", "document_identity", "document_sha256", "plan_hash", "allowed_operations", "runtime_mode", "product", "single_use", "expires_at"],
+      "required": ["required_level", "approval_reference", "approval_required", "single_use", "expires_at"],
       "properties": {
-        "job_id": {"type": "string"}, "document_identity": {"type": "string"},
-        "document_sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
-        "plan_hash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
-        "allowed_operations": {"type": "array", "items": {"type": "string"}, "minItems": 1},
-        "runtime_mode": {"type": "string"}, "product": {"type": "string"},
-        "single_use": {"const": true}, "expires_at": {"type": "string", "format": "date-time"},
-        "consumed": {"type": "boolean", "default": false}, "production_allowed": {"type": "boolean", "default": false}
+        "required_level": {"enum": ["L0_READ_ONLY", "L1_DRY_RUN", "L2_SANDBOX_PREP", "L3_SANDBOX_WRITE", "L4_CONTROLLED_PRODUCTION"]},
+        "approval_reference": {"type": ["string", "null"]},
+        "approval_required": {"type": "boolean"},
+        "single_use": {"const": true},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"}
       }
     },
-    "checkpoint": {
+    "verification": {
       "type": "object", "additionalProperties": false,
-      "required": ["job_id", "plan_hash", "last_completed_batch_id", "completed_batch_count", "completed_task_count", "journal_mode", "atomic_write", "idempotency_keys", "manual_save_status"],
+      "required": ["entity_verification_required", "visual_review_required", "topology_verification_required", "engineering_review_required", "reopen_verification_required"],
       "properties": {
-        "job_id": {"type": "string"}, "plan_hash": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
-        "last_completed_batch_id": {"type": ["string", "null"]},
-        "completed_batch_count": {"type": "integer", "minimum": 0},
-        "completed_task_count": {"type": "integer", "minimum": 0},
-        "journal_mode": {"const": "append_only"}, "atomic_write": {"const": true},
-        "idempotency_keys": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-        "dependency_classification": {"type": "object"}, "unexpected_object_classification": {"type": "object"},
-        "duplicate_object_blocking": {"const": true}, "outer_timeout_recoverable": {"type": "boolean"},
-        "manual_save_status": {"enum": ["NOT_REQUIRED", "MANUAL_SAVE_REQUIRED", "MANUAL_SAVE_CONFIRMED"]},
-        "active_document_identity_verified": {"type": "boolean"}
+        "entity_verification_required": {"type": "boolean"},
+        "visual_review_required": {"const": true},
+        "topology_verification_required": {"type": "boolean"},
+        "engineering_review_required": {"const": true},
+        "reopen_verification_required": {"type": "boolean"}
+      }
+    },
+    "recovery": {
+      "type": "object", "additionalProperties": false,
+      "required": ["checkpoint_enabled", "journal_enabled", "resume_enabled", "manual_save_required", "idempotency_required"],
+      "properties": {
+        "checkpoint_enabled": {"type": "boolean"},
+        "journal_enabled": {"type": "boolean"},
+        "resume_enabled": {"type": "boolean"},
+        "manual_save_required": {"const": true},
+        "idempotency_required": {"type": "boolean"}
+      }
+    },
+    "output": {
+      "type": "object", "additionalProperties": false,
+      "required": ["output_root", "artifact_root", "plan_output", "evidence_output", "report_output", "naming_policy"],
+      "properties": {
+        "output_root": {"type": "string", "minLength": 1},
+        "artifact_root": {"type": "string", "minLength": 1},
+        "plan_output": {"type": "string", "minLength": 1},
+        "evidence_output": {"type": "string", "minLength": 1},
+        "report_output": {"type": "string", "minLength": 1},
+        "naming_policy": {"enum": ["deterministic", "explicit"]}
+      }
+    },
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["created_at", "created_by", "source", "notes"],
+      "properties": {
+        "created_at": {"type": ["string", "null"], "format": "date-time"},
+        "created_by": {"type": ["string", "null"]},
+        "source": {"type": "string"},
+        "notes": {"type": "string"}
       }
     }
   }

@@ -33,6 +33,10 @@
         "status": {"enum": ["OPEN", "CLOSED"]},
         "closure_claim_allowed": {"type": "boolean"},
         "baseline_id": {"type": "string", "minLength": 1},
+        "baseline_sha256": {"type": "string", "minLength": 1},
+        "parent_baseline_id": {"type": "string", "minLength": 1},
+        "parent_baseline_sha256": {"type": "string", "minLength": 1},
+        "triggering_change": {"type": "string", "minLength": 1},
         "baseline_path": {"type": "string", "minLength": 1},
         "default_test_real_dwg_access_count": {"type": "integer", "minimum": 0},
         "verifier": {"type": "string", "minLength": 1, "pattern": "^python -m scripts\\.verify_safe_test_baseline\\b"}
@@ -40,7 +44,7 @@
       "allOf": [
         {
           "if": {"properties": {"status": {"const": "CLOSED"}}, "required": ["status"]},
-          "then": {"required": ["baseline_id", "baseline_path", "default_test_real_dwg_access_count", "verifier"]}
+          "then": {"required": ["baseline_id", "baseline_sha256", "parent_baseline_id", "parent_baseline_sha256", "triggering_change", "baseline_path", "default_test_real_dwg_access_count", "verifier"]}
         }
       ]
     },

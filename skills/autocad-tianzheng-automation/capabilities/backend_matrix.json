@@ -5,21 +5,86 @@
       "id": "SEC-FINAL-019",
       "status": "CLOSED",
       "closure_claim_allowed": true,
-      "baseline_id": "20260714T193554+0800_s2_1",
+      "baseline_id": "20260714T220937+0800",
+      "baseline_sha256": "87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff",
+      "parent_baseline_id": "20260714T193554+0800_s2_1",
+      "parent_baseline_sha256": "226281f3a2bb29e72fe9978d6cffcd0fe84c83be1d7f7091ee95df5361f3bcf1",
+      "triggering_change": "intentional AGENTS.md update",
       "default_test_real_dwg_access_count": 0,
-      "baseline_path": "artifacts/cad_safe_test_baseline/20260714T193554+0800_s2_1",
-      "verifier": "python -m scripts.verify_safe_test_baseline --baseline artifacts/cad_safe_test_baseline/20260714T193554+0800_s2_1 --project-root ."
+      "baseline_path": "artifacts/cad_safe_test_baseline/20260714T220937+0800",
+      "verifier": "python -m scripts.verify_safe_test_baseline --baseline artifacts/cad_safe_test_baseline/20260714T220937+0800 --project-root ."
     }
   ],
   "backends": [
-    {"backend":"offline","support_level":"IMPLEMENTED","available":true,"execution_allowed":false,"notes":"Manifest、计划、报告和 Mock"},
-    {"backend":"original-redraw-adapter","support_level":"PARTIALLY_IMPLEMENTED","available":true,"execution_allowed":false,"notes":"只映射和隔离，不修改原 Skill"},
-    {"backend":"nextgen-mock","component":"NextGenMcpMockBackend","support_level":"IMPLEMENTED_BASELINE","available":true,"execution_allowed":false,"notes":"只提供 Mock；NextGenControlPlane=PARTIALLY_IMPLEMENTED；仅引用现有 mcp_nextgen"},
-    {"backend":"legacy-contract-disabled","component":"LegacyAdapter","support_level":"DISABLED_CONTRACT_ONLY","available":true,"execution_allowed":false,"notes":"仅合同，禁止执行"},
-    {"backend":"legacy-com","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"本阶段明确不可用"},
-    {"backend":"nextgen-real","component":"NextGenRealBackend","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"不得描述为真实 CAD 能力"},
-    {"backend":"autocad-dotnet-plugin","component":"AutoCadDotNetPlugin","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"进程内插件尚未实现"},
-    {"backend":"tianzheng-water-real","component":"TianzhengRealBackend","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"真实产品后端不可用"},
-    {"backend":"tianzheng-hvac-real","component":"TianzhengRealBackend","support_level":"NOT_IMPLEMENTED","available":false,"execution_allowed":false,"notes":"真实产品后端不可用"}
+    {
+      "backend": "offline",
+      "support_level": "IMPLEMENTED",
+      "available": true,
+      "execution_allowed": false,
+      "notes": "availability=AVAILABLE；仅离线规划、验证和报告，不代表真实 CAD 执行"
+    },
+    {
+      "backend": "original_redraw_adapter",
+      "component": "OriginalRedrawSkillAdapter",
+      "support_level": "PARTIALLY_IMPLEMENTED",
+      "available": true,
+      "execution_allowed": false,
+      "notes": "availability=AVAILABLE_FOR_OFFLINE_PLANNING；Real COM execution disabled"
+    },
+    {
+      "backend": "nextgen_mock",
+      "component": "NextGenMcpMockBackend",
+      "support_level": "IMPLEMENTED_BASELINE",
+      "available": true,
+      "execution_allowed": false,
+      "notes": "availability=AVAILABLE_FOR_MOCK；Mock-only；NextGenControlPlane=PARTIALLY_IMPLEMENTED"
+    },
+    {
+      "backend": "legacy_contract_disabled",
+      "component": "LegacyAdapter",
+      "support_level": "DISABLED_CONTRACT_ONLY",
+      "available": false,
+      "execution_allowed": false,
+      "notes": "availability=DISABLED_CONTRACT_ONLY；仅合同存在，禁止执行"
+    },
+    {
+      "backend": "legacy_com",
+      "support_level": "NOT_IMPLEMENTED",
+      "available": false,
+      "execution_allowed": false,
+      "notes": "availability=NOT_AVAILABLE；Legacy/COM 不可用"
+    },
+    {
+      "backend": "nextgen_real",
+      "component": "NextGenRealBackend",
+      "support_level": "NOT_IMPLEMENTED",
+      "available": false,
+      "execution_allowed": false,
+      "notes": "availability=NOT_AVAILABLE；不得描述为真实 CAD 能力"
+    },
+    {
+      "backend": "autocad_dotnet_plugin",
+      "component": "AutoCadDotNetPlugin",
+      "support_level": "NOT_IMPLEMENTED",
+      "available": false,
+      "execution_allowed": false,
+      "notes": "availability=NOT_AVAILABLE；AutoCAD 进程内插件未实现"
+    },
+    {
+      "backend": "tianzheng_water_real",
+      "component": "TianzhengRealBackend",
+      "support_level": "NOT_IMPLEMENTED",
+      "available": false,
+      "execution_allowed": false,
+      "notes": "availability=NOT_AVAILABLE；天正给排水 Real backend 未实现"
+    },
+    {
+      "backend": "tianzheng_hvac_real",
+      "component": "TianzhengRealBackend",
+      "support_level": "NOT_IMPLEMENTED",
+      "available": false,
+      "execution_allowed": false,
+      "notes": "availability=NOT_AVAILABLE；天正暖通 Real backend 未实现"
+    }
   ]
 }

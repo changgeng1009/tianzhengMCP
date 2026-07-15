@@ -1,0 +1,16 @@
+{
+  "runtime": {
+    "runtime_mode": "plain_autocad",
+    "offline_only": true
+  },
+  "product": {
+    "requested_product": "generic_autocad",
+    "required_capabilities": [],
+    "prohibited_products": ["tianzheng_water", "tianzheng_hvac"],
+    "product_detection_policy": "explicit_metadata_only"
+  },
+  "backend": {
+    "preferred_backend": "offline",
+    "require_real_execution": false
+  }
+}

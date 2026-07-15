@@ -290,3 +290,36 @@
 - 更新 `SKILL.md`、`README.md`、`CHANGELOG.md`、`references/safety_model.md`、`references/known_limitations.md`、`capabilities/backend_matrix.json`。
 - 必要时更新 `tests/test_skill.py` 的安全状态期望。
 - 更新 `agent_outbox/docs_agent_report.md`。
+# Task for docs_agent
+## Assigned by: Manager
+## Phase: CAD-CONFIG-S2
+## Task ID: CAD-CONFIG-S2-WP5-DRAFT
+
+## Task Description
+基于已完成 WP1/WP2 和当前 WP3 实际接口，编写 CAD-CONFIG-S2 的配置架构文档。文档不得虚报尚未通过测试的能力；WP3/CLI 细节必须从实际代码读取并在其稳定后回填。
+
+## Owned Files
+- `skills/autocad-tianzheng-automation/docs/configuration_driven_architecture.md`
+- `docs/project_manifest_reference.md`
+- `docs/manifest_versioning_and_migration.md`
+- `docs/config_merge_precedence.md`
+- `docs/path_resolution_policy.md`
+- `docs/runtime_and_product_routing.md`
+- `docs/backend_selection_policy.md`
+- `docs/workflow_registry.md`
+- `docs/execution_plan_determinism.md`
+- `docs/config_cli_reference.md`
+- `docs/config_security_boundaries.md`
+- `docs/template_guide.md`
+- `docs/s2_known_limitations.md`
+
+当前阶段先写可确认内容；CLI 文档在 CLI 完成前明确标记待回填，不能写成已验证。暂不修改 `SKILL.md`、`README.md`、`CHANGELOG.md`，待实现和测试稳定后另行授权。
+
+## Constraints
+- 不访问 DWG/DXF，不连接 CAD/COM/天正，不运行测试或安装同步。
+- 只修改 Owned Files，使用 UTF-8 和 apply_patch。
+- 明确 real backend、Legacy、L3/L4、Production 均不可用。
+
+## Expected Output
+- 13 个 docs 文件草稿。
+- `agent_outbox/docs_agent_report.md`，列出待回填项。

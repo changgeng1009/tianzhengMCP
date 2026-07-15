@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/autocad-tianzheng/execution_plan.schema.json",
+  "title": "AutoCAD 与天正离线 Execution Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["plan_schema_version", "plan_id", "project_id", "task_id", "runtime_mode", "product_mode", "backend", "workflow_id", "approval_requirement", "document_requirements", "protected_regions", "operation_allowlist", "operation_denylist", "stages", "expected_artifacts", "verification_requirements", "recovery_policy", "limitations", "executable", "blocked_reasons", "canonical_manifest_hash", "plan_hash"],
+  "properties": {
+    "plan_schema_version": {"const": "1.0.0"},
+    "plan_id": {"type": "string", "pattern": "^plan-[a-f0-9]{16,64}$"},
+    "project_id": {"type": "string", "minLength": 1},
+    "task_id": {"type": "string", "minLength": 1},
+    "runtime_mode": {"enum": ["plain_autocad", "tianzheng_water", "tianzheng_hvac", "auto_detect", "offline_analysis"]},
+    "product_mode": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "unknown"]},
+    "backend": {"type": "string", "minLength": 1},
+    "workflow_id": {"type": "string", "minLength": 1},
+    "approval_requirement": {"type": "object"},
+    "document_requirements": {"type": "array", "items": {"type": "object"}},
+    "protected_regions": {"type": "array", "items": {"type": "object"}},
+    "operation_allowlist": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "operation_denylist": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "stages": {"type": "array", "items": {"type": "object"}},
+    "expected_artifacts": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "verification_requirements": {"type": "object"},
+    "recovery_policy": {"type": "object"},
+    "limitations": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "executable": {"type": "boolean"},
+    "blocked_reasons": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "canonical_manifest_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "plan_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

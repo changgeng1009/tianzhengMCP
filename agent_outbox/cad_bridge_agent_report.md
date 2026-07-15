@@ -6,91 +6,126 @@ cad_bridge_agent
 
 ## Assigned Task
 
-- Phase: `MCP-UPGRADE-HANDOFF`
-- Task ID: `MUH-FIX-MOCK-009`
-- 目标：最小修复 Mock `DocumentIdentity.created_at` 不确定问题，并允许显式注入时钟。
+`CAD-CONFIG-S2-WP2`
 
 ## Files Read
 
 - `agent_inbox/cad_bridge_agent.md`
-- `mcp_nextgen/backends/models.py`
-- `mcp_nextgen/backends/mock.py`
+- `skills/autocad-tianzheng-automation/runtime/contracts.py`
+- `skills/autocad-tianzheng-automation/runtime/errors.py`
+- `skills/autocad-tianzheng-automation/runtime/selector.py`
+- WP2 Owned Files 的现有版本
+- `skills/autocad-tianzheng-automation/schemas/capability.schema.json`
+
+仅阅读文本源码和 JSON；未读取、解析、扫描或哈希 DWG/DXF。
 
 ## Files Modified
 
-- `mcp_nextgen/backends/models.py`
-- `mcp_nextgen/backends/mock.py`
+- `skills/autocad-tianzheng-automation/adapters/registry.py`（新增）
+- `skills/autocad-tianzheng-automation/adapters/__init__.py`
+- `skills/autocad-tianzheng-automation/adapters/generic_autocad/adapter.py`
+- `skills/autocad-tianzheng-automation/adapters/tianzheng_water/adapter.py`
+- `skills/autocad-tianzheng-automation/adapters/tianzheng_hvac/adapter.py`
+- `skills/autocad-tianzheng-automation/capabilities/backend_matrix.json`
+- `skills/autocad-tianzheng-automation/capabilities/product_adapter_matrix.json`（新增）
 - `agent_outbox/cad_bridge_agent_report.md`
 
-未修改 tests、runtime、Legacy adapter、旧代码或其他目录。
+未修改测试、安全守卫、`mcp_nextgen`、P2/P3/P4.1、安装目录、原始 GitHub Skill 或其他 Agent Owned Files。
 
 ## Work Completed
 
-- 新增默认 Mock 时间常量：`2000-01-01T00:00:00+00:00`。
-- `MockCadBackend` 新增可选 `clock: Callable[[], str]` 构造参数。
-- 未提供 `clock` 时，所有等价新建 Mock backend 使用相同默认创建时间。
-- 显式提供 `clock` 时，文档创建时调用一次并冻结到 `_MockDocument.created_at`。
-- `_MockDocument.identity()` 重复生成 identity 时沿用冻结时间，不使用协议模型的实时时钟默认值。
-- `mock_document_identity()` 改为必须显式接收 `created_at`，避免后续调用意外回退到实时微秒值。
-- 未改变 Real/Legacy 语义；未修改 document state SHA-256 计算。
+### Product Adapter 静态合同
 
-## Deterministic Clock Strategy
+- 新增 `ProductAdapterRegistry`，按已确定的 runtime mode 唯一选择 adapter；未完成的 `auto_detect` 直接 fail-closed。
+- 新增 `ProductCapabilityResolver`，输出 supported/unsupported capabilities、required backend、required approval、workflow candidates、limitations 和 verification requirements。
+- 新增 `OfflineAnalysisAdapter`，状态固定为 `IMPLEMENTED`，只允许离线文档比较、能力审计、Manifest 校验和确定性计划构建。
+- `GenericAutoCadAdapter`：`OFFLINE_PLANNING_IMPLEMENTED`，真实 backend 为 `NOT_IMPLEMENTED`。
+- `TianzhengWaterAdapter`：`OFFLINE_PLANNING_IMPLEMENTED`，Real 为 `NOT_IMPLEMENTED`，native topology / engineering semantics 均为 `NOT_VERIFIED`，保留人工工程复核要求。
+- `TianzhengHvacAdapter`：read=`PARTIALLY_IMPLEMENTED`、write=`INTERFACE_ONLY`、Real=`NOT_IMPLEMENTED`。
+- 保留原有 adapter `mode` 字段作为兼容别名，同时新增规范化 `runtime_mode`、`product` 和状态字段。
 
-```text
-默认：MockCadBackend(clock=None)
-  -> 固定 2000-01-01T00:00:00+00:00
+### Backend 静态合同
 
-可注入：MockCadBackend(clock=lambda: "2030-01-02T03:04:05+00:00")
-  -> 创建文档时冻结该时间
-```
+- 新增不可变 `BackendRegistry`、`BackendContract`、`BackendSelector` 和 `BackendSelectionResult`。
+- 当前 9 个 backend 真值：
+  - `offline=AVAILABLE`
+  - `original_redraw_adapter=AVAILABLE_FOR_OFFLINE_PLANNING`
+  - `nextgen_mock=AVAILABLE_FOR_MOCK`
+  - `legacy_contract_disabled=DISABLED_CONTRACT_ONLY`
+  - `legacy_com=NOT_AVAILABLE`
+  - `nextgen_real=NOT_AVAILABLE`
+  - `autocad_dotnet_plugin=NOT_AVAILABLE`
+  - `tianzheng_water_real=NOT_AVAILABLE`
+  - `tianzheng_hvac_real=NOT_AVAILABLE`
+- Python registry 接受历史连字符 ID 作为输入 alias，但所有输出统一返回下划线 canonical ID。
+- Disabled/Real backend 不能被选中；返回结构化 `BACKEND_NOT_AVAILABLE` 和可用离线替代项，不自动执行 fallback。
+- `require_real_execution=true` 始终返回 `BACKEND_NOT_AVAILABLE`，明确禁止用 Mock 冒充 Real。
+- `nextgen_mock` 仅在 `mock_allowed=true` 时可选。
+- Manifest 若出现 `available`、`availability_status`、`support_level`、`execution_allowed`、`real_execution_supported` 或 `capabilities` 等自提升字段，返回 `CONFIG_BACKEND_OVERRIDE_FORBIDDEN`。
+- fallback 仅接受 registry 已知 ID；未知值返回 `BACKEND_CONFLICT`。
 
-该策略保证两个等价默认 Mock backend 的 `DocumentIdentity` 完全相等，同时允许调用方在时间相关场景中提供确定性测试时钟。
+### Capability Matrix
+
+- 更新 `backend_matrix.json` 为当前 authoritative baseline provenance，并保持 `production_d1_allowed=false`。
+- `legacy_contract_disabled` 的 `available` 改为 false，确保“合同存在”不等于“可选择”。
+- 新增 `product_adapter_matrix.json`，显式记录四个 adapter 的 read/write/real、拓扑和工程语义边界。
+- 所有 backend 的 `execution_allowed=false`；Capability Matrix 未声明任何真实 CAD 执行能力。
 
 ## Tests Run
 
-按约束未运行 pytest，仅执行 compile 与内存自检：
+未运行 pytest、全量测试、外部集成、CAD 测试或 Real backend 测试。
 
-```powershell
-python -m compileall -q mcp_nextgen\backends
-```
+仅执行一次 Owned Files 轻量离线 Python/JSON 自检，且设置 `PYTHONDONTWRITEBYTECODE=1`：
 
-结果：PASS。
-
-内存自检验证：
-
-- 两个默认 `MockCadBackend().list_documents()` 完全相等；
-- 默认 `created_at` 为固定值；
-- 注入 clock 后 `created_at` 等于注入值。
-
-结果：`MOCK_CLOCK_SELF_CHECK_OK`。
+- 解析/import 5 个 Owned Python 文件；
+- 构造 4 个 Product Adapter；
+- 构造 9 个 BackendContract；
+- 验证 canonical/历史 alias；
+- 验证 6 个 Disabled/Real backend 全部阻断；
+- 验证 `require_real_execution` 阻断；
+- 验证 Manifest availability override 阻断；
+- JSON 解析两份 matrix；
+- 使用现有 `capability.schema.json` 校验 `backend_matrix.json`。
 
 ## Test Result
 
-- compile：PASS
-- 默认 Mock identity 确定性：PASS
-- 显式 clock 注入：PASS
-- pytest：NOT RUN（由 test_agent 验证）
+`WP2_OFFLINE_SELF_CHECK_PASS`
+
+- Product Adapter：4/4 状态匹配。
+- Backend Contract：9/9 状态匹配。
+- Disabled/Real backend 阻断：6/6。
+- `require_real_execution`：`BACKEND_NOT_AVAILABLE`。
+- Manifest capability elevation：`CONFIG_BACKEND_OVERRIDE_FORBIDDEN`。
+- `backend_matrix.json` Schema：PASS。
+- Real backend executions：0。
 
 ## Safety Check
 
 * Connected to AutoCAD: NO
-* Connected to Tianzheng: NO
-* Imported or used COM: NO
 * Opened DWG: NO
-* Used CopyObjects: NO
+* Opened source DWG: NO
 * Used SendCommand: NO
-* Started P4.1: NO
-* Saved or modified DWG: NO
-* Production D1 attempted: NO
+* Executed Tianzheng command: NO
+* Saved DWG: NO
+* Modified source DWG: NO
+* Read, parsed, scanned or hashed DWG/DXF: NO
+* Imported COM/real executor: NO
+* Enabled Legacy or Real backend: NO
+* Production D1 allowed: NO
 
 ## Risks Found
 
-- 注入 clock 的格式目前只要求非空字符串；协议层未对 `DocumentIdentity.created_at` 做 ISO-8601 强校验。该项不影响当前确定性修复。
+- `product_adapter_matrix.json` 当前为 WP2 专用静态合同，现有 `capability.schema.json` 尚无该聚合矩阵定义；后续 WP3/测试应按文件自身字段验证，或由 Schema Owner 增加兼容定义。
+- JSON matrix 使用新的下划线 canonical backend ID；Python registry 已兼容旧连字符 ID，但直接绕过 registry 的旧静态消费者应迁移到 canonical ID。
+- Registry 仅依赖 `runtime.errors.SkillRuntimeError`；若 WP1 调整统一错误实现，必须保留该兼容基类或做最小 import 对齐。
+- 本 agent 未运行全局 quick_validate/pytest，避免越过 Owned Files 和 Test Agent 职责；需由 Manager/Test Agent 在 WP1/WP3 合并后统一验证。
 
 ## Remaining Work
 
-- 由 test_agent 运行 `tests/nextgen/test_nextgen_handoff.py::test_mock_backend_is_deterministic`。
+- WP3 将 Runtime/Workflow/Plan builder 接到本 registry。
+- Test Agent 需按批准计划补充 Product/Backend 路由和安全阻断测试。
+- 最终安装同步由 Manager 在全部 WP 完成后执行；本任务未修改安装目录。
 
 ## Recommendation
 
-- 接受该最小修复；保持 Mock 默认固定时钟，真实系统时间只允许通过显式注入进入 Mock。
+`CAD_CONFIG_S2_WP2_COMPLETE_OFFLINE_STATIC_CONTRACT`
