@@ -12,6 +12,7 @@ from mcp.server.fastmcp import FastMCP
 
 from ..protocol.version import PROTOCOL_VERSION
 from ..schemas.tools import NEXTGEN_TOOLS
+from .discovery import prompt_message, resource_payload
 from .dispatcher import dispatch_tool
 
 
@@ -67,6 +68,57 @@ def create_mcp() -> FastMCP:
     @register("cad.job.status")
     def cad_job_status(request: dict[str, Any]) -> dict[str, Any]:
         return dispatch_tool("cad.job.status", request)
+
+    @register("cad.job.approve")
+    def cad_job_approve(request: dict[str, Any]) -> dict[str, Any]:
+        return dispatch_tool("cad.job.approve", request)
+
+    @register("cad.job.run_mock")
+    def cad_job_run_mock(request: dict[str, Any]) -> dict[str, Any]:
+        return dispatch_tool("cad.job.run_mock", request)
+
+    @register("cad.job.cancel")
+    def cad_job_cancel(request: dict[str, Any]) -> dict[str, Any]:
+        return dispatch_tool("cad.job.cancel", request)
+
+    @register("cad.job.events")
+    def cad_job_events(request: dict[str, Any]) -> dict[str, Any]:
+        return dispatch_tool("cad.job.events", request)
+
+    @server.resource(
+        "cad://nextgen/capabilities",
+        name="cad.capabilities.resource",
+        description="NextGen Mock-only 能力资源。",
+        mime_type="application/json",
+    )
+    def capabilities_resource() -> dict[str, Any]:
+        return resource_payload("cad://nextgen/capabilities")
+
+    @server.resource(
+        "cad://nextgen/tool-registry",
+        name="cad.tool_registry.resource",
+        description="NextGen 工具注册表资源。",
+        mime_type="application/json",
+    )
+    def tool_registry_resource() -> dict[str, Any]:
+        return resource_payload("cad://nextgen/tool-registry")
+
+    @server.resource(
+        "cad://nextgen/safety-boundaries",
+        name="cad.safety_boundaries.resource",
+        description="固定的 Mock-only 安全边界资源。",
+        mime_type="application/json",
+    )
+    def safety_boundaries_resource() -> dict[str, Any]:
+        return resource_payload("cad://nextgen/safety-boundaries")
+
+    @server.prompt(name="cad.plan_mock_job", description="生成 Mock-only 作业规划提示。")
+    def plan_mock_job_prompt() -> str:
+        return prompt_message("cad.plan_mock_job")
+
+    @server.prompt(name="cad.review_safety_boundary", description="生成安全边界复核提示。")
+    def review_safety_boundary_prompt() -> str:
+        return prompt_message("cad.review_safety_boundary")
 
     return server
 

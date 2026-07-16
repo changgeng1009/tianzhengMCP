@@ -13,15 +13,15 @@ AI / Codex
   -> AutoCAD / Tianzheng
 ```
 
-本阶段只实现左侧的隔离协议、import-safe 控制面、transport 合同，以及纯内存 Mock/Layer D 基线。实际 local listener、.NET plugin、Real backend 和天正接口均未实现。
+S4 已实现协议内的 Mock-only 控制面：版本化 tools/resources/prompts、作业状态机、审批绑定、进度事件、append-only journal 与原子 checkpoint，以及确定性 Mock 执行。实际 local listener、.NET plugin、Real backend 和天正接口均未实现。
 
 ## 当前组件
 
 ```text
 mcp_nextgen/
-  control_server/  FastMCP 注册与严格 dispatcher
+  control_server/  import-safe FastMCP 注册、发现层、严格 dispatcher、ControlPlaneService
   protocol/        版本、枚举、12 个 canonical 模型
-  schemas/         核心与 9-tool 严格 Schema
+  schemas/         核心与 13-tool 严格 Schema
   transport/       policy/auth/framing/replay；无 listener
   jobs/            状态、协调、幂等、边界与快照
   journal/         append-only hash-chain journal、原子 checkpoint
@@ -34,7 +34,7 @@ integrations/
 
 ## 控制流边界
 
-`mcp_nextgen.control_server.server:mcp` 在 import 时只构造 FastMCP 对象并注册 9 tools：
+`mcp_nextgen.control_server.server:mcp` 在 import 时只构造 FastMCP 对象并注册 13 tools、3 resources 和 2 prompts：
 
 - 没有 `main()`
 - 没有 `.run()`
@@ -42,16 +42,16 @@ integrations/
 - 不绑定端口
 - 不访问文件或 CAD
 
-所有工具进入 `dispatch_tool()` 后先执行 registry Schema 与审批绑定校验。当前 dispatcher 尚未调用 `LayerDCoordinator`、`MockPluginRuntime` 或 `MockCadBackend`。因此，除三个安全查询外，其余工具明确返回 `NOT_IMPLEMENTED`。
+所有工具进入 `dispatch_tool()` 后先执行 registry Schema 与审批绑定校验。`cad.batch.plan`、`cad.job.status`、`cad.job.approve`、`cad.job.run_mock`、`cad.job.cancel`、`cad.job.events` 接入 `ControlPlaneService`，只持久化 Mock job 的安全证据；不调用 AutoCAD、COM、天正或真实 backend。`cad.entities.query`、`cad.entities.inspect`、`cad.batch.clone`、`cad.batch.transform` 保持 `NOT_IMPLEMENTED` 并安全返回错误。
 
 ## 五层映射
 
 | 层 | NextGen 对应实现 | 状态 |
 |---|---|---|
-| A — Control Server | `control_server`、`schemas` | import-safe、Mock-only；未接执行层 |
+| A — Control Server | `control_server`、`schemas` | `IMPLEMENTED_BASELINE`；import-safe、Mock-only 控制面 |
 | B — Local Transport | `transport` | contract-only，无 listener |
 | C — Plugin Runtime | `runtime.MockPluginRuntime` | 纯内存模拟，不是 AutoCAD 插件 |
-| D — Job/Journal/Safety | `jobs`、`journal`、`safety` | 隔离重写基线，待正式测试固化 |
+| D — Job/Journal/Safety | `jobs`、`journal`、`safety` | `IMPLEMENTED_BASELINE`；状态机、审批、journal/checkpoint 仅服务 Mock job |
 | E — Backend | `backends.MockCadBackend` | deterministic Mock-only |
 
 ## 来源与适配
@@ -66,6 +66,5 @@ integrations/
 
 ## 当前验证状态
 
-各实现 Agent 已完成编译、import 和隔离内存自检；正式 `tests/nextgen` 与主线全量回归待 test_agent 最终验证。文档不以临时自检替代最终测试结论。
-
+S4 验收以 `tests/nextgen`、`tests/s4` 与默认安全回归的最终报告为准。文档不以实现存在或临时自检替代最终测试结论。
 

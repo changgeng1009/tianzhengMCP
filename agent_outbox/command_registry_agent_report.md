@@ -393,6 +393,76 @@ Manager 应将安装目录拒绝路径的统一退出码合同最小修复为 ex
 
 ---
 
+## CAD-S4-PROTOCOL-001（NextGen MCP Protocol / Tool Registry）
+
+### Files Read
+
+- `mcp_nextgen/control_server/{server,dispatcher}.py`
+- `mcp_nextgen/protocol/{version,enums,models}.py`
+- `mcp_nextgen/schemas/{core,tools,validator}.py`
+- `tests/nextgen/test_nextgen_handoff.py`
+
+### Files Modified
+
+- `mcp_nextgen/control_server/discovery.py`
+- `mcp_nextgen/control_server/server.py`
+- `mcp_nextgen/control_server/__init__.py`
+- `mcp_nextgen/schemas/tools.py`
+- 本 outbox（追加本节）
+
+### Work Completed
+
+- 将既有 9-tool registry 扩展为版本仍为 `1.0.0` 的 13-tool S4 registry，并为每个工具补齐 `errorSchema`、`status`、`available` 与允许的离线/Mock runtime 声明。
+- 已注册 3 个静态 MCP resources：能力、工具注册表和固定安全边界；以及 2 个只生成文字的 prompts。资源与提示均为纯数据，不会启动服务或读取文件。
+- `cad.capabilities` 现在返回完整、带 `status`/`available`/Schema 的 tool registry，而非仅返回名称列表，便于 Skill 发现真实能力边界。
+- `cad.capabilities`、`cad.documents.list`、`cad.document.inspect`、`cad.batch.plan`、`cad.job.status`、`cad.job.approve`、`cad.job.run_mock`、`cad.job.cancel`、`cad.job.events` 为 `IMPLEMENTED_BASELINE`。其中 batch plan 只创建 `PLANNED` Mock 作业；approve 必须绑定 job/plan/operation/product/runtime/expiry；run_mock 仅调用无 CAD 句柄的确定性模拟。
+- `cad.entities.query`、`cad.entities.inspect`、`cad.batch.clone`、`cad.batch.transform` 均明确为 `NOT_IMPLEMENTED` 和 `available=false`。
+- registry 自检会拒绝将 `NOT_IMPLEMENTED` 工具声明为 `available=true`。
+
+### Tests Run
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+$env:CAD_SAFE_TEST_RUN_DIR = Join-Path $env:TEMP 'cad_s4_protocol_registry'
+python -m pytest -q tests/nextgen/test_nextgen_handoff.py -k 'server_import_surface or server_factory or tool_schema_registry or control_dispatcher or arbitrary_code_execution_tools'
+```
+
+结果：`5 passed, 42 deselected`。
+
+另运行 registry/discovery 纯内存自检：PASS（13 tools、3 resources、2 prompts）；dispatcher synthetic Mock 完整生命周期（plan→approve→run_mock→events/status 及 cancel）smoke：PASS；`.dwg` synthetic 路径返回 `REAL_CAD_PATH_BLOCKED`。
+
+在 S4 service 和测试合同稳定后，补充运行：
+
+```powershell
+$env:PYTHONDONTWRITEBYTECODE='1'
+$env:CAD_SAFE_TEST_RUN_DIR = Join-Path $env:TEMP 'cad_s4_nextgen_combined'
+python -m pytest -q tests/nextgen/test_nextgen_handoff.py tests/s4
+```
+
+结果：`60 passed`。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened/read/parsed/hashed DWG or DXF: NO
+* Started listener/TCP/exec/shell: NO
+* Enabled Legacy/Real backend: NO
+* Production D1 allowed: NO
+* Executed Git command: NO
+
+### Remaining Work
+
+- approval/run/cancel/recovery 的状态机合同由 `ControlPlaneService` 提供；当前 MCP 公开工具不新增真实执行入口，`cad.batch.clone` / `cad.batch.transform` 仍不得提升为可用。
+
+### 状态一致性修订
+
+- 发现资源和 `cad.capabilities` 的对外 `control_plane_status` 已统一为 `IMPLEMENTED_BASELINE`，仅表示 S4 Mock-only 控制面合同已实现。
+- 同时显式公开 `real_backend_status=NOT_IMPLEMENTED` 与 `real_backend_available=false`；本修订不提升任何 AutoCAD、天正、COM 或生产能力。
+
+---
+
 ## CAD-CONFIG-S2-TEMPLATE-REJECT-013（模板输出拒绝码修正）
 
 ### Files Modified

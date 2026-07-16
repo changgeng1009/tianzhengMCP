@@ -3,7 +3,7 @@
 - 本阶段不连接 AutoCAD/天正，不读取、打开、保存或修改 DWG。
 - `generic_autocad` 与 `tianzheng_water` 仅为 `OFFLINE_PLANNING_IMPLEMENTED`；不得将计划、检查合同或 Mock 输出描述为实际打开、扫描或修改 CAD。
 - `tianzheng_hvac` 为 `INTERFACE_ONLY`，暖通写入不可执行；若存在通用几何回退，只是普通几何离线规划，不验证任何天正暖通对象、样式、显示环境、拓扑或工程语义。
-- NextGen Mock 为 `IMPLEMENTED_BASELINE`，Control Plane 为 `PARTIALLY_IMPLEMENTED`；NextGen 真实后端、Legacy COM、AutoCAD .NET / ObjectARX 插件和天正真实后端均为 `NOT_IMPLEMENTED`。
+- NextGen Mock 与 S4 Mock-only Control Plane 均为 `IMPLEMENTED_BASELINE`；控制面仅运行确定性 Mock job，不启动 listener。NextGen 真实后端、Legacy COM、AutoCAD .NET / ObjectARX 插件和天正真实后端均为 `NOT_IMPLEMENTED`。
 - `LegacyAdapter=DISABLED_CONTRACT_ONLY`；原始重绘适配器只进行离线任务映射，不调用原 Skill 的真实执行路径。
 - `execution_runtime=com` 与 `execution_runtime=objectarx` 是未来接口且为 `NOT_AVAILABLE`；不能由配置、审批引用或工作流覆盖变为可用。
 - 给排水原生拓扑为 `NOT_VERIFIED`，工程语义完整性为 `MANUAL_REVIEW_REQUIRED`。

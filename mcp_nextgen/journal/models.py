@@ -3,10 +3,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from typing import Any, Mapping
 
-from mcp_nextgen.jobs.models import SCHEMA_VERSION, utc_now
 from mcp_nextgen.safety.canonical import sha256_hex
+
+
+# 不能从 mcp_nextgen.jobs 导入：journal 是 jobs 的底层依赖，反向导入会在
+# 控制面直接使用 checkpoint 时造成初始化循环。
+SCHEMA_VERSION = "1.0.0"
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat()
 
 
 GENESIS_HASH = "0" * 64
@@ -131,4 +140,3 @@ class CheckpointRecord:
         if int(value.get("completed_task_count", record.completed_task_count)) != record.completed_task_count:
             raise ValueError("checkpoint completed_task_count 不一致")
         return record
-

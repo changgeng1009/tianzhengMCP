@@ -79,6 +79,73 @@ test_agent
 
 ## Assigned Task
 
+CAD-S4-TEST-003
+
+## Files Read
+
+- `mcp_nextgen/protocol/**`、`mcp_nextgen/schemas/**`、`mcp_nextgen/control_server/**`
+- `mcp_nextgen/jobs/**`、`mcp_nextgen/journal/**`、`mcp_nextgen/safety/**`
+- `tests/nextgen/**`、`tests/safety/test_real_cad_access_guard.py`、`pytest.ini`
+
+## Files Modified
+
+- `tests/s4/test_control_plane_discovery.py`
+- `tests/s4/test_control_plane_service_contract.py`
+- `tests/s4/test_control_plane_dispatcher.py`
+- `artifacts/s4_nextgen_mcp_control_plane/20260716T183700+0800_s4_test/s4_test_audit.json`
+- 本报告与测试 inbox 追加记录。
+
+## Work Completed
+
+- 审计既有 NextGen Mock-only 基线，并补充 S4 协议发现、13-tool registry、资源、prompts、job 生命周期、审批绑定、checkpoint/journal/recovery、进度、取消、错误及 dispatcher 主链路测试。
+- 主链路已验证：`cad.batch.plan → cad.job.approve → cad.job.run_mock → cad.job.events / cad.job.status`，全过程只使用 `mock://` synthetic identity 与 pytest `tmp_path`。
+- 发现 service 初稿的循环 import 与审批重放缺口后，等待 job-control 最小修复；最终回归通过。未修改业务模块或安全守卫。
+
+## Tests Run
+
+```powershell
+python -m pytest -q -c pytest.ini --strict-markers tests/nextgen tests/s4 tests/safety/test_real_cad_access_guard.py -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"
+```
+
+## Test Result
+
+`108 passed, 1 skipped`。本任务的定向安全回归通过；全项目默认安全回归仍应由 Manager 在最终集成后统一运行。
+
+## Safety Check
+
+* Connected to AutoCAD: NO
+* Opened DWG: NO
+* Opened source DWG: NO
+* Used SendCommand: NO
+* Executed Tianzheng command: NO
+* Saved DWG: NO
+* Modified source DWG: NO
+* Real DWG successful reads/writes: 0/0
+* CAD processes / AutoCAD COM / Tianzheng / external processes: 0/0/0/0
+
+## Risks Found
+
+- `cad.entities.query`、`cad.entities.inspect`、`cad.batch.clone`、`cad.batch.transform` 仍为 `NOT_IMPLEMENTED` / `available=false`；测试确认未被虚报为可用。
+- S4 只验证 Mock-only 控制面；不构成 AutoCAD、天正、COM、ObjectARX 或任何 Real Backend 能力。
+
+## Remaining Work
+
+- Manager 应在所有 S4 并行代码与文档合并后执行默认安全回归，并汇总最终阶段报告。
+
+## Recommendation
+
+接受 `CAD-S4-TEST-003` 定向测试结果，继续最终集成验证；不得据此启用真实 CAD 或生产权限。
+
+---
+
+# Agent Report
+
+## Agent Name
+
+test_agent
+
+## Assigned Task
+
 CAD-S3-TEST-005
 
 ## Files Read

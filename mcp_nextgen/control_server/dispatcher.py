@@ -3,12 +3,19 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+import tempfile
 from typing import Any
 
 from ..protocol.enums import BackendKind
 from ..protocol.version import PROTOCOL_VERSION
-from ..schemas.tools import NEXTGEN_TOOLS
+from ..schemas.tools import NEXTGEN_TOOLS, list_tools
 from ..schemas.validator import SchemaValidationError, validate_instance
+from ..safety.canonical import sha256_hex
+from .service import ControlPlaneJobError, ControlPlaneService
+
+
+_CONTROL_PLANE_SERVICE: ControlPlaneService | None = None
+_CONTROL_PLANE_TEMPORARY_ROOT: tempfile.TemporaryDirectory[str] | None = None
 
 
 class ControlPlaneError(ValueError):
@@ -16,6 +23,25 @@ class ControlPlaneError(ValueError):
         super().__init__(message)
         self.code = code
         self.details = details or {}
+
+
+def configure_control_plane_service(service: ControlPlaneService | None) -> None:
+    """注入测试或宿主提供的 Mock-only 作业服务；不接受真实 backend。"""
+
+    global _CONTROL_PLANE_SERVICE, _CONTROL_PLANE_TEMPORARY_ROOT
+    _CONTROL_PLANE_SERVICE = service
+    if service is not None:
+        _CONTROL_PLANE_TEMPORARY_ROOT = None
+
+
+def _control_plane_service() -> ControlPlaneService:
+    """延迟创建仅用于当前进程的临时 Mock 作业存储。"""
+
+    global _CONTROL_PLANE_SERVICE, _CONTROL_PLANE_TEMPORARY_ROOT
+    if _CONTROL_PLANE_SERVICE is None:
+        _CONTROL_PLANE_TEMPORARY_ROOT = tempfile.TemporaryDirectory(prefix="tianzheng-nextgen-s4-")
+        _CONTROL_PLANE_SERVICE = ControlPlaneService(_CONTROL_PLANE_TEMPORARY_ROOT.name)
+    return _CONTROL_PLANE_SERVICE
 
 
 def _result(
@@ -68,7 +94,7 @@ def _validate_approval(tool_name: str, payload: dict[str, Any]) -> None:
 
 
 def dispatch_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
-    """严格验证并分派；当前不会调用 job/backend/文件系统。"""
+    """严格验证并分派；只调用 Mock-only 控制面，绝不调用真实 CAD backend。"""
 
     tool = NEXTGEN_TOOLS.get(tool_name)
     if tool is None:
@@ -86,9 +112,13 @@ def dispatch_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
             data={
                 "protocol_version": PROTOCOL_VERSION,
                 "backend_kind": BackendKind.MOCK.value,
+                "control_plane_status": "IMPLEMENTED_BASELINE",
+                "nextgen_mock_backend_status": "IMPLEMENTED_BASELINE",
+                "real_backend_status": "NOT_IMPLEMENTED",
                 "real_backend_available": False,
                 "production_d1_allowed": False,
-                "tools": sorted(NEXTGEN_TOOLS),
+                "tool_count": len(NEXTGEN_TOOLS),
+                "tools": list_tools(),
             },
         )
     if tool_name == "cad.documents.list":
@@ -98,6 +128,101 @@ def dispatch_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
             payload,
             status="OK",
             data={"document": payload["document"], "file_access_performed": False},
+        )
+    if tool_name == "cad.batch.plan":
+        plan_material = {
+            "schema_version": PROTOCOL_VERSION,
+            "job_id": payload["job_id"],
+            "document": payload["document"],
+            "operation": payload["operation"],
+            "product": payload["product"],
+            "execution_runtime": payload["execution_runtime"],
+            "backend": payload["backend"],
+            "task_ids": payload["task_ids"],
+            "dry_run": payload["dry_run"],
+        }
+        tasks = [
+            {
+                "task_id": task_id,
+                "batch_id": f"batch-{payload['job_id']}",
+                "operation": payload["operation"],
+            }
+            for task_id in payload["task_ids"]
+        ]
+        try:
+            job = _control_plane_service().create_job(
+                job_id=payload["job_id"],
+                request_id=payload["request_id"],
+                idempotency_key=payload["idempotency_key"],
+                plan_hash=sha256_hex(plan_material),
+                operation=payload["operation"],
+                product=payload["product"],
+                execution_runtime=payload["execution_runtime"],
+                backend=payload["backend"],
+                document_identity=payload["document"],
+                tasks=tasks,
+                production_allowed=False,
+                production_d1_allowed=False,
+            )
+        except ControlPlaneJobError as exc:
+            raise ControlPlaneError(exc.code, str(exc)) from exc
+        return _result(
+            payload,
+            status=job.status.value,
+            data={"job": job.to_dict(), "mock_only": True, "file_access_performed": False},
+        )
+    if tool_name == "cad.job.status":
+        try:
+            status = _control_plane_service().status(payload["job_id"])
+        except ControlPlaneJobError as exc:
+            raise ControlPlaneError(exc.code, str(exc)) from exc
+        return _result(
+            payload,
+            status="OK",
+            data={"job": status, "mock_only": True, "file_access_performed": False},
+        )
+    if tool_name == "cad.job.approve":
+        approval = payload["approval"]
+        if approval["job_id"] != payload["job_id"]:
+            raise ControlPlaneError("APPROVAL_JOB_MISMATCH", "审批 job_id 与请求不一致")
+        try:
+            job = _control_plane_service().approve(payload["job_id"], approval)
+        except ControlPlaneJobError as exc:
+            raise ControlPlaneError(exc.code, str(exc)) from exc
+        return _result(
+            payload,
+            status=job.status.value,
+            data={"job": job.to_dict(), "mock_only": True, "file_access_performed": False},
+        )
+    if tool_name == "cad.job.run_mock":
+        try:
+            job = _control_plane_service().run(payload["job_id"])
+        except ControlPlaneJobError as exc:
+            raise ControlPlaneError(exc.code, str(exc)) from exc
+        return _result(
+            payload,
+            status=job.status.value,
+            data={"job": job.to_dict(), "mock_only": True, "file_access_performed": False},
+        )
+    if tool_name == "cad.job.cancel":
+        try:
+            job = _control_plane_service().cancel(payload["job_id"], reason=payload.get("reason", "CANCELLED_BY_REQUEST"))
+        except ControlPlaneJobError as exc:
+            raise ControlPlaneError(exc.code, str(exc)) from exc
+        return _result(
+            payload,
+            status=job.status.value,
+            data={"job": job.to_dict(), "mock_only": True, "file_access_performed": False},
+        )
+    if tool_name == "cad.job.events":
+        try:
+            events = [item.to_dict() for item in _control_plane_service().progress_events(payload["job_id"])]
+        except ControlPlaneJobError as exc:
+            raise ControlPlaneError(exc.code, str(exc)) from exc
+        return _result(
+            payload,
+            status="OK",
+            data={"events": events, "mock_only": True, "file_access_performed": False},
         )
 
     return _result(

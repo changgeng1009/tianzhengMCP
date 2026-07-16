@@ -53,6 +53,15 @@ _RESULT_OUTPUT = strict_object(
     ],
 )
 
+_ERROR_OUTPUT = strict_object(
+    {
+        "code": {"type": "string", "minLength": 1},
+        "message": {"type": "string", "minLength": 1},
+        "details": {"type": "object"},
+    },
+    ["code", "message", "details"],
+)
+
 
 def _tool(
     name: str,
@@ -61,23 +70,56 @@ def _tool(
     *,
     read_only: bool,
     allowed_levels: list[ApprovalLevel],
+    status: str = "NOT_IMPLEMENTED",
 ) -> dict[str, Any]:
+    if status not in {"IMPLEMENTED_BASELINE", "PARTIALLY_IMPLEMENTED", "NOT_IMPLEMENTED"}:
+        raise ValueError(f"非法工具状态: {status}")
     return {
         "name": name,
         "description": description,
         "inputSchema": input_schema,
         "outputSchema": deepcopy(_RESULT_OUTPUT),
+        "errorSchema": deepcopy(_ERROR_OUTPUT),
         "version": PROTOCOL_VERSION,
         "read_only": read_only,
         "backend_kind": BackendKind.MOCK.value,
         "real_backend_available": False,
         "production_d1_allowed": False,
+        "allowed_execution_runtimes": ["offline", "mock"],
+        "status": status,
+        "available": status == "IMPLEMENTED_BASELINE",
         "allowed_approval_levels": [level.value for level in allowed_levels],
     }
 
 
 _DOCUMENT_INPUT = {"document": deepcopy(DOCUMENT_IDENTITY_SCHEMA)}
 _APPROVAL_INPUT = {"approval_context": deepcopy(APPROVAL_CONTEXT_SCHEMA)}
+_CONTROL_APPROVAL_SCHEMA = strict_object(
+    {
+        "job_id": id_property(),
+        "plan_hash": sha_property(),
+        "operation": {"type": "string", "minLength": 1, "maxLength": 128},
+        "product": {
+            "type": "string",
+            "enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "offline_analysis"],
+        },
+        "runtime": {"type": "string", "enum": ["offline", "mock"]},
+        "allowed_operations": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1, "maxLength": 128},
+            "minItems": 1,
+            "uniqueItems": True,
+        },
+        "expires_at": {"type": "string", "format": "date-time"},
+        "single_use": {"type": "boolean", "const": True},
+        "production_allowed": {"type": "boolean", "const": False},
+        "production_d1_allowed": {"type": "boolean", "const": False},
+    },
+    [
+        "job_id", "plan_hash", "operation", "product", "runtime", "allowed_operations",
+        "expires_at", "single_use", "production_allowed", "production_d1_allowed",
+    ],
+)
 
 NEXTGEN_TOOLS: dict[str, dict[str, Any]] = {
     "cad.capabilities": _tool(
@@ -86,6 +128,7 @@ NEXTGEN_TOOLS: dict[str, dict[str, Any]] = {
         _input(),
         read_only=True,
         allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
     ),
     "cad.documents.list": _tool(
         "cad.documents.list",
@@ -93,6 +136,7 @@ NEXTGEN_TOOLS: dict[str, dict[str, Any]] = {
         _input(),
         read_only=True,
         allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
     ),
     "cad.document.inspect": _tool(
         "cad.document.inspect",
@@ -100,6 +144,7 @@ NEXTGEN_TOOLS: dict[str, dict[str, Any]] = {
         _input(_DOCUMENT_INPUT, ["document"]),
         read_only=True,
         allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
     ),
     "cad.entities.query": _tool(
         "cad.entities.query",
@@ -133,21 +178,31 @@ NEXTGEN_TOOLS: dict[str, dict[str, Any]] = {
     ),
     "cad.batch.plan": _tool(
         "cad.batch.plan",
-        "生成 Mock-only dry-run 计划合同；当前不实现 job planner。",
+        "生成并保存 Mock-only dry-run 作业计划；不执行 CAD 操作。",
         _input(
             {
                 "job_id": id_property(),
                 **_DOCUMENT_INPUT,
                 "operation": {"type": "string", "enum": ["clone", "transform"]},
+                "product": {
+                    "type": "string",
+                    "enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "offline_analysis"],
+                },
+                "execution_runtime": {"type": "string", "enum": ["offline", "mock"]},
+                "backend": {"type": "string", "enum": ["offline", "nextgen_mock"]},
                 "task_ids": {"type": "array", "items": id_property(), "minItems": 1, "uniqueItems": True},
                 "dry_run": {"type": "boolean", "const": True},
                 "production_allowed": {"type": "boolean", "const": False},
                 **_APPROVAL_INPUT,
             },
-            ["job_id", "document", "operation", "task_ids", "dry_run", "production_allowed", "approval_context"],
+            [
+                "job_id", "document", "operation", "product", "execution_runtime", "backend",
+                "task_ids", "dry_run", "production_allowed",
+            ],
         ),
         read_only=False,
         allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L2_SANDBOX_PREP],
+        status="IMPLEMENTED_BASELINE",
     ),
     "cad.batch.clone": _tool(
         "cad.batch.clone",
@@ -202,10 +257,49 @@ NEXTGEN_TOOLS: dict[str, dict[str, Any]] = {
     ),
     "cad.job.status": _tool(
         "cad.job.status",
-        "查询 Mock job 状态；当前未实现 job store。",
+        "查询由 Mock-only 控制面保存的作业状态与进度。",
         _input({"job_id": id_property()}, ["job_id"]),
         read_only=True,
         allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+    ),
+    "cad.job.approve": _tool(
+        "cad.job.approve",
+        "将单次、过期受限的 Mock-only 审批绑定到 PLANNED 作业；不执行任务。",
+        _input({"job_id": id_property(), "approval": deepcopy(_CONTROL_APPROVAL_SCHEMA)}, ["job_id", "approval"]),
+        read_only=False,
+        allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L2_SANDBOX_PREP],
+        status="IMPLEMENTED_BASELINE",
+    ),
+    "cad.job.run_mock": _tool(
+        "cad.job.run_mock",
+        "在已审批作业上运行确定性的 Mock 模拟；禁止 CAD、COM 和真实 backend。",
+        _input(
+            {"job_id": id_property(), "dry_run": {"type": "boolean", "const": True}},
+            ["job_id", "dry_run"],
+        ),
+        read_only=False,
+        allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L2_SANDBOX_PREP],
+        status="IMPLEMENTED_BASELINE",
+    ),
+    "cad.job.cancel": _tool(
+        "cad.job.cancel",
+        "取消未终态的 Mock-only 作业；不触发 CAD 回滚或任何文件写图。",
+        _input(
+            {"job_id": id_property(), "reason": {"type": "string", "minLength": 1, "maxLength": 256}},
+            ["job_id"],
+        ),
+        read_only=False,
+        allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L2_SANDBOX_PREP],
+        status="IMPLEMENTED_BASELINE",
+    ),
+    "cad.job.events": _tool(
+        "cad.job.events",
+        "读取 Mock-only 作业的有序进度事件；不订阅外部监听器。",
+        _input({"job_id": id_property()}, ["job_id"]),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
     ),
 }
 
@@ -223,12 +317,13 @@ def self_check_registry() -> dict[str, Any]:
     expected = {
         "cad.capabilities", "cad.documents.list", "cad.document.inspect",
         "cad.entities.query", "cad.entities.inspect", "cad.batch.plan",
-        "cad.batch.clone", "cad.batch.transform", "cad.job.status",
+        "cad.batch.clone", "cad.batch.transform", "cad.job.status", "cad.job.approve",
+        "cad.job.run_mock", "cad.job.cancel", "cad.job.events",
     }
     if set(NEXTGEN_TOOLS) != expected:
-        raise ValueError("NextGen registry 必须且只能包含 9 个批准工具")
+        raise ValueError("NextGen registry 必须且只能包含 S4 批准工具")
     for name, tool in NEXTGEN_TOOLS.items():
-        for required in ("name", "description", "inputSchema", "outputSchema", "version"):
+        for required in ("name", "description", "inputSchema", "outputSchema", "errorSchema", "version", "status", "available"):
             if required not in tool:
                 raise ValueError(f"{name} 缺少 registry 字段 {required}")
         if tool["name"] != name or tool["version"] != PROTOCOL_VERSION:
@@ -237,6 +332,8 @@ def self_check_registry() -> dict[str, Any]:
             raise ValueError(f"{name} 不得声明 Real backend")
         if tool["production_d1_allowed"] is not False:
             raise ValueError(f"{name} 不得放行 Production D1")
+        if tool["status"] == "NOT_IMPLEMENTED" and tool["available"] is True:
+            raise ValueError(f"{name} 未实现时不得标记 AVAILABLE")
         if tool["inputSchema"].get("additionalProperties") is not False:
             raise ValueError(f"{name} inputSchema 必须拒绝额外字段")
         if tool["outputSchema"].get("additionalProperties") is not False:

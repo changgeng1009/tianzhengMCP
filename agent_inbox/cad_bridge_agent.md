@@ -183,3 +183,13 @@ Manifest 不得提升 backend availability；require_real_execution 必须返回
 将每个 adapter 的产品状态、支持能力、required backend、限制和 execute 可用性暴露给现有 registry。HVAC 必须保持 `INTERFACE_ONLY`/非真实支持；Original GitHub Skill 仅离线规划；Real/Legacy 状态不得提升。
 
 新增针对性测试与 `artifacts/s3_product_unification/<run_id>/adapter_contract_audit.json`，更新 cad_bridge outbox。禁止任何真实 CAD/DWG/DXF/COM/Git 操作。
+# Task for cad_bridge_agent
+## Assigned by: Manager
+## Phase: CAD-S4
+## Task ID: CAD-S4-JOB-002
+## Task Description
+只在 `mcp_nextgen` 中整合 Mock-only 作业控制层：状态、进度、审批绑定、checkpoint、append-only journal、recovery/resume 与 offline/nextgen_mock simulation。禁止 CAD/COM/DWG/Real backend。
+## Expected Output
+- 最小代码与定向测试
+- `agent_outbox/cad_bridge_agent_report.md`
+- `artifacts/s4_nextgen_mcp_control_plane/<run_id>/job_control_audit.json`

@@ -57,7 +57,7 @@
   "backends": [
     {"backend_id": "offline", "status": "IMPLEMENTED", "real_execution": false},
     {"backend_id": "original_redraw_adapter", "status": "OFFLINE_MAPPING_ONLY", "real_execution": false},
-    {"backend_id": "nextgen_mock", "status": "IMPLEMENTED_BASELINE", "control_plane": "PARTIALLY_IMPLEMENTED", "real_execution": false},
+    {"backend_id": "nextgen_mock", "status": "IMPLEMENTED_BASELINE", "control_plane": "IMPLEMENTED_BASELINE", "real_execution": false},
     {"backend_id": "legacy_contract_disabled", "status": "DISABLED_CONTRACT_ONLY", "real_execution": false},
     {"backend_id": "legacy_com", "status": "NOT_IMPLEMENTED", "real_execution": false},
     {"backend_id": "nextgen_real", "status": "NOT_IMPLEMENTED", "real_execution": false},

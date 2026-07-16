@@ -177,3 +177,12 @@ Template reject error-code fix、postfix2 Phase D/E 已通过。执行最终安�
 实现/更新仅限配置与路由合同（选择现有结构最小扩展）：ProductProfile schema/registry、产品-运行时兼容选择、明确状态/required backend/capabilities。不得将 runtime_mode 继续作为 product；保留 S2 兼容 wrapper。不得接入任何真实 backend、CAD、COM。
 
 新增针对性测试和报告 `artifacts/s3_product_unification/<run_id>/product_schema_audit.json`。完成后更新 command_registry outbox，列明实际改动与状态。
+# Task for command_registry_agent
+## Assigned by: Manager
+## Phase: CAD-S4
+## Task ID: CAD-S4-PROTOCOL-001
+## Task Description
+在既有 `mcp_nextgen` Mock-only 基线上，最小完善版本化 MCP protocol、tools/resources/prompts discovery 与可审计 Tool Registry；每项工具须含 input/output/error schema 和真实状态。仅允许 offline/nextgen_mock，禁止 listener、TCP、exec/shell、CAD、COM、DWG 与任何 Real backend。
+## Expected Output
+- 代码、定向测试与 `agent_outbox/command_registry_agent_report.md`
+- `artifacts/s4_nextgen_mcp_control_plane/<run_id>/protocol_registry_audit.json`

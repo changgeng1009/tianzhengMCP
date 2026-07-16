@@ -11,7 +11,7 @@ description: 统一、安全地编排普通 AutoCAD、天正给排水、天正�
 
 不得根据 DWG 文件名猜产品，不得随意选择 `ActiveDocument`，不得将几何重合等同于工程语义完整。模式、产品或文档身份冲突时立即停止并返回标准错误码。
 
-本 Skill 已提供 `NextGenMcpMockBackend=IMPLEMENTED_BASELINE` 的离线/Mock 门面，`NextGenControlPlane=PARTIALLY_IMPLEMENTED`；两者都不代表真实 CAD 能力。NextGen 真实写入后端仍为 `NOT_IMPLEMENTED`，`NextGenMcpBackendPlaceholder` 只描述该未实现边界。天正暖通写入保持 `INTERFACE_ONLY`。
+本 Skill 已提供 `NextGenMcpMockBackend=IMPLEMENTED_BASELINE` 和 S4 `NextGenControlPlane=IMPLEMENTED_BASELINE` 的 Mock-only 控制面：13 个版本化工具、3 个只读资源、2 个安全提示，以及纯 Mock 的作业、审批、进度、checkpoint/journal 合同。它没有 listener，绝不代表真实 CAD 能力。NextGen 真实写入后端仍为 `NOT_IMPLEMENTED`，`NextGenMcpBackendPlaceholder` 只描述该未实现边界。天正暖通写入保持 `INTERFACE_ONLY`。
 
 `SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=CAD-SAFE-20260714T220937+0800` 关闭，权威最终 SHA256 为 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。`13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9` 仅是 freeze-time provenance SHA，不是当前 S2 预检或验收应使用的基线 SHA。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
 
@@ -30,7 +30,7 @@ S3 统一产品档案使用 `generic_autocad`、`tianzheng_water`、`tianzheng_h
 - `tianzheng_hvac`：`INTERFACE_ONLY`；对象/扫描/写入合同不等于天正暖通真实能力。若提供通用几何回退，其状态独立于天正对象、样式、拓扑和工程语义。
 - `offline_analysis`：`IMPLEMENTED`；只处理 JSON、代码、报告、Schema、图片/PDF 的离线规划和 Mock 证据，不读取真实 CAD 文件。
 
-`OriginalRedrawSkillAdapter` 仅把原始 GitHub Skill 的任务映射为安全的离线规划合同；它不调用原 Skill 的真实执行入口。`NextGenMcpMockBackend=IMPLEMENTED_BASELINE`，`NextGenControlPlane=PARTIALLY_IMPLEMENTED`，均不代表真实 CAD。`LegacyAdapter=DISABLED_CONTRACT_ONLY`；`NextGenRealBackend`、`Legacy COM`、`AutoCAD .NET / ObjectARX`、`Tianzheng Water/HVAC Real` 均为 `NOT_IMPLEMENTED`。
+`OriginalRedrawSkillAdapter` 仅把原始 GitHub Skill 的任务映射为安全的离线规划合同；它不调用原 Skill 的真实执行入口。S4 控制面只允许 `offline`/`nextgen_mock`：`cad.batch.plan` 和 `cad.job.*` 可管理确定性 Mock job；实体查询与 clone/transform 合同仍为 `NOT_IMPLEMENTED`，不会降级为真实执行。`LegacyAdapter=DISABLED_CONTRACT_ONLY`；`NextGenRealBackend`、`Legacy COM`、`AutoCAD .NET / ObjectARX`、`Tianzheng Water/HVAC Real` 均为 `NOT_IMPLEMENTED`。项目级控制面详情见 `docs/mcp_nextgen/08_s4_control_plane.md`；安装后的 Skill 仍以本文件和 `references/` 的离线边界为准。
 
 ## 标准流程
 

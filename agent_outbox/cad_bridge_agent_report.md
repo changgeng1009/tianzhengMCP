@@ -270,3 +270,66 @@ python -m pytest -q skills/autocad-tianzheng-automation/tests/test_skill.py test
 * Opened DWG: NO
 * Read, parsed, scanned or hashed DWG/DXF: NO
 * Imported COM/real executor: NO
+
+---
+
+## S4 Addendum — CAD-S4-JOB-002
+
+### Assigned Task
+
+`CAD-S4-JOB-002`
+
+### Files Read
+
+- `mcp_nextgen/jobs/**`、`mcp_nextgen/journal/**`、`mcp_nextgen/safety/approval.py`
+- `mcp_nextgen/runtime/mock_plugin.py`、`mcp_nextgen/control_server/**`
+- `tests/nextgen/test_nextgen_handoff.py`
+
+均为源码、测试或 synthetic 临时数据；未读取、解析、扫描或哈希 DWG/DXF。
+
+### Files Modified
+
+- `mcp_nextgen/control_server/service.py`（新增 S4 Mock-only 作业服务）
+- `mcp_nextgen/journal/models.py`（消除 journal 到 jobs 的循环导入）
+- `tests/nextgen/test_s4_control_plane_jobs.py`（新增）
+- `artifacts/s4_nextgen_mcp_control_plane/20260716T183826+0800_s4/job_control_audit.json`
+- 本 outbox 报告
+
+### Work Completed
+
+- 新增独立 S4 生命周期：`CREATED → PLANNED → APPROVED → RUNNING → COMPLETED`，并有 fail-closed 的 `FAILED` / `CANCELLED` 终态。既有 LayerD 的 `VALIDATING/READY` 恢复合同保持不变。
+- 审批强制绑定 `job_id`、`plan_hash`、`operation`、`product`、`runtime`、`expires_at` 与 single-use；不匹配、过期、已消费或任意生产授权一律拒绝。
+- 只接受 `offline/offline` 与 `mock/nextgen_mock`；拒绝 Real/Legacy/ObjectARX/COM、production 标志、DWG/DXF 路径及非 synthetic 文档身份。
+- 复用 SHA-256 append-only journal 和原子 checkpoint；审批绑定可重放，恢复时校验 checkpoint anchor、plan hash、DocumentIdentity 与完成任务集合。
+- `run()` 只执行离线/Mock 任务模拟。自定义 executor 即使声称 real backend/CAD 也会立即失败为 `REAL_BACKEND_BLOCKED`；不会得到 CAD 句柄。
+- 进度事件包含状态、完成数、总数、百分比和错误码；已完成任务不会在恢复视图中重复。
+
+### Tests Run
+
+```powershell
+$env:PYTHONPATH='.'
+$env:CAD_SAFE_TEST_RUN_DIR=Join-Path $env:TEMP 'cad-s4-job-control'
+python -m pytest -q tests/nextgen/test_nextgen_handoff.py tests/nextgen/test_s4_control_plane_jobs.py tests/s4
+```
+
+### Test Result
+
+`67 passed in 7.37s`
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Opened DWG: NO
+* Opened source DWG: NO
+* Used SendCommand: NO
+* Executed Tianzheng command: NO
+* Saved DWG: NO
+* Modified source DWG: NO
+* Read, parsed, scanned or hashed DWG/DXF: NO
+* Imported COM/real executor: NO
+* Enabled Legacy or Real backend: NO
+* Production D1 allowed: NO
+
+### Recommendation
+
+`CAD-S4-JOB-002_COMPLETE_MOCK_ONLY_CONTROL_CONTRACT`

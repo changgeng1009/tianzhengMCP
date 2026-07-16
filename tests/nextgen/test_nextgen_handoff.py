@@ -165,18 +165,26 @@ def test_server_import_surface_does_not_auto_start() -> None:
     assert SERVER_IDENTITY["production_d1_allowed"] is False
 
 
-def test_server_factory_registers_exact_nine_tools_without_running() -> None:
+def test_server_factory_registers_exact_s4_tools_without_running() -> None:
     server = create_mcp()
-    assert sorted(server._tool_manager._tools) == sorted(NEXTGEN_TOOLS)
-    assert len(server._tool_manager._tools) == 9
+    expected = {
+        "cad.capabilities", "cad.documents.list", "cad.document.inspect",
+        "cad.entities.query", "cad.entities.inspect", "cad.batch.plan",
+        "cad.batch.clone", "cad.batch.transform", "cad.job.status", "cad.job.approve",
+        "cad.job.run_mock", "cad.job.cancel", "cad.job.events",
+    }
+    assert set(server._tool_manager._tools) == expected
+    assert set(NEXTGEN_TOOLS) == expected
+    assert len(server._tool_manager._tools) == 13
 
 
 def test_tool_schema_registry_is_strict_and_versioned() -> None:
     result = self_check_registry()
-    assert result["tool_count"] == 9
+    assert result["tool_count"] == 13
     assert result["schema_version"] == PROTOCOL_VERSION
     assert all(tool["inputSchema"]["additionalProperties"] is False for tool in NEXTGEN_TOOLS.values())
     assert all(tool["outputSchema"]["additionalProperties"] is False for tool in NEXTGEN_TOOLS.values())
+    assert all(tool["errorSchema"]["additionalProperties"] is False for tool in NEXTGEN_TOOLS.values())
 
 
 def test_protocol_version_is_semver_and_negotiated() -> None:

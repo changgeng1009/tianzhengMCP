@@ -234,3 +234,74 @@ CAD-S3-DOCS-004
 ## Recommendation
 
 - 仅在 S3 全部实现和安全回归通过后，按用户授权创建阶段提交和 Tag；不得把本报告中的 Mock/接口状态升级为真实 CAD 能力。
+
+---
+
+# Agent Report
+
+## Agent Name
+
+docs_agent
+
+## Assigned Task
+
+CAD-S4-DOCS-004 — S4 控制面中文文档、Skill 知识边界与能力矩阵。
+
+## Files Read
+
+- `mcp_nextgen/control_server/{discovery,dispatcher,server,service}.py`
+- `mcp_nextgen/schemas/tools.py`
+- `docs/mcp_nextgen/{01_architecture,02_protocol,07_known_limitations}.md`
+- `skills/autocad-tianzheng-automation/SKILL.md`
+- Skill references 与 capability matrices。
+
+## Files Modified
+
+- `skills/autocad-tianzheng-automation/SKILL.md`
+- `skills/autocad-tianzheng-automation/references/{backend_model,known_limitations}.md`
+- `skills/autocad-tianzheng-automation/capabilities/{backend_matrix,product_matrix}.json`
+- `docs/mcp_nextgen/{01_architecture,02_protocol,07_known_limitations,08_s4_control_plane}.md`
+- `artifacts/s4_nextgen_mcp_control_plane/20260716T183826+0800_s4/documentation_audit.json`
+- 本 outbox。
+
+## Work Completed
+
+- 修订历史 9-tool/未接 job 描述为 S4 的 13 tools、3 resources、2 prompts。
+- 记录 `ControlPlaneService` 的 Mock-only lifecycle、approval、progress、checkpoint 与 append-only journal 边界。
+- 将 S4 Mock-only control plane 记录为 `IMPLEMENTED_BASELINE`，同时明确没有 listener、没有 Real CAD 执行。
+- 保持 NextGen Real、Legacy COM、AutoCAD .NET/ObjectARX、天正 Water/HVAC Real 为 `NOT_IMPLEMENTED`，生产权限保持 false。
+
+## Tests Run
+
+- JSON 解析：2 个能力矩阵与 `documentation_audit.json` 通过。
+- `SKILL.md` frontmatter 静态校验通过。
+- 当前 Skill/references 与现行 MCP docs 的历史 9-tool/未接 job 断言扫描：无命中。
+
+## Test Result
+
+`STATIC_DOCUMENTATION_VALIDATION=PASS`
+
+## Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened DWG: NO
+* Read/Parsed/Scanned/Hashed DWG or DXF: NO
+* Used SendCommand: NO
+* Executed Tianzheng command: NO
+* Saved DWG: NO
+* Modified source DWG: NO
+
+## Risks Found
+
+- Mock control plane 仅是协议和确定性模拟；不得被描述为 listener、Real backend、真实 CAD 或生产能力。
+- 多进程审批消费、writer fencing 与完整跨组件 checkpoint 互校验仍是后续安全工作，不在 S4 文档中伪称完成。
+
+## Remaining Work
+
+- Manager 汇总 S4 实现和测试后执行全局验收、Skill 同步、阶段报告和受用户授权的 Git 阶段操作。
+
+## Recommendation
+
+- 将 `documentation_audit.json` 作为 S4 报告的静态文档证据；在最终测试前不要将其替代回归结论。

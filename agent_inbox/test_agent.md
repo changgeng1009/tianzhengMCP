@@ -1,5 +1,23 @@
 # Task for test_agent
 ## Assigned by: Manager
+## Phase: CAD-NEXTGEN-MCP-CONTROL-PLANE-S4
+## Task ID: CAD-S4-TEST-003
+
+## Task Description
+审计并补充 S4 NextGen MCP Control Plane 的离线/Mock 安全测试。覆盖 protocol schema、Tool Registry、Job 状态机、Approval 绑定、checkpoint、append-only journal、Mock 执行流程和错误处理。先审计既有 `mcp_nextgen` 与 `tests/nextgen`，只在并行控制面 API 稳定后新增 `tests/s4/**` 或等价隔离测试；不得修改业务模块，除非 Manager 明确批准最小测试辅助修复。
+
+## Constraints
+- 禁止连接 AutoCAD、天正、COM，禁止读取、解析、扫描或哈希真实 DWG/DXF。
+- 仅运行受项目级文件访问守卫保护的默认测试；排除 real_dwg、external_integration、autocad_required、tianzheng_required、com_required、production_only。
+- 禁止 Real Backend、真实 listener、TCP/socket、exec/shell 或生产写入。
+- 使用 `tmp_path`、内存 Mock 与虚构 `mock://` 文档身份；静态 fixture 不得包含 CAD 文件。
+- 不削弱既有安全断言或访问守卫。
+
+## Expected Output
+- `tests/s4/**`（仅在现有测试未覆盖的 S4 控制面合同存在时新增）。
+- `artifacts/s4_nextgen_mcp_control_plane/<run_id>/s4_test_audit.json`。
+- 更新 `agent_outbox/test_agent_report.md`，包括测试计划、实际结果、真实 CAD 零访问和未实现边界。
+## Assigned by: Manager
 ## Phase: CAD-BASELINE-REFREEZE
 ## Task ID: REFREEZE-TEST-PREPARE-20260714T220937+0800
 ## Task Description

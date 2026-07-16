@@ -35,9 +35,10 @@
       "backend": "nextgen_mock",
       "component": "NextGenMcpMockBackend",
       "support_level": "IMPLEMENTED_BASELINE",
+      "control_plane_status": "IMPLEMENTED_BASELINE",
       "available": true,
       "execution_allowed": false,
-      "notes": "availability=AVAILABLE_FOR_MOCK；Mock-only；NextGenControlPlane=PARTIALLY_IMPLEMENTED"
+      "notes": "availability=AVAILABLE_FOR_MOCK；S4 Mock-only control plane=IMPLEMENTED_BASELINE（13 tools/3 resources/2 prompts）；无 listener，不代表真实 CAD"
     },
     {
       "backend": "legacy_contract_disabled",
