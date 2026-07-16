@@ -94,3 +94,57 @@
 在任何 S2 实现修改开始前，生成 `source_change_manifest.json` 的 before snapshot。只纳入允许的源码、测试、Schema、JSON、Markdown 和配置文件；排除 DWG/DXF、`output`、CAD 二进制、cache、`.git`、临时文件、安装目录、冻结基线和所有已登记预存变化。可以对允许的非 CAD 文本/源码文件计算 SHA256，严禁对任何 DWG/DXF 计算哈希。
 
 同时生成 `configuration_layer_matrix.json`，记录六层配置优先级及不可放宽安全字段。输出中标记 `snapshot_complete=true`、`s2_implementation_gate=PASS`，否则列出 blocker。
+
+## Mid-Implementation Safety Audit
+
+### Task ID: CAD-CONFIG-S2-SAFETY-MID-003
+
+只读审计 WP1/WP2/WP3 当前实现，确认：
+- 无 COM/CAD/Tianzheng/Real backend 连接或启动路径；
+- path resolver 不对 CAD 路径执行 open/read/stat/exists/hash/strict resolve；
+- Manifest/override 无法提升 production、L3/L4、approval 或 backend availability；
+- Mock/Contract/Interface/Placeholder 状态准确；
+- 写入 Workflow 只产生 blocked plan；
+- 214 条预存变化未被触碰，199 条删除仍排除于 S2 changes。
+
+不得修改实现；输出中间审计结果到 `agent_outbox/safety_audit_agent_report.md` 的追加章节，并列出 BLOCKER 或 PASS。不得读取 CAD 文件内容。
+
+## Unexpected Git State Incident
+
+### Task ID: CAD-CONFIG-S2-GIT-INCIDENT-004
+
+S2 期间检测到未经 Manager 授权的 Git 状态变化：分支由起始 `main` 切换为 `codex/cadskill`，HEAD 由 `854eb0f4f2c155c662ff8e346390216c64003903` 经 `ea7dea21c3a1e71efa3bbfe0350984c61bc1f90b` 变为 `b989d0a1ed227e145060859c7609416c980924b3`。后一个 commit 包含 WP3/docs/tests，前一个 commit 同时包含 S2 WP1/WP2 和用户确认但明确禁止在 S2 提交的 199 条预存删除。三名执行 Agent 均书面声明未执行 git add/commit/push/checkout/switch/merge/rebase。
+
+仅基于 Git 元数据生成：
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/unexpected_git_state_incident.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/unexpected_git_state_incident.md`
+
+记录 branch、HEAD、reflog 时间、commit metadata、name-status 分类计数、是否含199条预存删除、upstream/remote-tracking本地可见状态、Agent归因声明、未执行恢复/清理/历史改写、对 S2 source snapshot 的影响。不得读取 commit 中任何 DWG/DXF blob，不得修改 Git、实现或删除状态。最终裁决为 `CAD_CONFIG_DRIVEN_S2_BLOCKED_UNAUTHORIZED_GIT_STATE_CHANGE`。
+
+## User Authorization Revision
+
+### Task ID: CAD-CONFIG-S2-GIT-AUTH-005
+
+用户已明确追认当前分支 `codex/cadskill`、HEAD `b989d0a1ed227e145060859c7609416c980924b3`、提交 `ea7dea21c3a1e71efa3bbfe0350984c61bc1f90b` 与 `b989d0a1ed227e145060859c7609416c980924b3`，以及 `暖通课程设计/**` 下 199 条删除。撤销先前阻断，将状态修订为 `USER_AUTHORIZED_GIT_STATE_CHANGE`。
+
+不得删除原事故记录；向以下文件追加修订：
+- `unexpected_git_state_incident.json`
+- `unexpected_git_state_incident.md`
+- `safety_audit_agent_report.md`
+- `s2_preexisting_worktree_changes.json`
+
+生成 `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/user_authorized_git_state_confirmation.json`。199 条删除分类改为 `USER_CONFIRMED_INTENTIONAL_DELETION`，并标记 `authorized_by_user=true`、`occurred_before_current_s2_continuation=true`、`accepted_as_current_repository_state=true`、排除于后续 S2 change manifest。
+
+复核正式 verifier 当前 10 个 source drift 记录，只读取 verifier 输出与非 CAD 路径元数据，不读取任何 DWG/DXF blob。准确记录：verifier overall FAIL、source manifest false、checksum/closure true；若全部漂移仅由用户确认提交和本阶段获批 S2 源变化造成，输出 `authorized_source_drift_only=true`、`git_state_gate=PASS`、`continue_s2=true`。不得把 verifier 本身伪报为 PASS。
+
+## Post-S2 Git and Source Freeze Audit
+
+### Task ID: CAD-POST-S2-FREEZE-GIT-001
+
+冻结目录：`artifacts/post_s2_baseline_freeze/20260716T170858+0800_post_s2`。
+
+仅审计并生成：`git_state_snapshot.json` 与 `source_manifest.json`。记录 branch、HEAD、commit_time、git status、log -1、remote、diff/diff-stat、working tree、authorized changes、uncommitted changes。当前 `codex/cadskill`/`b989d0a...`、两提交及 `暖通课程设计/**` 199 删除均为用户确认状态，不得重新判为事故。
+
+source manifest 仅纳入源码、Schema、测试、Skill、文档、配置和脚本；排除 `.git`、cache、logs、artifacts、临时文件、用户数据、DWG/DXF。每项记录 path/type/SHA256/size/mtime；仅能计算非CAD文件哈希。明确 `real_cad_file_count=0`、`dwg_read_count=0`、`dxf_read_count=0`。
+
+若发现本次冻结开始后新增未解释的源码路径，列出为 blocker；不得修改任何业务源码、Git或CAD文件。更新 safety outbox。

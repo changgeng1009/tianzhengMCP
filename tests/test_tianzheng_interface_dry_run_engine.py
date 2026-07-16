@@ -223,7 +223,29 @@ class TestNoRealCADAccess:
 
     def test_no_autocad(self):
         import sys
-        for mod_name in list(sys.modules.keys()):
-            assert "autocad" not in mod_name.lower(), (
-                f"不应导入 AutoCAD 相关模块: {mod_name}"
-            )
+        from tests.safety.pytest_plugin import CAD_ACCESS_GUARD
+
+        # 离线 Skill 模块名可以包含 generic_autocad；真实连接库仍必须明确阻断。
+        forbidden_roots = {
+            "autocad",
+            "pyautocad",
+            "win32com",
+            "pythoncom",
+            "comtypes",
+        }
+        loaded_real_modules = sorted(
+            name
+            for name in sys.modules
+            if name.split(".", 1)[0].lower() in forbidden_roots
+        )
+        assert loaded_real_modules == [], (
+            f"不应导入真实 AutoCAD/COM 连接模块: {loaded_real_modules}"
+        )
+        assert not any(
+            event["operation"] in {
+                "autocad_com_connection.completed",
+                "tianzheng_connection.completed",
+            }
+            or event["reason"] == "cad_process_started"
+            for event in CAD_ACCESS_GUARD._events
+        ), "不应建立 AutoCAD/天正/COM 连接或启动 CAD 进程"

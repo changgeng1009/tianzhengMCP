@@ -326,3 +326,220 @@ Canonical 数据流固定为：
 ## Recommendation
 
 在 G0 通过后进入 WP1；优先锁定 Schema/version/error/canonical contract，再并行配置核心与静态 adapter/backend 合同。任何真实 CAD、权限提升或非计划源码变化均 fail-closed。最终 CAD-CONFIG-S2 只能宣称离线配置驱动和 NextGen Mock 可用，不得宣称真实执行。
+
+---
+
+## S2 Completion Audit Addendum（只读，基于用户确认的 `codex/cadskill`）
+
+### Audit Basis
+
+- 分支：`codex/cadskill`。
+- HEAD：`b989d0a1ed227e145060859c7609416c980924b3`。
+- 用户已确认 `ea7dea21…`、`b989d0a1…` 和 `暖通课程设计/**` 的 199 条删除均为授权的当前仓库状态；本审计未恢复、变更或读取其中任何文件。
+- 仅读取 Python、JSON、Markdown、Schema、Git 元数据与模板路径；未运行 pytest，未改动 Skill、源码、测试、安装目录或 Git。
+
+### 已完成实现盘点
+
+| 域 | 结论 | 只读证据 |
+|---|---|---|
+| Schema / 迁移 | 已完成 | canonical `project_manifest.schema.json=1.1.0`、兼容 `1.0/1.0.0` schema、`ManifestVersionPolicy`、`ManifestMigrator`；未知字段 fail-closed。 |
+| 默认值 / 安全合并 | 已完成 | 6 层 `DefaultResolver`、逐字段 `DefaultSourceTrace`/`MergeTrace`、权限 AND、强制项 OR、allowlist 交集、denylist/protected/product 能力并集、approval 禁止继承。 |
+| 路径 | 已完成（纯词法） | `ManifestPathResolver` 不调用 exists/stat/open/hash/resolve；处理相对路径、`..`、UNC、外部路径、大小写/斜杠、source/output collision、禁止 Skill/原始 Skill 输出。 |
+| Runtime / Product / Backend | 已完成 | 5 runtime mode、冲突 fail-closed、4 个 Product adapter 静态合同、Backend registry。offline/original adapter/nextgen_mock 可选；legacy 为 `DISABLED_CONTRACT_ONLY`；所有 Real backend=`NOT_AVAILABLE`。 |
+| Workflow | 已完成 | 机器可读 workflow JSON 11 个，覆盖原 S2 指定的 11 项；真实写入相关 workflow 以 `NOT_EXECUTABLE_CURRENTLY`/blocked plan 表示。 |
+| Execution Plan | 已完成 | `ExecutionPlanBuilder/Canonicalizer/Hasher/Validator`，计划 ID 从 hash 派生；排除时间、临时目录、随机 ID、notes 等非语义字段。 |
+| CLI | 已完成 | 保留旧入口，新增 manifest/config/runtime/product/backend/workflow/plan/simulate/templates 分组入口；仅 JSON，默认 offline，simulate 仅允许 offline/nextgen_mock。 |
+| 模板 | 已完成 | 10 个虚构、相对路径 canonical 模板，附 catalog/capability matrix；Water completion/HVAC write 均声明 blocked。 |
+| 测试 | 已实现但本审计未执行 | `tests/config_driven` 与 `tests/config_cli` 已存在；`requirement_test_map.json` 映射 1–100 项要求。 |
+| 文档 | 已完成 | 13 份 S2 文档均存在：架构、Manifest、迁移、合并、路径、路由、后端、workflow、计划确定性、CLI、安全、模板、限制。 |
+
+### 安全虚报与缺口
+
+1. **需要最小修订：基线 provenance 文案不一致。** `SKILL.md`、`README.md`、`CHANGELOG.md`、`references/known_limitations.md`、`references/safety_model.md` 仍将 freeze-time SHA `13dc72…` 写成 current baseline SHA；能力矩阵和权威输入为 `CAD-SAFE-20260714T220937+0800` / final SHA `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。须更新为最终权威基线；可保留 `13dc72…`，但只能明确标记为 self-reference/freeze-time provenance，绝不能作为 S2 precheck 输入。
+2. **需要最小修订：SKILL.md 尚未直接展示 S2 CLI 使用法。** 它仍主要列旧 `inspect-manifest`、`validate-manifest`、`select-runtime`、`build-plan` 示例；应补充创建/验证/解释/迁移 Manifest、计划构建、offline/nextgen_mock simulation，以及“配置不能代替审批/不能提升 backend”的明确入口说明。
+3. **审批追踪仅部分显式。** `safety/approval.py` 会校验 consumed、expiry 和 scope bindings，但 S2 `ExecutionPlan.approval_requirement` 目前仅输出 `approval_reference_present`、`approval_verified=false`、`single_use`。若按原 S2 第十七节逐字段输出要求验收，应增加或在报告中明确 `approval_declared/consumed/expired/scope_match` 均为未验证状态；当前不得声称 approval 已验证。
+4. **符号链接/junction 检查为运行时观察接口。** `ManifestPathResolver` 有 `validate_runtime_boundary_observation`，但为遵守本阶段零文件系统探测，不自行检测。文档必须继续称为 `runtime_boundary_verification_required`，不能声称 S2 已物理解析链接边界。
+5. **模板 create 的输出锚点是显式调用时的 cwd。** 这不会读写 CAD，且需要 `--output`，但不同于 Manifest 文档路径“相对于 Manifest 目录”的规则；建议 CLI 文档明确其仅用于创建 JSON 模板，或后续增加显式 `--project-root`。本项不构成 Real CAD 风险。
+
+### 未发现的安全虚报
+
+- `simulate_plan` 明确输出 `real_execution=false`、`real_cad_capability=false`、CAD/COM/天正连接均为 false、子进程为 false。
+- Backend Registry 不允许 Manifest 覆盖 availability/support level；`require_real_execution=true` fail-closed，不能自动改用 Mock。
+- `ManifestPathResolver` 与 file guard 未打开、扫描、哈希 DWG/DXF；CLI JSON 输入入口先拒绝 `.dwg/.dxf`。
+- Generic/Water/HVAC/NextGen 状态未提升为真实 CAD 能力；Legacy 仍为合同禁用状态。
+
+### 最终仍需的 Evidence / Sync 步骤
+
+1. 在完成上述最小文档/追踪修订后，运行规定的 config、Skill、NextGen、CLI 与默认安全回归；本审计不把存在测试文件等同于测试 PASS。
+2. 将各阶段结果汇总到根输出目录，补齐尚未出现的 manifest/version/migration、默认/merge/path、routing/product/backend/workflow、template/plan/CLI、测试/安全回归、known limitations、final report 等规定 artifact。
+3. 更新并关闭 `source_change_manifest.json`：将 199 条用户确认删除作为 `USER_CONFIRMED_INTENTIONAL_DELETION` 预存状态排除，不能归入本次 S2 新增变更；不得读取其 CAD 内容。
+4. 仅在测试成功后执行 Skill quick_validate、安装 dry-run、实际同步、源/安装 SHA256 校验、安装态 CLI/10 模板验证；不得删除未知安装文件或触碰原始 GitHub Skill。
+5. 最终报告需说明本次直接基于用户授权的 branch/HEAD 继续，未执行 Git 恢复、历史改写、新提交或推送。
+
+### Audit Decision
+
+`CAD_CONFIG_S2_IMPLEMENTATION_SUBSTANTIALLY_COMPLETE_REQUIRES_FINAL_EVIDENCE_AND_MINIMAL_PROVENANCE_FIXES`
+
+本审计不构成测试通过或安装同步完成的声明。
+
+---
+
+## CAD-CONFIG-S2-FINAL-ARTIFACT-PLAN-002（只读盘点）
+
+### 审计范围与当前结论
+
+- 规范要求的根输出 artifact 为 32 项；当前根目录中存在 6 项同名 JSON：`baseline_precheck`、`existing_manifest_audit`、`configuration_layer_matrix`、`safe_default_regression_results`、`default_test_file_access_summary`、`source_change_manifest`。
+- 其中 `baseline_precheck.json`、`existing_manifest_audit.json` 与 `source_change_manifest.json` 仍引用旧起点 `main/854eb0f4...`，并带有已被用户解除的 preexisting/Git 阻断结论；它们不能原样作为最终 S2 证据，必须保留原文件并以附加修订或新的最终字段重新生成。
+- `test_runs/` 已有可复用的最终阶段原始日志：config `102 passed`、Skill `64 passed`、NextGen `47 passed`、CLI `29 passed`、默认安全回归 `1726 passed, 1 skipped, 0 failed`；每个最终阶段的文件访问摘要均为 real DWG reads/writes、CAD、COM、天正均 0。它们需要由 test_agent 汇总为规定的根 artifact，不能只依赖日志目录。
+- 本规划未运行 pytest、sync、CLI、Git；未读取任何 DWG/DXF。
+
+### 32 项最终 Artifact 生成清单
+
+| # | Artifact | 应生成的直接证据 | 当前缺口 / 最终动作 | 责任阶段 |
+|---:|---|---|---|---|
+| 1 | `baseline_precheck.json` | 正式 verifier JSON、权威 baseline `CAD-SAFE-20260714T220937+0800`、final SHA `87b995...`、当前 branch/HEAD 只读元数据 | 已存在但引用旧 `main/854...` 且旧阻断；追加用户授权 Git 状态修订，保留原审计字段 | safety_audit_agent |
+| 2 | `existing_manifest_audit.json` | canonical schema、兼容 schema、loader/migrator/CLI/routing/plan 只读盘点 | 已存在但旧阻断结论；更新为当前实现审计和最小 provenance 缺口 | command_registry_agent |
+| 3 | `manifest_schema_change_report.json` | v1.0 与 v1.1.0 schema 结构 diff、未知字段策略、兼容 wrapper | 缺失；从 schema 与 migrator 生成，不含任何 CAD 文件读取 | command_registry_agent |
+| 4 | `manifest_version_matrix.json` | `ManifestVersionPolicy`、支持范围、too-old/new/unknown error 测试 | 缺失；由版本模块与 config 测试结果汇总 | command_registry_agent + test_agent |
+| 5 | `manifest_migration_matrix.json` | v1.0/1.0.0→1.1.0 migration cases、deprecated/unknown-field cases | 缺失；由 migrator 的 synthetic manifests 与测试结果汇总 | command_registry_agent + test_agent |
+| 6 | `configuration_layer_matrix.json` | 六层 defaults、优先级、non-relaxable fields、array merge policy | 已存在且结构可复用；复核是否反映最终实现，必要时最小更新 | planning_agent / safety_audit_agent |
+| 7 | `default_registry.json` | 六个 defaults JSON、`DefaultResolver` 与逐字段 source trace | 缺失；导出 registry、来源枚举与 forced-safe defaults | command_registry_agent |
+| 8 | `config_merge_policy.json` | `SecurityAwareMergePolicy`、安全字段 AND/OR、allow/deny/protected 规则、approval 禁止继承 | 缺失；从实现与静态 policy 生成 | command_registry_agent + safety_audit_agent |
+| 9 | `security_merge_test_results.json` | config merge 定向 pytest JUnit、要求 17–24 的映射 | 缺失；从 `phase_a_config_final` JUnit/测试选择器生成 | test_agent |
+| 10 | `path_resolution_policy.json` | `ManifestPathResolver`、词法规范化、traversal/UNC/external/collision/skill-dir 阻断测试 | 缺失；明确“未物理跟随链接、未打开 CAD” | command_registry_agent + safety_audit_agent |
+| 11 | `runtime_routing_matrix.json` | RuntimeSelector、五模式、优先级、冲突/禁止产品 fail-closed 测试 | 缺失；由 routing contracts 和 config tests 导出 | intent_mapper_agent |
+| 12 | `product_adapter_matrix.json` | 四 Product Adapter 合同、capability/limitation、真实后端状态 | 缺失；不得把 Water/HVAC/Generic 的 planning 状态写成真实 CAD 执行 | cad_bridge_agent |
+| 13 | `backend_selection_matrix.json` | BackendRegistry/capability matrix、offline/original/nextgen_mock、Legacy disabled、Real unavailable | 缺失；覆盖 require-real 阻断及禁止自动 Mock fallback | cad_bridge_agent |
+| 14 | `workflow_registry.json` | 11 个机器可读 workflow JSON、supported mode/product/backend、可执行状态 | 缺失；写入类 workflow 必须为 `NOT_EXECUTABLE_CURRENTLY` | intent_mapper_agent |
+| 15 | `template_catalog.json` | 10 个 synthetic canonical template、catalog、capability matrix | 缺失；列出虚构/project-relative/synthetic 属性 | intent_mapper_agent |
+| 16 | `template_validation_results.json` | 10 模板 schema/resolve/blocked-plan 验证、JUnit 或 CLI JSON | 缺失；不能通过读取引用 CAD 来验证 | test_agent |
+| 17 | `execution_plan_schema.json` | `schemas/execution_plan.schema.json`、plan contract、required/blocked fields | 缺失；从 schema 静态导出 canonical copy/摘要 | command_registry_agent |
+| 18 | `execution_plan_determinism_results.json` | execution-plan tests、同输入 hash/stage 一致、semantic delta 不同 | 缺失；从 config plan JUnit/test vectors 汇总 | test_agent |
+| 19 | `plan_hash_test_vectors.json` | canonical input/output hash vectors：键序、时间、斜杠、notes、语义变更、mismatch | 缺失；仅 synthetic JSON，禁止文档内容/真实路径 | test_agent |
+| 20 | `cli_command_matrix.json` | `skill_cli --help`/parser contract、旧命令兼容、新分组命令、exit codes | 缺失；从实际 CLI parser 静态/安全调用生成 | command_registry_agent |
+| 21 | `cli_test_results.json` | `phase_d_cli_final` JUnit/pytest output、guard summary | 缺失；当前可用原始证据为 `29 passed` | test_agent |
+| 22 | `config_unit_test_results.json` | `phase_a_config_final` JUnit/pytest output、requirement map、guard summary | 缺失；当前可用原始证据为 `102 passed` | test_agent |
+| 23 | `skill_test_results.json` | `phase_b_skill_final` JUnit/pytest output、guard summary、baseline provenance wording test | 缺失；当前可用原始证据为 `64 passed`；先完成 provenance 文案最小修订再复跑 | test_agent |
+| 24 | `nextgen_test_results.json` | `phase_c_nextgen` JUnit/pytest output、Mock-only contract | 缺失；当前可用原始证据为 `47 passed`，需明确无 real backend | test_agent |
+| 25 | `safe_default_regression_results.json` | 最终 six-marker pytest JUnit/stdout、收集/通过/失败/跳过/警告 | 已存在且记录 `1726/0/1`；应与当前最终复跑或其 immutable logs 核对并补版本/commit context | test_agent |
+| 26 | `default_test_file_access_summary.json` | 默认安全回归最终 guard JSON/log 汇总 | 已存在且为 `PASS_ZERO_REAL_CAD_ACCESS`；需将最终 run 证据、real backend=0 一并引用 | safety_audit_agent + test_agent |
+| 27 | `source_change_manifest.json` | S2 前快照、当前源/测试/Schema/文档/配置清单、before/after hash、排除规则 | 已存在但旧 `854...` 起点；更新为“用户授权当前基础”并单独排除 199 条 `USER_CONFIRMED_INTENTIONAL_DELETION`；不读取其内容 | planning_agent |
+| 28 | `installation_manifest.json` | quick_validate、sync dry-run/apply 输出、新增/更新/不变/冲突列表、未知文件未删除声明 | 缺失；只在全部测试 PASS 后生成 | command_registry_agent |
+| 29 | `installation_hash_verification.json` | 源/安装目录对应文件 SHA256、数量、mismatch=0、原始 GitHub Skill unchanged | 缺失；只哈希 Skill 源/安装的非 CAD 文件 | command_registry_agent + safety_audit_agent |
+| 30 | `known_limitations.json` | adapter/backend/workflow statuses、approval/provenance/link boundary、禁止 real CAD 边界 | 缺失；必须将 NextGen Mock 与真实执行明确区分 | docs_agent + safety_audit_agent |
+| 31 | `s2_final_report.md` | 上述 1–30 完整索引、验收矩阵、Git 用户确认、最终状态 | 缺失；只在所有证据一致后生成 | docs_agent |
+| 32 | `s2_final_report.json` | 与 Markdown 一致的结构化最终裁决、32 项 artifact 索引、关闭条件 | 缺失；不得在安装/测试未完成时声明 COMPLETE | docs_agent + safety_audit_agent |
+
+### 可直接执行的收尾顺序
+
+1. **修订入口证据而不覆盖历史**：将用户授权 Git 状态写入 #1、#2、#27 的 revision/decision 字段；#27 显式排除 199 条 `USER_CONFIRMED_INTENTIONAL_DELETION`，不枚举或读取其 CAD 内容。
+2. **最小 provenance/approval 文案修复**：将 Skill 的 `13dc72...` 标记为 freeze-time self-reference provenance，S2 precheck 使用 `87b995...`；补齐 S2 CLI 指引与未验证 approval 子状态。不得提升 backend、approval 或 production。
+3. **先生成实现证据 #3–#8、#10–#15、#17、#20、#30**：只读取 Python/JSON/Markdown/Schema；所有导出应有 `generated_at` 但 hash 输入与关键结论分离，确保可重复。
+4. **在守卫下复跑并汇总 #9、#16、#18–#26**：固定采用各阶段最后成功的同类命令；若因修订触发重跑，则只以新 JUnit/stdout/guard summary 为最终依据。任何真实 CAD/COM/Real backend 事件立即停止。
+5. **安装与独立核对 #28–#29**：仅测试全绿后 `quick_validate → dry-run → apply → hash verify → 安装态 CLI/10 templates`；禁止删除未知安装文件，禁止触碰原始 GitHub Skill。
+6. **关闭 #31–#32**：由 docs_agent 汇总、safety_audit_agent 签核；最终状态只能由实际测试、安装和零访问证据决定。
+
+### 当前可复用原始证据（不等于最终汇总）
+
+- `test_runs/phase_a_config_final/pytest_output.txt`：`102 passed`。
+- `test_runs/phase_b_skill_final/pytest_output.txt`：`64 passed`。
+- `test_runs/phase_c_nextgen/pytest_output.txt`：`47 passed`。
+- `test_runs/phase_d_cli_final/pytest_output.txt`：`29 passed`。
+- `test_runs/phase_e_default_regression_final/pytest_output.txt`：`1726 passed, 1 skipped, 1 warning`。
+- 各上述 final 目录的 `default_test_file_access_summary.json`：成功真实 DWG 读/写、CAD 进程、COM、天正均为 `0`。
+
+### Planning Decision
+
+`CAD_CONFIG_S2_FINAL_ARTIFACTS_READY_FOR_EVIDENCE_GENERATION`
+
+前提：Manager 先接受本次用户授权 Git 状态修订；随后以当前实现为基础完成最小安全文案修订、受守卫测试、安装同步和最终证据汇总。任何最终 artifact 都不得复活旧 Git 事故结论、不得以 Mock 冒充真实 CAD、不得包含或读取任何 DWG/DXF。
+
+---
+
+## CAD-CONFIG-S2-ARTIFACTS-010 完成报告
+
+### 已完成
+
+- 已在 `artifacts/cad_config_driven_s2/20260715T113724+0800_s2` 生成或更新 28/28 项本任务指定的根 artifact，并额外创建 `installation_manifest.json`、`installation_hash_verification.json` 作为待安装验收占位证据。
+- 已补齐 Schema、版本/迁移、默认值、安全合并、路径、runtime/product/backend/workflow、模板、Execution Plan、CLI、A–E 测试汇总、限制与最终报告。
+- `source_change_manifest.json` 已保留原始 before-S2 snapshot，并追加用户授权 Git 状态修订；199 条 `暖通课程设计/**` 删除均按 `USER_CONFIRMED_INTENTIONAL_DELETION` 排除。
+- 历史 `unexpected_git_state_incident.*` 未删除；其已有授权修订保留，当前裁决为 `USER_AUTHORIZED_GIT_STATE_CHANGE`。
+
+### 可复用测试证据
+
+| 域 | 结果 |
+|---|---:|
+| Config | 104 passed, 0 failed |
+| Skill | 64 passed, 0 failed |
+| NextGen Mock | 47 passed, 0 failed |
+| CLI | 29 passed, 0 failed |
+| 默认安全回归 | 1728 passed, 0 failed, 1 skipped, 1 warning |
+
+所有上述阶段证据中的真实 DWG 成功读写、CAD 进程、AutoCAD COM 与天正连接均为 0；未将 Mock、合同或 placeholder 写成真实 CAD 能力。
+
+### 未执行事项 / 当前状态
+
+- 未运行 pytest、CLI、sync 或任何 Git 写操作；本子任务只复用既有最终证据并进行 JSON 语法/清单校验。
+- 未读取、打开、扫描或哈希 DWG/DXF；未连接 AutoCAD、天正或 COM。
+- Skill 安装 quick_validate、dry-run、实际同步、源/安装哈希比较、安装态 CLI/模板验证仍由安装验收步骤完成。
+
+### 结果
+
+`PENDING_INSTALLATION_VERIFICATION`
+
+---
+
+## CAD-CONFIG-S2-FINALIZE-015 完成报告
+
+### Files Read
+
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/postfix2_regression_results.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_hash_verification.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/source_change_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/known_limitations.json`
+- `agent_outbox/command_registry_agent_report.md`
+
+### Files Modified
+
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/source_change_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/known_limitations.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/s2_final_report.md`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/s2_final_report.json`
+- `agent_outbox/planning_agent_report.md`
+
+### Work Completed
+
+- 用 postfix2 最终证据回填 Phase D=`32 passed` 和 Phase E=`1731 passed, 0 failed, 1 skipped, 1 warning`。
+- 用最终安装验收回填 131/131 源/安装非 CAD 文件哈希一致、安装态 `create -> validate -> plan` 通过，以及安装目录输出 fail-closed 为 exit 6。
+- 保留历史 `installation_postfix_verification.json` 的旧 exit-code mismatch 事实；最终报告明确它已被 TEMPLATE-REJECT-013 最小修正与 INSTALL-FINAL-014 后置验收取代，而非删除或覆盖。
+- 将用户确认的分支、HEAD、两个提交和199条预存删除记录为当前基础；删除保持排除，未读取其CAD内容。
+- 如实保留基线限制：current-source verifier 的 source manifest 因10项获批S2源码漂移为 FAIL，checksum/closure 为 PASS，未知漂移为0；不将其伪报为当前源码冻结。
+- 34项终稿状态设置为 `CAD_CONFIG_DRIVEN_S2_COMPLETE`。
+
+### Evidence Consistency
+
+| 项目 | 最终证据 |
+|---|---|
+| A Config | 104 passed |
+| B Skill | 64 passed |
+| C NextGen | 47 passed |
+| D CLI postfix2 | 32 passed |
+| E 默认安全回归 postfix2 | 1731 passed, 0 failed, 1 skipped, 1 warning |
+| 真实DWG读/写 | 0 / 0 |
+| AutoCAD/天正/COM/Real backend | 0 / 0 / 0 / 0 |
+| 安装同步 | PASS，131/131 SHA256 一致 |
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened/Read/Parsed/Scanned/Hashed DWG or DXF: NO
+* Executed Real backend: NO
+* Executed pytest, sync or Git command: NO
+* Modified implementation or original GitHub Skill: NO
+
+### Result
+
+`CAD_CONFIG_DRIVEN_S2_COMPLETE`

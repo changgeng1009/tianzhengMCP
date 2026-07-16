@@ -12,8 +12,9 @@
 
 `SEC-FINAL-019` 已关闭，冻结基线：
 
-- `current_safe_baseline_id=20260714T220937+0800`
-- `baseline_sha256=13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`
+- `current_safe_baseline_id=CAD-SAFE-20260714T220937+0800`
+- `baseline_sha256=87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`
+- `freeze_time_provenance_sha256=13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`（仅保留来源记录，不可作为当前 S2 基线 SHA）
 - `parent_baseline_id=20260714T193554+0800_s2_1`
 - `parent_baseline_sha256=226281f3a2bb29e72fe9978d6cffcd0fe84c83be1d7f7091ee95df5361f3bcf1`
 - `triggering_change=intentional AGENTS.md update`

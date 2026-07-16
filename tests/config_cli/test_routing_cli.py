@@ -2,20 +2,22 @@ from __future__ import annotations
 
 import json
 
-from scripts.skill_cli import main
+from tests.config_cli._cli_loader import main
 
 
 def _invoke(capsys, *args):
     code = main(["--json", *map(str, args)])
-    return code, json.loads(capsys.readouterr().out)
+    envelope = json.loads(capsys.readouterr().out)
+    return code, envelope["result"]
 
 
 def test_req_079_config_resolve(capsys, cli_manifest):
     path, _ = cli_manifest
     code, output = _invoke(capsys, "config", "resolve", path)
     assert code == 0
-    assert output["resolved"]["safety"]["production_allowed"] is False
-    assert output["source_trace"]
+    assert output["manifest"]["safety"]["production_allowed"] is False
+    assert output["resolution"]["source_trace"]
+    assert output["paths"]["filesystem_accessed"] is False
 
 
 def test_req_080_runtime_select(capsys, cli_manifest):

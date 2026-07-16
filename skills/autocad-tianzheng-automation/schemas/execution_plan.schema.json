@@ -14,7 +14,22 @@
     "product_mode": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "unknown"]},
     "backend": {"type": "string", "minLength": 1},
     "workflow_id": {"type": "string", "minLength": 1},
-    "approval_requirement": {"type": "object"},
+    "approval_requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_level", "approval_required", "approval_declared", "approval_reference_present", "approval_verified", "approval_consumed", "approval_expired", "approval_scope_match", "single_use"],
+      "properties": {
+        "required_level": {"enum": ["L0_READ_ONLY", "L1_DRY_RUN", "L2_SANDBOX_PREP", "L3_SANDBOX_WRITE", "L4_CONTROLLED_PRODUCTION"]},
+        "approval_required": {"type": "boolean"},
+        "approval_declared": {"type": "boolean"},
+        "approval_reference_present": {"type": "boolean"},
+        "approval_verified": {"const": false},
+        "approval_consumed": {"const": "UNVERIFIED"},
+        "approval_expired": {"const": "UNVERIFIED"},
+        "approval_scope_match": {"const": "UNVERIFIED"},
+        "single_use": {"const": true}
+      }
+    },
     "document_requirements": {"type": "array", "items": {"type": "object"}},
     "protected_regions": {"type": "array", "items": {"type": "object"}},
     "operation_allowlist": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},

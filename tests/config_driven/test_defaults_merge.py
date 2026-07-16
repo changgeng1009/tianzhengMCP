@@ -77,11 +77,13 @@ def test_req_020_denylist_is_union():
 
 
 def test_req_021_allowlist_is_intersection():
-    value, _ = ConfigMerger().merge_layers([
+    value, trace = ConfigMerger().merge_layers([
         ("system_default", {"safety": {"operation_allowlist": ["inspect", "report"]}}),
         ("project_manifest", {"safety": {"operation_allowlist": ["inspect", "write"]}}),
     ])
-    assert value["safety"]["operation_allowlist"] == ["inspect"]
+    # 空 trust root 是系统的 fail-closed 起点；后续配置只能做交集，不能自行扩权。
+    assert value["safety"]["operation_allowlist"] == []
+    assert all(item.policy == "allowlist_intersection" for item in trace)
 
 
 def test_req_022_protected_regions_are_union():

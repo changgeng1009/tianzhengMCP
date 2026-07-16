@@ -19,6 +19,7 @@ from safety.approval import ApprovalContext, validate_approval
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = json.loads((ROOT / "schemas/project_manifest.schema.json").read_text(encoding="utf-8"))
+V1_SCHEMA = json.loads((ROOT / "schemas/project_manifest_v1_0.schema.json").read_text(encoding="utf-8"))
 
 
 def load_example(name="plain_autocad_redraw.json"):
@@ -46,7 +47,10 @@ def test_08_auto_detect_conflict():
     with pytest.raises(RuntimeModeConflict): select_runtime(manifest)
 def test_09_offline_analysis(): assert select_runtime(load_example("offline_pdf_to_cad_plan.json")).product == "offline"
 @pytest.mark.parametrize("name", ["plain_autocad_redraw.json", "plain_autocad_compare.json", "tianzheng_water_completion.json", "tianzheng_hvac_inspection.json", "offline_pdf_to_cad_plan.json"])
-def test_10_manifest_schema(name): jsonschema.validate(load_example(name), SCHEMA)
+def test_10_manifest_schema(name):
+    manifest = load_example(name)
+    schema = V1_SCHEMA if manifest["schema_version"] in {"1.0", "1.0.0"} else SCHEMA
+    jsonschema.validate(manifest, schema)
 def test_11_no_project_paths_hardcoded():
     for file in (ROOT / "examples").glob("*.json"):
         text = file.read_text(encoding="utf-8")
@@ -74,13 +78,13 @@ def test_21_capability_support_levels():
     text = (ROOT / "capabilities/tianzheng_hvac.json").read_text(encoding="utf-8")
     assert '"INTERFACE_ONLY"' in text and '"write_supported":false' in text
 def test_22_checkpoint_fields():
-    text = (ROOT / "schemas/project_manifest.schema.json").read_text(encoding="utf-8")
+    text = (ROOT / "schemas/checkpoint.schema.json").read_text(encoding="utf-8")
     assert all(x in text for x in ["last_completed_batch_id", "completed_batch_count", "completed_task_count"])
 def test_23_no_hardcoded_completed_batch():
     for file in ROOT.rglob("*.py"):
         assert not re.search(r"last_completed_batch_id\s*=\s*['\"](?:batch)?\d+", file.read_text(encoding="utf-8"))
 def test_24_manual_save_status(): assert "MANUAL_SAVE_REQUIRED" in (ROOT / "schemas/checkpoint.schema.json").read_text(encoding="utf-8")
-def test_25_protected_region(): assert "protected_regions" in SCHEMA["properties"]
+def test_25_protected_region(): assert "protected_regions" in SCHEMA["$defs"]["safety"]["properties"]
 def test_26_original_file_write_forbidden(): assert "禁止写入源 DWG" in (ROOT / "safety/document_guard.py").read_text(encoding="utf-8")
 def test_27_visual_review_required(): assert all(load_example(p.name)["visual_review_required"] for p in (ROOT / "examples").glob("*.json"))
 def test_28_engineering_semantic_status(): assert "MANUAL_REVIEW_REQUIRED" in (ROOT / "capabilities/tianzheng_water.json").read_text(encoding="utf-8")
@@ -106,7 +110,7 @@ def test_security_finding_closed_with_frozen_baseline():
     assert finding["status"] == "CLOSED"
     assert finding["closure_claim_allowed"] is True
     assert finding["baseline_id"] == "20260714T220937+0800"
-    assert finding["baseline_sha256"] == "13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9"
+    assert finding["baseline_sha256"] == "87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff"
     assert finding["parent_baseline_id"] == "20260714T193554+0800_s2_1"
     assert finding["triggering_change"] == "intentional AGENTS.md update"
     assert finding["default_test_real_dwg_access_count"] == 0

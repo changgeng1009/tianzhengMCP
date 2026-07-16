@@ -52,3 +52,30 @@ WP1 公共配置 API 已稳定，WP2 已完成，WP3 正在实施。现在创建
 覆盖原需求 100 项测试域，允许按参数化方式合并用例；必须能形成需求编号到 test id 的映射。静态 fixture 不得包含 `.dwg/.dxf`；CAD 路径仅作虚构字符串；不得调用 exists/stat/read/hash/strict resolve；不得覆盖项目级 guard fixture。
 
 先写测试并做语法检查。待 WP3/CLI 完成及 Manager 发出 `RUN_PHASED_TESTS` 后，才按 Phase A–E 顺序运行。更新 outbox，明确已写/未运行状态。
+
+## Test Completion Handoff
+
+### Task ID: CAD-CONFIG-S2-TEST-COMPLETE-006
+
+此前 Phase A/B/C/D 已通过，Phase E 首轮只剩一个旧测试对离线模块名 `generic_autocad` 的误报。该测试已获授权最小修正：禁止真实 AutoCAD/COM 模块、CAD 进程和 guard 连接事件，但允许明确的离线 `adapters.generic_autocad.adapter` 命名空间。现在先只读审计该修正，再运行：
+
+1. 定向旧安全测试；
+2. Phase E 全量默认安全回归。
+
+每次运行：清除 `CAD_TEST_ALLOW_EXTERNAL_READONLY`，设置新的 `CAD_SAFE_TEST_RUN_DIR`，从根目录以 `python -m pytest -q -c pytest.ini --strict-markers -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"` 执行。
+
+不得运行任何被排除 marker；不得读取真实 DWG/DXF；不得修改实现或守卫。若失败：仅修复明显错误的测试断言且不得削弱真实 CAD/COM/guard 检测；否则停止并报告。生成 Phase E 结果和访问摘要至 `artifacts/cad_config_driven_s2/20260715T113724+0800_s2`，并更新 outbox。
+
+## Post-S2 Freeze Test Run
+
+### Task ID: CAD-POST-S2-FREEZE-TEST-002
+
+冻结目录：`artifacts/post_s2_baseline_freeze/20260716T170858+0800_post_s2`。在不修改任何代码/守卫/Git的条件下，严格运行：
+
+1. `tests/config_driven`；
+2. `skills/autocad-tianzheng-automation/tests`；
+3. `tests/nextgen`；
+4. `tests/config_cli tests/skill/test_skill_cli.py`；
+5. 默认安全回归。
+
+每个 pytest 进程从项目根 `python -m pytest -q -c pytest.ini --strict-markers`，排除六类 marker，清除所有 external readonly 放行，使用独立 `CAD_SAFE_TEST_RUN_DIR`。收集 passed/failed/skipped/warning 和 guard 摘要，写入冻结目录 `test_results.json`；真实DWG读写、CAD/COM/天正/外部进程任一非0即停止。warning 只记录，不改代码。更新 test outbox。

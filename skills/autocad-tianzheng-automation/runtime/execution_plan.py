@@ -36,6 +36,36 @@ _LEVELS = {
 }
 
 
+def _approval_requirement(
+    approval: Mapping[str, Any],
+    *,
+    requested_level: str,
+    minimum_level: str,
+) -> dict[str, Any]:
+    """生成仅声明性的审批追踪合同。
+
+    Execution Plan 是离线、确定性的计划，不是审批 authority。除非未来由
+    独立 authority 在执行时验证，本函数绝不把引用、过期、消费或 scope
+    绑定推断为已验证。
+    """
+
+    approval_required = bool(approval.get("approval_required", False)) or (
+        _LEVELS.get(requested_level, 99) >= _LEVELS["L3_SANDBOX_WRITE"]
+    )
+    reference_present = bool(approval.get("approval_reference"))
+    return {
+        "required_level": approval.get("required_level", minimum_level),
+        "approval_required": approval_required,
+        "approval_declared": approval_required or reference_present,
+        "approval_reference_present": reference_present,
+        "approval_verified": False,
+        "approval_consumed": "UNVERIFIED",
+        "approval_expired": "UNVERIFIED",
+        "approval_scope_match": "UNVERIFIED",
+        "single_use": True,
+    }
+
+
 def _semantic_projection(value: Any) -> Any:
     if isinstance(value, Mapping):
         return {
@@ -120,11 +150,24 @@ class ExecutionPlanBuilder:
         safety = dict(manifest.get("safety") or {})
         approval = dict(manifest.get("approval") or {})
         requested_level = str(safety.get("requested_level") or "L0_READ_ONLY")
+        approval_requirement = _approval_requirement(
+            approval,
+            requested_level=requested_level,
+            minimum_level=workflow.definition.minimum_approval_level,
+        )
         blocked = list(workflow.blocked_reasons)
         if _LEVELS.get(requested_level, 99) >= _LEVELS["L3_SANDBOX_WRITE"]:
-            blocked.extend(("APPROVAL_REQUIRED", "REAL_EXECUTION_NOT_AVAILABLE"))
+            blocked.extend(
+                (
+                    "APPROVAL_REQUIRED",
+                    "REAL_EXECUTION_NOT_AVAILABLE",
+                    "REAL_BACKEND_NOT_AVAILABLE",
+                )
+            )
+        if approval_requirement["approval_required"]:
+            blocked.append("APPROVAL_REQUIRED")
         if bool((manifest.get("backend") or {}).get("require_real_execution")):
-            blocked.append("REAL_EXECUTION_NOT_AVAILABLE")
+            blocked.extend(("REAL_EXECUTION_NOT_AVAILABLE", "REAL_BACKEND_NOT_AVAILABLE"))
         if bool(safety.get("production_allowed")) or bool(safety.get("production_d1_allowed")):
             blocked.append("CONFIG_SECURITY_DOWNGRADE_BLOCKED")
         if bool(safety.get("real_cad_access_allowed")):
@@ -170,14 +213,7 @@ class ExecutionPlanBuilder:
             "product_mode": product.product,
             "backend": backend.backend,
             "workflow_id": workflow.definition.workflow_id,
-            "approval_requirement": {
-                "required_level": approval.get("required_level", workflow.definition.minimum_approval_level),
-                "approval_required": bool(approval.get("approval_required", False))
-                or _LEVELS.get(requested_level, 99) >= _LEVELS["L3_SANDBOX_WRITE"],
-                "approval_reference_present": bool(approval.get("approval_reference")),
-                "approval_verified": False,
-                "single_use": True,
-            },
+            "approval_requirement": approval_requirement,
             "document_requirements": document_requirements,
             "protected_regions": deepcopy(safety.get("protected_regions") or []),
             "operation_allowlist": sorted(set(safety.get("operation_allowlist") or [])),

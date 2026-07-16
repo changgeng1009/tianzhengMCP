@@ -1,8 +1,15 @@
 # 变更记录
 
+## 0.1.3
+
+- 校正当前安全基线为 `CAD-SAFE-20260714T220937+0800`，权威最终 SHA256 为 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。
+- 保留 `13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`，但明确其仅为 freeze-time provenance，不得作为当前 S2 预检或验收 SHA。
+- 记录 S2 配置驱动 CLI 与安全边界：配置不能授予或继承审批，不能提升 Backend、真实 CAD、L3/L4 或生产权限。
+- 未改变 runtime mode、capability support level、Legacy/Real backend 状态、`production_allowed=false` 或 `production_d1_allowed=false`。
+
 ## 0.1.2
 
-- 因 `intentional AGENTS.md update` 将当前安全基线更新为 `20260714T220937+0800`（SHA256：`13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`），父基线保留为 `20260714T193554+0800_s2_1`。
+- 因 `intentional AGENTS.md update` 生成当前安全基线目录 `20260714T220937+0800`，父基线保留为 `20260714T193554+0800_s2_1`。当时记录的 `13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9` 为 freeze-time provenance；当前权威 SHA 见 0.1.3。
 - 未改变 runtime mode、capability support level、Legacy/Real backend 状态、`production_allowed=false` 或 `production_d1_allowed=false`。
 
 ## 0.1.1

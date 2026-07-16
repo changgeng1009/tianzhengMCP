@@ -4,6 +4,7 @@ from copy import deepcopy
 
 import pytest
 
+from adapters.registry import BackendNotAvailable
 from runtime.errors import PlanHashMismatch
 from runtime.execution_plan import (
     ExecutionPlanBuilder,
@@ -73,6 +74,32 @@ def test_req_069_approval_requirement_is_declarative(canonical_manifest):
     plan = _build(canonical_manifest)
     assert plan["approval_requirement"]["approval_verified"] is False
     assert "APPROVAL_REQUIRED" in plan["blocked_reasons"]
+
+
+def test_approval_trace_is_explicit_and_unverified(canonical_manifest):
+    canonical_manifest["approval"]["approval_reference"] = "offline-declaration-only"
+    canonical_manifest["approval"]["approval_required"] = True
+
+    plan = _build(canonical_manifest)
+    trace = plan["approval_requirement"]
+
+    assert trace["approval_declared"] is True
+    assert trace["approval_reference_present"] is True
+    assert trace["approval_verified"] is False
+    assert trace["approval_consumed"] == "UNVERIFIED"
+    assert trace["approval_expired"] == "UNVERIFIED"
+    assert trace["approval_scope_match"] == "UNVERIFIED"
+    assert "APPROVAL_REQUIRED" in plan["blocked_reasons"]
+    assert plan["executable"] is False
+
+
+def test_real_execution_remains_blocked_without_authority(canonical_manifest):
+    canonical_manifest["backend"]["require_real_execution"] = True
+
+    # 后端注册表在计划构建之前即 fail-closed；不得生成看似可执行的
+    # Real 执行计划，也不得回退到 Mock。
+    with pytest.raises(BackendNotAvailable):
+        _build(canonical_manifest)
 
 
 def test_req_070_verification_requirements_are_preserved(canonical_manifest):

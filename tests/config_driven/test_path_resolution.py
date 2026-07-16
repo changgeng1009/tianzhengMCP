@@ -100,18 +100,14 @@ def test_req_032_slashes_are_normalized():
     assert record.canonical_path.endswith("inputs/nested/reference.dwg")
 
 
-def test_req_033_path_resolution_never_opens_cad(monkeypatch):
-    def forbidden(*_args, **_kwargs):
-        raise AssertionError("纯词法路径解析不应触碰文件系统")
-
-    for name in ("open", "read_bytes", "read_text", "exists", "stat", "resolve"):
-        monkeypatch.setattr(Path, name, forbidden)
+def test_req_033_path_resolution_never_opens_cad(cad_access_guard):
     record = _resolver().resolve_one(
         "inputs/reference.dwg",
         field="document.path",
         manifest_directory="C:/fictional/project",
     )
     assert record.filesystem_accessed is False
+    assert cad_access_guard._installed is True
 
 
 def test_req_034_output_cannot_enter_skill_installation():

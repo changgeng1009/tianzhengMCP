@@ -323,3 +323,26 @@
 ## Expected Output
 - 13 个 docs 文件草稿。
 - `agent_outbox/docs_agent_report.md`，列出待回填项。
+
+## S2 Final Documentation and Provenance Update
+
+### Task ID: CAD-CONFIG-S2-DOCS-008
+
+基于已通过的 Phase A–E 结果和实际实现，完成最小文档回填：
+
+1. 在统一 Skill 范围内查找 5 处将 `13dc72...` 描述为 current baseline SHA 的文案，改为权威 `current_safe_baseline_id=CAD-SAFE-20260714T220937+0800` 与最终 SHA256 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`；可保留 `13dc72...`，但只能标注为 freeze-time provenance/self-reference limitation。
+2. 更新 `SKILL.md`、`README.md`、`CHANGELOG.md`：说明 canonical Manifest 1.1.0/1.0 迁移、16 个 S2 分组 CLI 命令、10 个模板、11 个 workflow、offline/nextgen_mock simulation；明确配置不得授予审批、提升 L3/L4 或 Backend，Real/Legacy/Production 都不可用。
+3. 更新 13 份 S2 docs 中先前的“待验证/待回填”措辞，只能根据实际通过的测试填为已验证；不得把 NextGen Mock/Interface/Placeholder 描述为真实CAD。
+
+只修改统一 Skill 的文档/Markdown/JSON metadata，不修改实现、测试、守卫、安装目录或Git。完成后运行 Markdown/UTF-8/链接静态自检，不运行pytest，更新 docs_agent outbox。
+
+## Post-S2 Baseline Summary
+
+### Task ID: CAD-POST-S2-FREEZE-SUMMARY-004
+
+冻结目录：`artifacts/post_s2_baseline_freeze/20260716T170858+0800_post_s2`。基于已经生成的 `git_state_snapshot.json`、`source_manifest.json`、`skill_installation_freeze.json`、`capability_matrix.json`、`test_results.json`、`security_state.json`，生成：
+
+- `baseline_summary.md`
+- `baseline_summary.json`
+
+必须明确：branch/HEAD 用户确认；31 条工作树变化已记录，未发现未解释源码路径；S2 当前源清单982、SHA256 `d208131d04bd971989ef2940c3b4303f74cb79c38159183cf9f4f9ca15f5988d`；Skill 131/131一致；五组测试通过；Real backend/生产禁用；真实CAD读写/连接为0；199删除为用户确认状态。最终状态仅在所有输入PASS时为 `POST_S2_BASELINE_FROZEN`，否则 `POST_S2_BASELINE_FREEZE_BLOCKED`。不要修改业务源码、Git或Skill内容；只写冻结目录报告与docs outbox。

@@ -37,3 +37,29 @@
 ## Expected Output
 - `D:\CodexWork\天正\agent_outbox\planning_agent_report.md`
 - 报告包含模块分工、目标文件、依赖、测试顺序、报告文件映射和停止条件。
+
+## Final Artifact Assembly
+
+### Task ID: CAD-CONFIG-S2-ARTIFACTS-010
+
+根据已完成实现、用户授权 Git state revision、A–E 最终测试证据和现有 inventories，补齐原 CAD-CONFIG-S2 指定的根 artifacts（不覆盖历史事实；旧阻断结论以修订字段/附录保留）。根目录为 `artifacts/cad_config_driven_s2/20260715T113724+0800_s2`。
+
+必须生成或更新：`manifest_schema_change_report.json`、`manifest_version_matrix.json`、`manifest_migration_matrix.json`、`configuration_layer_matrix.json`、`default_registry.json`、`config_merge_policy.json`、`security_merge_test_results.json`、`path_resolution_policy.json`、`runtime_routing_matrix.json`、`product_adapter_matrix.json`、`backend_selection_matrix.json`、`workflow_registry.json`、`template_catalog.json`、`template_validation_results.json`、`execution_plan_schema.json`、`execution_plan_determinism_results.json`、`plan_hash_test_vectors.json`、`cli_command_matrix.json`、`cli_test_results.json`、`config_unit_test_results.json`、`skill_test_results.json`、`nextgen_test_results.json`、`safe_default_regression_results.json`、`default_test_file_access_summary.json`、`source_change_manifest.json`、`known_limitations.json`、`s2_final_report.md`、`s2_final_report.json`。
+
+可读取源码、测试结果、JSON/Markdown、Git元数据；不得读取/哈希任何DWG/DXF或被删除CAD blob，不得执行Git写操作、pytest、安装同步或改Skill代码。source change manifest 须明确排除用户确认的199条删除、两个授权 commit 作为当前基线、以及协作 inbox/outbox/artifacts；记录本次继续执行后新增S2路径。最终报告按原任务34项结构，状态先标记 `PENDING_INSTALLATION_VERIFICATION`，待安装Agent完成再由Manager回填最终状态。
+
+## Final Report Closeout
+
+### Task ID: CAD-CONFIG-S2-FINALIZE-015
+
+安装验收已 PASS。根据最新 postfix2 Phase D/E、最终安装证据和用户授权 Git state 修订，更新 `source_change_manifest.json`、`known_limitations.json`、`s2_final_report.md`、`s2_final_report.json`。34项终稿须标明：
+
+- 分支/HEAD/两个提交/199删除均由用户确认；无后续 Git 操作；
+- 199删除排除于本次S2继续变更且未读取其中CAD；
+- D=32 passed，E=1731 passed/0 failed/1 skipped/1 warning；A=104、B=64、C=47；
+- 当前安装同步131/131一致、create→validate→plan 安装态 PASS、安装目录拒绝 exit6；
+- verifier source manifest 当前因获批S2源码漂移而FAIL，但checksum/closure PASS，10/10 drift授权且非本阶段阻断；
+- 真实DWG读写、CAD/COM/天正/Real backend=0；
+- final status=`CAD_CONFIG_DRIVEN_S2_COMPLETE`。
+
+保持历史阻断/incident记录，不删除。不得Git/CAD/pytest/sync或改实现。

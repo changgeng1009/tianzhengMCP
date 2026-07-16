@@ -2,14 +2,10 @@ from __future__ import annotations
 
 import builtins
 from copy import deepcopy
-from pathlib import Path
-import subprocess
-import sys
-
 import pytest
 
 from adapters.original_skill import OriginalRedrawSkillAdapter
-from adapters.registry import BackendRegistry, BackendSelector
+from adapters.registry import BackendRegistry
 from config import ConfigMerger, DefaultRegistry, ManifestPathResolver, canonical_hash
 from runtime.errors import ConfigPrivilegeEscalationBlocked, UnsafeOperation
 from runtime.execution_plan import execution_plan_hash
@@ -69,36 +65,25 @@ def test_req_092_offline_simulation_reports_zero_com_connection():
     assert result["tianzheng_connected"] is False
 
 
-def test_req_093_simulation_does_not_start_subprocess(monkeypatch):
-    def forbidden(*_args, **_kwargs):
-        raise AssertionError("离线模拟不得启动子进程")
-
-    monkeypatch.setattr(subprocess, "Popen", forbidden)
-    monkeypatch.setattr(subprocess, "run", forbidden)
+def test_req_093_simulation_does_not_start_subprocess(cad_access_guard):
     result = simulate_plan(_minimal_plan())
     assert result["subprocess_started"] is False
+    assert cad_access_guard is CAD_ACCESS_GUARD
 
 
-def test_req_094_lexical_manifest_path_does_not_read_cad(monkeypatch):
-    def forbidden(*_args, **_kwargs):
-        raise AssertionError("不得读取虚构 CAD 路径")
-
-    monkeypatch.setattr(Path, "open", forbidden)
-    monkeypatch.setattr(Path, "read_bytes", forbidden)
+def test_req_094_lexical_manifest_path_does_not_read_cad(cad_access_guard):
     resolver = ManifestPathResolver(project_root="C:/fictional/project")
     record = resolver.resolve_one(
         "inputs/reference.dwg", field="document.path", manifest_directory="C:/fictional/project"
     )
     assert record.filesystem_accessed is False
+    assert cad_access_guard is CAD_ACCESS_GUARD
 
 
-def test_req_095_canonical_hash_never_hashes_a_cad_file(monkeypatch):
-    def forbidden(*_args, **_kwargs):
-        raise AssertionError("canonical hash 不得读取 CAD 字节")
-
-    monkeypatch.setattr(Path, "read_bytes", forbidden)
+def test_req_095_canonical_hash_never_hashes_a_cad_file(cad_access_guard):
     value = {"document_path": "inputs/reference.dwg", "identity_status": "DECLARED"}
     assert len(canonical_hash(value)) == 64
+    assert cad_access_guard is CAD_ACCESS_GUARD
 
 
 def test_req_096_manifest_cannot_grant_l4():

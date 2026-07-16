@@ -6,160 +6,95 @@ command_registry_agent
 
 ## Assigned Task
 
-CAD-CONFIG-S2-WP1 — 实现 canonical Manifest 1.1.0、1.0/1.0.0 兼容迁移、canonical serialization、六层默认值、限制性安全合并、纯词法路径解析、统一错误模型及 Execution Plan Schema。
+CAD-CONFIG-S2-CLI-002 — 在 WP1/WP3 已冻结接口上实现分组离线 CLI，保持旧入口兼容，并统一 JSON 错误与退出码。
 
 ## Files Read
 
 - `agent_inbox/command_registry_agent.md`
-- `skills/autocad-tianzheng-automation/schemas/project_manifest.schema.json`（旧 1.0）
-- `skills/autocad-tianzheng-automation/runtime/errors.py`
-- `skills/autocad-tianzheng-automation/examples/*.json`
-- `skills/autocad-tianzheng-automation/runtime/selector.py`
-- `skills/autocad-tianzheng-automation/runtime/planner.py`
 - `skills/autocad-tianzheng-automation/scripts/skill_cli.py`
-- `skills/autocad-tianzheng-automation/safety/approval.py`
+- `skills/autocad-tianzheng-automation/config/*.py`
+- `skills/autocad-tianzheng-automation/runtime/{contracts,routing,backend_registry,workflow_registry,execution_plan,simulation,errors}.py`
+- `skills/autocad-tianzheng-automation/adapters/registry.py`
+- `skills/autocad-tianzheng-automation/templates/template_catalog.json`
+- `agent_outbox/intent_mapper_agent_report.md`
 - `skill-creator/SKILL.md`
 
 ## Files Modified
 
-共 20 个 Owned Files：
+1. `skills/autocad-tianzheng-automation/scripts/skill_cli.py`
+2. `agent_outbox/command_registry_agent_report.md`
 
-1. `schemas/project_manifest.schema.json`
-2. `schemas/project_manifest_v1_0.schema.json`
-3. `schemas/execution_plan.schema.json`
-4. `runtime/errors.py`
-5. `config/__init__.py`
-6. `config/models.py`
-7. `config/errors.py`
-8. `config/canonical.py`
-9. `config/versioning.py`
-10. `config/migrator.py`
-11. `config/manifest_loader.py`
-12. `config/merge.py`
-13. `config/default_registry.py`
-14. `config/path_resolver.py`
-15. `config/defaults/system_defaults.json`
-16. `config/defaults/skill_defaults.json`
-17. `config/defaults/plain_autocad_defaults.json`
-18. `config/defaults/tianzheng_water_defaults.json`
-19. `config/defaults/tianzheng_hvac_defaults.json`
-20. `config/defaults/offline_analysis_defaults.json`
-
-另按任务要求更新本报告：`agent_outbox/command_registry_agent_report.md`。
-
-未修改 CLI、Adapters、tests、`config/workflows/**`、`mcp_nextgen`、P2/P3/P4.1、安全守卫、安装目录、冻结基线或原始 GitHub Skill。
+未修改 `scripts/__init__.py`、测试、WP1/WP3 实现、业务执行器、安全守卫、冻结基线、安装目录、原始 GitHub Skill、DWG/DXF 或任何 Real backend。
 
 ## Work Completed
 
-### Manifest 与版本
+### CLI 命令面
 
-- canonical version 固定为 `1.1.0`。
-- 保存独立的 1.0/1.0.0 compatibility Schema；原 5 个示例均可验证并迁移。
-- `ManifestVersionPolicy` 明确区分 unsupported、too old、too new。
-- `ManifestMigrator.preview()` 输出字段变化、deprecated、unmigrated 和 warnings；`migrate()` 返回 canonical Manifest。
-- 未知 1.0 顶层字段报 `MANIFEST_UNKNOWN_FIELD`；只有 canonical `extensions` 允许扩展。
-- 不继承旧 approval；发现旧审批对象报 `CONFIG_APPROVAL_INHERITANCE_FORBIDDEN`。
-- 旧 checkpoint、identity、options 等不静默丢失，进入显式 `extensions.legacy_*`。
-- 迁移不生成时间、UUID、approval 或真实身份验证结论。
+共实现 21 个叶子命令，其中 16 个新分组命令、5 个旧兼容入口：
 
-### Canonical serialization
+- `manifest validate|normalize|explain|migrate|diff`（5）
+- `config resolve`（1）
+- `runtime select`（1）
+- `product select`（1）
+- `backend select`（1）
+- `workflow select`（1）
+- `plan build|verify|hash`（3）
+- `simulate <manifest> --backend offline|nextgen_mock`（1）
+- `templates list|create`（2）
+- 旧入口 `inspect-manifest`、`validate-manifest`、`select-runtime`、`build-plan --dry-run`、`capabilities --mode`（5）
 
-- `canonicalize()`、`canonical_dumps()`、`canonical_hash()` 提供 UTF-8、稳定键序、紧凑 JSON 和 SHA256。
-- 路径字段统一 `/`；支持排除生成时间和临时目录等非语义字段。
-- 相同语义 JSON 的 canonical hash 可重复。
+所有叶子命令均接受 `--json`；新命令统一输出 `{"ok": true, "result": ...}`。旧入口默认保持原直接 JSON 形状，显式 `--json` 时使用统一 envelope，兼顾历史调用与新合同。
 
-### 六层默认值与安全合并
+### Manifest 与路由流水线
 
-- 顺序固定为：`system_default → skill_default → product_default → workflow_default → project_manifest → run_override`；即高优先级为 run override > project > workflow > product > skill > system。
-- `DefaultRegistry.describe()` 输出层级与默认文件来源。
-- `DefaultResolver.resolve()` 返回 resolved value、逐叶字段 source trace 和 merge trace。
-- `production_allowed`、`production_d1_allowed`、`real_cad_access_allowed`、外部/UNC 权限按 AND 收紧。
-- `offline_only`、`dry_run`、`simulate_only`、source write 禁止、sandbox、fail-closed、视觉/工程复核、manual save 按 OR 保持强制。
-- L0/L1/L2 可声明离线计划；L3/L4 配置请求直接报 `CONFIG_PRIVILEGE_ESCALATION_BLOCKED`，不形成批准。
-- denylist、protected regions、prohibited products、required capabilities 取确定性并集；allowlist 采用 fail-closed 交集。
-- 默认/workflow/run override 不得携带 approval；backend availability/support/execution 字段不得由配置覆盖。
+- Manifest 路由命令统一执行：`ManifestLoader.load → validate source → ManifestMigrator.preview → validate canonical 1.1.0 → DefaultResolver.resolve → ManifestPathResolver.resolve_manifest → runtime/product/backend/workflow select`。
+- 旧 1.0/1.0.0 示例不再被直接套用 1.1 Schema，验证、迁移和旧入口 smoke 均通过。
+- `manifest migrate` 默认生成同目录 `.migrated.json`，支持 `--preview` 和显式 `--output`；禁止原地写回、禁止覆盖已有 JSON、禁止写入不存在的父目录。
+- `manifest diff` 在双方迁移到 canonical 后生成稳定路径级差异与 canonical hash。
+- `manifest explain` 输出迁移、六层配置来源、安全合并、纯词法路径、runtime/product/backend/workflow 路由轨迹。
 
-### 纯词法路径解析
+### Plan、Simulation 与模板
 
-- `ManifestPathResolver` 只使用 `ntpath` 进行字符串规范化，从不调用 `open/read/stat/exists/hash/resolve`。
-- 相对路径锚定 Manifest 目录，不依赖 PowerShell cwd。
-- 支持声明 `project_relative`、`workspace_relative`、`absolute_explicit`、`external_readonly`。
-- 默认阻断 `..`、UNC、外部绝对路径、项目/workspace 越界、source/output collision、Skill 安装或原始 Skill 输出根。
-- 输出 `ResolvedPathRecord.filesystem_accessed=false` 和 `runtime_boundary_verification_required=true`。
-- 符号链接/junction 由外部安全层观察后调用 `validate_runtime_boundary_observation()`；本层不探测文件系统。
+- `plan build` 委托 `ExecutionPlanBuilder`；`verify` 同时执行 Execution Plan Schema 与 hash/plan_id 校验；`hash` 重算语义 hash。
+- `simulate` 只允许 `offline` 与 `nextgen_mock`，后端通过 run override 显式选择后再构建计划；委托 `simulate_plan`，不导入执行器、不启动子进程。
+- `templates list` 读取 Skill 内 catalog；`templates create` 只创建 canonical `project_manifest.json`，输出限制为当前项目相对路径，拒绝覆盖以及写入安装目录/原始 GitHub Skill。
+- unavailable/Real backend 请求由静态 registry fail-closed；`legacy_com` 定向 smoke 返回 `BACKEND_NOT_AVAILABLE` / exit 4。
 
-### Schema 与错误模型
+### 错误与退出码
 
-- canonical Schema 含 16 个规定顶层域和显式 extensions。
-- Safety const 保持 production/real access=false，source write/sandbox/fail-closed/visual/engineering review=true。
-- Execution Plan Schema 覆盖计划身份、路由、审批、文档、保护区、操作、阶段、证据、验证、恢复、阻断、manifest hash 与 plan hash。
-- `runtime.errors.SkillRuntimeError` 现提供统一 `to_error_payload()` 和结构化 exit code，同时保留原有异常类兼容性。
-
-## Public APIs for WP3
-
-- `ManifestLoader.load(path)`
-- `ManifestLoader.validate(manifest)`
-- `ManifestLoader.load_canonical(path)`
-- `ManifestMigrator.preview(manifest, to_version="1.1.0")`
-- `ManifestMigrator.migrate(manifest, to_version="1.1.0")`
-- `ManifestVersionPolicy.normalize(version)`
-- `ManifestVersionPolicy.migration_path(version)`
-- `ManifestVersionPolicy.compatibility_matrix`
-- `DefaultRegistry.system_defaults()` / `skill_defaults()` / `product_defaults()` / `describe()`
-- `DefaultResolver.resolve(project_manifest, product_or_mode=..., workflow_defaults=..., run_override=...)`
-- `ConfigMerger.merge_layers([(source, mapping), ...])`
-- `ManifestPathResolver.resolve_one(...)`
-- `ManifestPathResolver.resolve_manifest(manifest, manifest_directory=...)`
-- `ManifestPathResolver.validate_runtime_boundary_observation(...)`
-- `canonicalize()` / `canonical_dumps()` / `canonical_hash()`
-- 所有 `SkillRuntimeError` 子类：`.code`、`.exit_code`、`.to_error_payload()`。
-
-## Compatibility
-
-- 旧 `runtime.errors` 导入类名保持存在。
-- 旧扁平 `schema_version=1.0` 与规范化 `1.0.0` 均支持。
-- 原 5 个示例不要求立即改写；WP3/CLI 可在入口自动验证、迁移后再路由。
-- 当前 `runtime.selector.select_runtime`、`runtime.planner.build_offline_plan` 和旧 CLI 未修改；WP3 应以 wrapper 委托新 API，避免破坏旧调用。
-- Canonical backend 使用下划线名称；迁移器已映射旧连字符名称。WP3 BackendRegistry 应消费 canonical 名称并在兼容输出层映射旧名称。
-
-## Safety Invariants
-
-- `production_allowed=false`
-- `production_d1_allowed=false`
-- `real_cad_access_allowed=false`
-- `source_write_forbidden=true`
-- `sandbox_required=true`
-- `fail_closed=true`
-- `dry_run=true`
-- `simulate_only=true`
-- `manual_save_required=true`
-- `visual_review_required=true`
-- `engineering_review_required=true`
-- approval 不继承、不生成、不验证为有效授权
-- L3/L4 不可由配置授予
-- backend capability/availability 不可由 Manifest 提升
-- 路径解析不访问文件系统，CAD identity 仅保持声明状态
+- 参数错误也进入结构化 `SkillRuntimeError` JSON，不输出非结构化 argparse 错误。
+- 退出码自检覆盖并通过：
+  - 2：Manifest/Plan 校验
+  - 3：配置、runtime、product、workflow 冲突
+  - 4：backend/Real execution 不可用
+  - 5：approval/权限提升/不可执行计划
+  - 6：路径/真实 CAD 访问阻断
+  - 7：Manifest 版本/迁移
+  - 8：安全基线
+  - 9：内部错误
 
 ## Tests Run
 
-未运行 pytest 或外部集成。执行两组 PowerShell here-string → Python 内存自检，均设置 `PYTHONDONTWRITEBYTECODE=1`：
+未运行 pytest。全部检查设置 `PYTHONDONTWRITEBYTECODE=1`，仅使用 JSON/Schema/合同和临时 synthetic JSON：
 
-1. JSON/AST/API 自检：9 个 Owned JSON 解析、11 个 Owned Python 模块 AST、1.0→1.1.0 迁移及双 Schema 验证、canonical hash 重复性、3 类安全降级阻断、纯词法路径、traversal 与 source/output collision。
-2. 边界矩阵自检：3 个 Schema `Draft202012Validator.check_schema`；5 个旧 example 全部验证→迁移→canonical Schema 验证；too old/new、未知字段、approval 继承、backend capability override、限制性数组、UNC/外部路径阻断。
+1. 顶层、`manifest`、`plan`、`templates` 的 `--help`：PASS。
+2. 内存 CLI smoke：20/20 PASS，覆盖 1.0 validate/normalize/migrate preview/diff、1.1 config/runtime/product/backend/workflow、plan build、offline/nextgen_mock simulate、templates list 和 5 个旧入口。
+3. 临时目录 synthetic JSON smoke：`plan verify`、`plan hash`、`templates create` 3/3 PASS；临时目录退出后自动清理。
+4. 结构化退出码 2–9：8/8 PASS。
+5. unavailable Real backend：`legacy_com → BACKEND_NOT_AVAILABLE / exit 4` PASS。
+6. Python AST/导入检查：PASS；无 `subprocess`、`win32com`、`pythoncom`、`comtypes` 导入，无 CAD/COM/SendCommand 调用。
 
 ## Test Result
 
-PASS：
+PASS（CLI 轻量 smoke 范围）：
 
-- JSON parse：9/9
-- Python AST/import：11/11
-- Schema metaschema：3/3
-- 旧 example migration：5/5
-- canonical determinism：PASS
-- security downgrade/privilege/backend/approval blocks：PASS
-- lexical path/traversal/UNC/external/collision：PASS
-- CAD/DWG/DXF 文件创建、打开、读取、解析、扫描或哈希：0
-- AutoCAD、天正、COM、Real backend：0
+- 新命令：16/16 已实现
+- 旧入口：5/5 已保留并 smoke 通过
+- CLI 叶子命令总数：21
+- 实际调用 smoke：23/23 PASS（20 内存命令 + 3 临时 JSON 命令）
+- exit code：2–9 全覆盖 PASS
+- unavailable/Real backend fail-closed：PASS
+- pytest：未运行（按任务要求）
 
 ## Safety Check
 
@@ -170,26 +105,318 @@ PASS：
 * Read/Parsed/Scanned/Hashed DWG or DXF: NO
 * Used SendCommand: NO
 * Executed Tianzheng command: NO
-* Saved DWG: NO
-* Modified source DWG: NO
-* Ran full pytest: NO
-* Modified tests or safety guard: NO
-* Modified installation or original GitHub Skill: NO
+* Started subprocess from Skill CLI: NO
+* Enabled Legacy backend: NO
+* Enabled NextGen Real backend: NO
+* Saved or modified CAD file: NO
+* Ran pytest or external integration: NO
+* Executed Git command: NO
 
 ## Risks Found
 
-- WP3 必须在调用 runtime selector/backend/workflow 前先执行 `load → validate old → migrate → validate canonical → resolve defaults → resolve paths`。
-- 词法解析不能证明磁盘上的 symlink/junction 身份；真实运行前仍必须由独立安全后端观察并回传边界结果。本阶段不得据此声明 runtime identity verified。
-- Allowlist 从系统空 trust root 开始时始终为空，这是 fail-closed 行为；未来 workflow 若需操作，必须由权威 registry 定义基础 allowlist，而不是由 Manifest 自行扩大。
-- Canonical Schema 强制视觉/工程复核为 true；若未来确有安全的离线例外，需要单独版本和安全审计，不得由 override 放宽。
+- 当前 CLI 仅完成实现与轻量 smoke；正式 `tests/config_driven`、Skill 定向测试和默认安全回归仍由 test_agent 执行。
+- `templates create` 有意只接受当前目录下的相对输出目录；如未来需要外部模板输出，必须新增显式路径政策和安全审计，不能放宽现有限制。
+- 词法路径解析不观察磁盘 symlink/junction；真实运行前仍必须由独立 runtime guard 验证。CLI 未把词法解析声明为真实身份验证。
+- 旧入口默认直接 JSON 与新命令 envelope 并存是兼容决策；机器调用如需统一结构应显式使用 `--json`。
 
 ## Remaining Work
 
-- WP3 实现 Runtime/Product/Backend/Workflow 路由、ExecutionPlanBuilder、simulation 和 legacy wrappers。
-- CLI 在 WP3 接口冻结后另派；当前未修改。
-- test_agent 为本 API 增加正式 `tests/config_driven`、Skill/CLI/安全回归测试。
-- docs_agent 在实现冻结后回填版本、合并、路径和 CLI 文档。
+- test_agent 增加并运行 CLI 正式测试、默认安全回归及 marker 隔离测试。
+- docs_agent 将 21 个命令、envelope、退出码和模板相对路径限制回填到 CLI 文档。
+- Manager 汇总 WP1/WP3/CLI 后再决定是否进入后续工作包；本 Agent 不推进 S2 下一阶段。
 
 ## Recommendation
 
-WP1 可交付 WP3。WP3 应直接使用上述公共 API，并维持 canonical 1.1.0、结构化错误、零 CAD 文件访问和所有安全不变量；不得复制一套相互冲突的配置加载/合并/路径实现。
+CLI-002 可交付 test_agent。正式验收应继续保持离线守卫，使用 synthetic JSON/临时目录，不读取 Manifest 中声明的 DWG/DXF 路径，也不得启用任何 Real backend。
+
+---
+
+## CAD-CONFIG-S2-INSTALL-009（安装收尾）
+
+### Files Read
+
+- `skills/autocad-tianzheng-automation/SKILL.md`
+- `skills/autocad-tianzheng-automation/scripts/validate_skill.ps1`
+- `skills/autocad-tianzheng-automation/scripts/sync_skill_installation.ps1`
+- 安装目录 `scripts/skill_cli.py`（仅通过 CLI `--help` 与 `templates list` 运行）
+
+### Files Modified
+
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_hash_verification.json`
+
+---
+
+## CAD-CONFIG-S2-TEMPLATE-OUTPUT-011（安装态模板外部临时输出修正）
+
+### Files Read
+
+- `agent_inbox/command_registry_agent.md`
+- `skills/autocad-tianzheng-automation/scripts/skill_cli.py`
+- `skills/autocad-tianzheng-automation/config/path_resolver.py`（只读确认未改）
+- `tests/config_cli/test_plan_template_cli.py`
+
+### Files Modified
+
+- `skills/autocad-tianzheng-automation/scripts/skill_cli.py`
+- `tests/config_cli/test_plan_template_cli.py`
+- 本 outbox（追加此节）
+
+### Work Completed
+
+- `templates create` 不再把 CLI 模板输出强制套用 Manifest 的 `project_relative` 文档路径策略；新增 CLI 专用、纯词法的输出目录校验。
+- 仍允许原有当前目录相对输出；新增允许显式指定的安装目录/规范源目录之外的绝对临时目录。
+- 持续拒绝规范源、安装目录、原始 GitHub Skill、UNC、`..` 路径段和 `.dwg`/`.dxf` 输出目录；模板仍只写 UTF-8 JSON，拒绝覆盖既有目标。
+- 未修改 `ManifestPathResolver`、Registry、Backend、守卫、安装目录或任何 CAD/Real backend 路径。
+
+### Tests Run
+
+```powershell
+python -m pytest -q tests/config_cli/test_plan_template_cli.py
+```
+
+结果：`9 passed in 1.67s`。
+
+新增覆盖：显式外部临时输出成功；规范源和安装目录输出拒绝；路径遍历、UNC、`.dwg`、`.dxf` 输出拒绝。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened or read DWG/DXF: NO
+* Started CAD/Real backend: NO
+* Executed Git command: NO
+* Modified original GitHub Skill: NO
+
+### Remaining Work
+
+Manager 需将规范源同步到安装目录后，重新执行安装态 CLI 外部临时输出验证及 D/E 回归；本修正未自行同步或执行 Git 操作。
+- 本 outbox（追加此节）
+
+### Work Completed
+
+- 规范源与安装目录的 `.dwg/.dxf` 文件名均为 0；未读取任何 CAD 内容。
+- `validate_skill.ps1`：PASS（`Skill is valid!`）。
+- 同步 dry-run：131 文件，`ADD=61`、`UPDATE=17`、`UNCHANGED=53`，`DeletesUnknownFiles=false`，未知删除为 0。
+- 实际同步并逐文件校验：PASS；仅复制上述新增/更新项，未删除未知安装文件。
+- 同步后非排除文件 SHA256：源/安装均为 131 文件，source-only=0、destination-only=0、mismatch=0。
+- 安装目录 CLI：`--help` PASS；`templates list --json` PASS（10 个模板）。
+
+### Installed CLI Template Verification
+
+从安装目录以相对输出 `s2_cli_synthetic_probe` 运行：
+
+```powershell
+python -m scripts.skill_cli templates create offline_analysis --output s2_cli_synthetic_probe --json
+```
+
+按路径安全策略返回 exit 6：`PATH_EXTERNAL_NOT_ALLOWED`（field=`output`）。当前工作目录就是 Skill 安装目录，而模板输出守卫明确禁止向安装目录写入。因此未绕过策略，未继续执行该临时模板的 `manifest validate` / `plan build`；这是安装态 CLI 使用边界，不是 CAD 访问或同步失败。
+
+### Test Result
+
+- 安装同步和哈希验证：PASS。
+- 安装目录 CLI 基础可用性：PASS。
+- “在安装目录内创建模板”的组合自检：按 fail-closed 路径政策 BLOCKED（exit 6），需 Manager 按 S2 验收口径决定是否视为预期安全拒绝。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened or read DWG/DXF: NO
+* Started CAD/Real backend: NO
+* Executed Git command: NO
+* Modified original GitHub Skill: NO
+* Deleted unknown installation files: NO
+
+### Evidence
+
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_hash_verification.json`
+
+---
+
+## CAD-POST-S2-FREEZE-SKILL-003（Skill 与能力冻结）
+
+### Files Read
+
+- `skills/autocad-tianzheng-automation/` 与安装目录中的非 CAD Skill 文件，仅用于清单与 SHA256 比对。
+- `skills/autocad-tianzheng-automation/scripts/validate_skill.ps1`。
+
+### Files Modified
+
+- `artifacts/post_s2_baseline_freeze/20260716T170858+0800_post_s2/skill_installation_freeze.json`
+- `artifacts/post_s2_baseline_freeze/20260716T170858+0800_post_s2/capability_matrix.json`
+- `artifacts/post_s2_baseline_freeze/20260716T170858+0800_post_s2/security_state.json`
+- 本 outbox（追加本节）
+
+### Work Completed
+
+- `quick_validate` 为 PASS（exit 0）。
+- 规范源与安装目录非排除文件均为 131；逐个相对路径及 SHA256 完全一致，未知新增、未知删除和哈希不一致均为 0。
+- 规范源总文件数 170、安装目录总文件数 161；差异均为排除的本地 Python 缓存（`__pycache__/*.pyc`），不属于安装缺失或未知 Skill 文件。
+- 两端 `.dwg/.dxf` 文件数均为 0；本冻结未读取任何 CAD 内容。
+- 能力矩阵明确冻结：Skill 包装、配置驱动、Workflow Registry、Execution Plan 与 Mock Backend 为 PASS；Real AutoCAD、Tianzheng Real、ObjectARX、NextGen Real 均为 `NOT_IMPLEMENTED`；生产绘图为 `DISABLED`。
+- 安全状态冻结：`production_allowed=false`、`production_d1_allowed=false`、`real_cad_access=false`、`real_backend=false`；AutoCAD、天正、COM 连接计数均为 0。
+
+### Test Result
+
+```text
+validate_skill.ps1: PASS (exit 0)
+source/install nonexcluded SHA256 match: PASS
+```
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened or read DWG/DXF: NO
+* Started CAD/Real backend: NO
+* Performed sync: NO
+* Executed Git command: NO
+* Modified original GitHub Skill: NO
+
+### Recommendation
+
+本子任务的 Skill、能力和安全冻结证据均为 PASS；等待 Manager 汇总 Git、源码清单和测试冻结结果后进行人工审查，不进入 S3。
+
+---
+
+## CAD-CONFIG-S2-INSTALL-POSTFIX-012（安装后置复验）
+
+### Files Read
+
+- `skills/autocad-tianzheng-automation/SKILL.md`
+- `skills/autocad-tianzheng-automation/scripts/validate_skill.ps1`
+- `skills/autocad-tianzheng-automation/scripts/sync_skill_installation.ps1`
+- 安装目录 CLI（仅 `--help`、`templates list`、外部临时模板 JSON 的 validate/plan 命令）
+
+### Files Modified
+
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_hash_verification.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_postfix_verification.json`
+- 本 outbox（追加本节）
+
+### Work Completed
+
+- 源和安装目录 `.dwg/.dxf` 文件名计数均为 0；未读取任何 CAD 内容。
+- `quick_validate` PASS。
+- sync dry-run 与 apply 均完成：131 文件，`UPDATE=1`、`ADD=0`、`UNCHANGED=130`，未删除未知安装文件。
+- 非排除、非 CAD 文件的 SHA256 逐项比对 PASS：源/安装各 131，缺失 0、未知 0、不一致 0。
+- 安装目录 CLI `--help` 和 `templates list --json` 均 PASS；显式安装外临时目录的 `templates create`、`manifest validate`、`plan build` 均为 exit 0。
+
+### Test Result
+
+安装目录输出拒绝行为发生，但退出码合同失败：
+
+```text
+expected exit code: 6
+actual exit code:   3
+error code:         CONFIG_CONFLICT
+```
+
+按 `CAD-CONFIG-S2-INSTALL-POSTFIX-012` 的“任何异常停止报告”要求，未自行修改 CLI 或继续后续操作。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened or read DWG/DXF: NO
+* Started CAD/Real backend: NO
+* Executed Git command: NO
+* Modified original GitHub Skill: NO
+* Deleted unknown installation files: NO
+
+### Recommendation
+
+Manager 应将安装目录拒绝路径的统一退出码合同最小修复为 exit 6 后，重新执行本后置验证；本 Agent 未提升 Backend、审批或生产权限。
+
+---
+
+## CAD-CONFIG-S2-TEMPLATE-REJECT-013（模板输出拒绝码修正）
+
+### Files Modified
+
+- `skills/autocad-tianzheng-automation/scripts/skill_cli.py`
+- `tests/config_cli/test_plan_template_cli.py`
+- 本 outbox（追加本节）
+
+### Work Completed
+
+- 模板输出位于规范源、安装目录或原始 Skill 时，继续 fail-closed，未改变输出边界或允许范围。
+- 此类路径策略违规现在统一抛出 `PATH_EXTERNAL_NOT_ALLOWED`，CLI 映射为 exit code `6`，不再误报为 `CONFIG_CONFLICT`/exit `3`。
+- 专用测试同步断言 `PATH_*` 错误码与 exit `6`；安装外临时输出成功与 traversal/UNC/CAD 后缀拒绝覆盖保持不变。
+
+### Tests Run
+
+```powershell
+python -m pytest -q tests/config_cli/test_plan_template_cli.py -k 'templates_create'
+```
+
+结果：`4 passed, 5 deselected`。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened or read DWG/DXF: NO
+* Started CAD/Real backend: NO
+* Executed Git command: NO
+* Modified original GitHub Skill: NO
+
+### Recommendation
+
+可由 Manager 重新执行 postfix Phase D/E、同步与安装态验证；本修正未触碰 CAD、文件访问守卫、Backend/审批能力或 Git 状态。
+
+---
+
+## CAD-CONFIG-S2-INSTALL-FINAL-014（最终安装验收）
+
+### Files Read
+
+- `skills/autocad-tianzheng-automation/scripts/validate_skill.ps1`
+- `skills/autocad-tianzheng-automation/scripts/sync_skill_installation.ps1`
+- 规范源与安装目录中的非 CAD Skill 文件（仅用于 SHA256 一一比对）
+- 安装目录 CLI，以及安装外临时目录生成的 synthetic JSON Manifest
+
+### Files Modified
+
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_hash_verification.json`
+- 本 outbox（追加本节）
+
+### Work Completed
+
+- 规范源与安装目录 `.dwg/.dxf` 文件名计数均为 0；未读取任何 CAD 内容。
+- `quick_validate`：PASS（exit 0）。
+- 安装同步：dry-run 后 apply，131 个非排除文件；`UPDATE=1`、`ADD=0`、`UNCHANGED=130`，未删除未知安装文件。
+- 独立 SHA256 一一比对：源/安装各 131，缺失 0、未知 0、不一致 0。
+- 安装态 `--help`、`templates list`、安装外临时目录 `templates create -> manifest validate -> plan build` 均 exit 0。
+- 安装目录输出仍 fail-closed：`PATH_EXTERNAL_NOT_ALLOWED`，exit 6。
+
+### Test Result
+
+`CAD-CONFIG-S2-INSTALL-FINAL-014`: PASS。
+
+首次链路中将生成 Manifest 误定位为模板名子目录，导致对不存在的路径调用 validate/plan（exit 2）；确认 CLI 正确将文件生成在输出根 `project_manifest.json` 后，以实际生成路径重跑，两个命令均 exit 0。此项仅为验收调用路径修正，未改代码、配置、Git 或 CAD 文件。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened or read DWG/DXF: NO
+* Started CAD/Real backend: NO
+* Executed Git command: NO
+* Modified original GitHub Skill: NO
+* Deleted unknown installation files: NO
+
+### Evidence
+
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_manifest.json`
+- `artifacts/cad_config_driven_s2/20260715T113724+0800_s2/installation_hash_verification.json`

@@ -13,7 +13,7 @@ description: 统一、安全地编排普通 AutoCAD、天正给排水、天正�
 
 本 Skill 已提供 `NextGenMcpMockBackend=IMPLEMENTED_BASELINE` 的离线/Mock 门面，`NextGenControlPlane=PARTIALLY_IMPLEMENTED`；两者都不代表真实 CAD 能力。NextGen 真实写入后端仍为 `NOT_IMPLEMENTED`，`NextGenMcpBackendPlaceholder` 只描述该未实现边界。天正暖通写入保持 `INTERFACE_ONLY`。
 
-`SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=20260714T220937+0800` 关闭，基线 SHA256 为 `13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
+`SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=CAD-SAFE-20260714T220937+0800` 关闭，权威最终 SHA256 为 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。`13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9` 仅是 freeze-time provenance SHA，不是当前 S2 预检或验收应使用的基线 SHA。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
 
 ```powershell
 python -m scripts.verify_safe_test_baseline --baseline "artifacts/cad_safe_test_baseline/20260714T220937+0800" --project-root "."
@@ -43,6 +43,26 @@ python -m scripts.skill_cli capabilities --mode plain_autocad
 ```
 
 这些入口不连接 AutoCAD，不打开或读取 DWG。显式请求未来后端也必须先通过审批门；当前 `nextgen-mcp` 会安全拒绝真实执行。
+
+## S2 配置驱动离线 CLI
+
+S2 CLI 仅处理 JSON Manifest、确定性 Plan 和 Mock 模拟；它不授予审批、不读取 CAD，也不改变 Registry 的后端真值。可用分组入口为：
+
+```powershell
+python -m scripts.skill_cli manifest validate|normalize|explain|migrate <manifest>
+python -m scripts.skill_cli config resolve <manifest>
+python -m scripts.skill_cli runtime select <manifest>
+python -m scripts.skill_cli product select <manifest>
+python -m scripts.skill_cli backend select <manifest>
+python -m scripts.skill_cli workflow select <manifest>
+python -m scripts.skill_cli plan build <manifest>
+python -m scripts.skill_cli plan verify|hash <plan.json>
+python -m scripts.skill_cli simulate <manifest> --backend offline|nextgen_mock
+python -m scripts.skill_cli templates list
+python -m scripts.skill_cli templates create <template_id> --output <relative-directory>
+```
+
+Manifest 只能声明意图、默认值和审批引用；它不能创建或继承有效审批，不能将引用视为已验证审批，也不能把 `production_allowed`、`production_d1_allowed`、`real_cad_access_allowed`、Backend availability/support level/execution capability 或 L3/L4 权限提升为可用。发生这类配置覆盖时必须 fail-closed；`offline`、`nextgen_mock` 和 `original_redraw_adapter` 均不代表真实 CAD 执行。
 
 ## 模式与适配器
 
