@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0.0",
+  "matrix_id": "s3_product_runtime_backend_matrix",
+  "purpose": "S3 产品、执行运行时和后端的静态真值；不表示真实 CAD 执行。",
+  "safety_boundary": {
+    "production_allowed": false,
+    "production_d1_allowed": false,
+    "real_cad_access": false,
+    "real_backend": false
+  },
+  "products": [
+    {
+      "product_id": "generic_autocad",
+      "cad_platform": "AutoCAD",
+      "professional_domain": "generic_cad",
+      "support_status": "OFFLINE_PLANNING_IMPLEMENTED",
+      "currently_available_execution_runtimes": ["offline", "mock"],
+      "future_not_available_execution_runtimes": ["com", "objectarx"],
+      "required_backends": ["offline", "original_redraw_adapter"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "limitations": ["仅离线规划", "不连接 AutoCAD/COM/ObjectARX"]
+    },
+    {
+      "product_id": "tianzheng_water",
+      "cad_platform": "AutoCAD + Tianzheng Water",
+      "professional_domain": "water_supply_and_drainage",
+      "support_status": "OFFLINE_PLANNING_IMPLEMENTED",
+      "currently_available_execution_runtimes": ["offline", "mock"],
+      "future_not_available_execution_runtimes": ["com", "objectarx"],
+      "required_backends": ["offline"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "limitations": ["原生拓扑与工程语义未验证", "不连接天正给排水"]
+    },
+    {
+      "product_id": "tianzheng_hvac",
+      "cad_platform": "AutoCAD + Tianzheng HVAC",
+      "professional_domain": "hvac",
+      "support_status": "INTERFACE_ONLY",
+      "currently_available_execution_runtimes": ["offline", "mock"],
+      "future_not_available_execution_runtimes": ["com", "objectarx"],
+      "required_backends": ["offline"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "limitations": ["暖通写入不可执行", "通用几何回退不是天正暖通真实能力"]
+    },
+    {
+      "product_id": "offline_analysis",
+      "cad_platform": "none",
+      "professional_domain": "offline_analysis",
+      "support_status": "IMPLEMENTED",
+      "currently_available_execution_runtimes": ["offline", "mock"],
+      "future_not_available_execution_runtimes": [],
+      "required_backends": ["offline", "nextgen_mock"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "limitations": ["不读取真实 CAD 文件", "不提供真实 CAD 执行"]
+    }
+  ],
+  "backends": [
+    {"backend_id": "offline", "status": "IMPLEMENTED", "real_execution": false},
+    {"backend_id": "original_redraw_adapter", "status": "OFFLINE_MAPPING_ONLY", "real_execution": false},
+    {"backend_id": "nextgen_mock", "status": "IMPLEMENTED_BASELINE", "control_plane": "PARTIALLY_IMPLEMENTED", "real_execution": false},
+    {"backend_id": "legacy_contract_disabled", "status": "DISABLED_CONTRACT_ONLY", "real_execution": false},
+    {"backend_id": "legacy_com", "status": "NOT_IMPLEMENTED", "real_execution": false},
+    {"backend_id": "nextgen_real", "status": "NOT_IMPLEMENTED", "real_execution": false},
+    {"backend_id": "autocad_dotnet_plugin", "status": "NOT_IMPLEMENTED", "real_execution": false},
+    {"backend_id": "tianzheng_water_real", "status": "NOT_IMPLEMENTED", "real_execution": false},
+    {"backend_id": "tianzheng_hvac_real", "status": "NOT_IMPLEMENTED", "real_execution": false}
+  ]
+}

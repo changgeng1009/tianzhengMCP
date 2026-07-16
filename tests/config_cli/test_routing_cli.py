@@ -28,6 +28,16 @@ def test_req_080_runtime_select(capsys, cli_manifest):
     assert output["trace"]
 
 
+def test_s3_product_select_exposes_independent_product_runtime_evidence(capsys, cli_manifest):
+    path, _ = cli_manifest
+    code, output = _invoke(capsys, "product", "select", path)
+    assert code == 0
+    assert output["product"] == "generic_autocad"
+    assert output["product_profile"]["product"] == "generic_autocad"
+    assert output["product_profile"]["execution_runtime"] == "offline"
+    assert output["product_profile"]["execution_allowed"] is False
+
+
 def test_req_081_backend_select(capsys, cli_manifest):
     path, _ = cli_manifest
     code, output = _invoke(capsys, "backend", "select", path)

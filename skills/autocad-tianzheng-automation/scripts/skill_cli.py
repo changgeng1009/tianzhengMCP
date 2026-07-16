@@ -28,6 +28,7 @@ from runtime.execution_plan import (
 )
 from runtime.file_guard import assert_offline_read_allowed
 from runtime.planner import build_offline_plan
+from runtime.product_profile import ProductRuntimeRouter
 from runtime.routing import RuntimeRouter, select_product
 from runtime.selector import select_runtime
 from runtime.simulation import simulate_plan
@@ -121,7 +122,12 @@ def _load_migration(path: str | Path) -> tuple[Path, dict[str, Any], Any, dict[s
 
 
 def _product_or_mode(manifest: Mapping[str, Any]) -> str:
-    product = str((manifest.get("product") or {}).get("requested_product") or "unknown")
+    product_block = manifest.get("product") or {}
+    product = str(
+        product_block.get("profile")
+        or product_block.get("requested_product")
+        or "unknown"
+    )
     if product != "unknown":
         return product
     return str((manifest.get("runtime") or {}).get("runtime_mode") or "offline_analysis")
@@ -148,6 +154,7 @@ def _resolve_pipeline(
         forbidden_output_roots=FORBIDDEN_OUTPUT_ROOTS,
     ).resolve_manifest(resolved, manifest_directory=directory)
     runtime = RuntimeRouter().select(resolved)
+    product_runtime = ProductRuntimeRouter().select_from_manifest(resolved)
     product = select_product(resolved, runtime)
     backend = select_backend(resolved)
     workflow = select_workflow(
@@ -164,6 +171,7 @@ def _resolve_pipeline(
         "resolution": resolution,
         "paths": paths,
         "runtime": runtime,
+        "product_runtime": product_runtime,
         "product": product,
         "backend": backend,
         "workflow": workflow,
@@ -252,6 +260,7 @@ def _manifest_command(args: argparse.Namespace) -> Any:
             "resolution": context["resolution"].as_dict(),
             "paths": context["paths"].as_dict(),
             "runtime": context["runtime"].to_dict(),
+            "product_profile": context["product_runtime"].to_dict(),
             "product": context["product"].to_dict(),
             "backend": context["backend"].to_dict(),
             "workflow": context["workflow"].to_dict(),
@@ -380,7 +389,9 @@ def _new_command(args: argparse.Namespace) -> Any:
     if args.group == "runtime":
         return context["runtime"].to_dict()
     if args.group == "product":
-        return context["product"].to_dict()
+        result = context["product"].to_dict()
+        result["product_profile"] = context["product_runtime"].to_dict()
+        return result
     if args.group == "backend":
         return context["backend"].to_dict()
     if args.group == "workflow":

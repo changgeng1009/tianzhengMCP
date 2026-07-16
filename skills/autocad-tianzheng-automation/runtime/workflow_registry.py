@@ -24,6 +24,22 @@ _LEVELS = {
     "L4_CONTROLLED_PRODUCTION": 4,
 }
 
+# S2 的 OfflineAnalysisAdapter 曾用 ``unknown`` 表示“并未选择 CAD
+# 产品”。S3 将其提升为明确的产品配置档案 ``offline_analysis``；保留这个
+# 规范化边界，避免旧 Manifest/Adapter 选择结果在升级后静默失效。
+_PRODUCT_ALIASES = {
+    "unknown": "offline_analysis",
+    "offline": "offline_analysis",
+    "offline_analysis": "offline_analysis",
+}
+
+
+def canonical_product_id(value: object) -> str:
+    """将旧 S2 离线产品别名映射到 S3 ProductProfile 标识。"""
+
+    text = str(value)
+    return _PRODUCT_ALIASES.get(text, text)
+
 
 class WorkflowRegistry:
     """机器可读 Workflow 注册表；只读取 Skill 内 JSON 合同。"""
@@ -89,11 +105,19 @@ class WorkflowRegistry:
                 field="workflow.workflow_id",
                 details={"workflow_id": workflow_id, "runtime_mode": runtime.mode.value},
             )
-        if product.product not in definition.supported_products:
+        selected_product = canonical_product_id(product.product)
+        workflow_products = tuple(
+            canonical_product_id(item) for item in definition.supported_products
+        )
+        if selected_product not in workflow_products:
             raise WorkflowNotAvailable(
                 "workflow 不支持所选产品",
                 field="workflow.workflow_id",
-                details={"workflow_id": workflow_id, "product": product.product},
+                details={
+                    "workflow_id": workflow_id,
+                    "product": selected_product,
+                    "supported_products": list(workflow_products),
+                },
             )
         missing = sorted(
             set(definition.required_capabilities) - set(product.supported_capabilities)
@@ -128,16 +152,28 @@ class WorkflowRegistry:
 
         trace = (
             RoutingTraceEntry(
+                "runtime_router",
+                "runtime.runtime_mode",
+                runtime.mode.value,
+                "runtime 证据独立于 ProductProfile 选择",
+            ),
+            RoutingTraceEntry(
+                "product_adapter_registry",
+                "product.requested_product",
+                selected_product,
+                "产品证据已规范化；不从 backend 或 workflow 反推产品",
+            ),
+            RoutingTraceEntry(
                 "project_manifest",
                 "workflow.workflow_id",
                 workflow_id,
                 "显式 workflow，不进行静默替代",
             ),
             RoutingTraceEntry(
-                "workflow_registry",
+                "backend_registry",
                 "backend.preferred_backend",
                 backend.backend,
-                "静态能力合同匹配",
+                "backend 证据独立于 runtime/product 选择",
             ),
         )
         return WorkflowSelectionResult(

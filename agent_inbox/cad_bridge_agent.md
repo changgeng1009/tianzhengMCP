@@ -173,3 +173,13 @@ Manifest 不得提升 backend availability；require_real_execution 必须返回
 ## Expected Output
 - 实现上述 Owned Files。
 - 更新 `agent_outbox/cad_bridge_agent_report.md`，含离线自检和安全检查。
+
+## S3 Unified Product Adapter Contract
+
+### Task ID: CAD-S3-ADAPTER-002
+
+建立统一 `ProductAdapter` 合同，至少包含 `inspect()`、`plan()`、`validate()`、`execute()`。为 GenericAutoCAD、TianzhengWater、TianzhengHVAC、OriginalSkillAdapter 提供实现或兼容 wrapper；`execute()` 只能产生离线 blocked/mock 合同，绝不能连接CAD/COM。
+
+将每个 adapter 的产品状态、支持能力、required backend、限制和 execute 可用性暴露给现有 registry。HVAC 必须保持 `INTERFACE_ONLY`/非真实支持；Original GitHub Skill 仅离线规划；Real/Legacy 状态不得提升。
+
+新增针对性测试与 `artifacts/s3_product_unification/<run_id>/adapter_contract_audit.json`，更新 cad_bridge outbox。禁止任何真实 CAD/DWG/DXF/COM/Git 操作。

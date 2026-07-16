@@ -159,3 +159,78 @@ CAD-POST-S2-FREEZE-SUMMARY-004
 ## Recommendation
 
 - 将该冻结目录作为后续 S3 / Backend 开发的审查起点；新阶段应先取得独立授权并重新执行安全预检。
+
+---
+
+# Agent Report
+## Agent Name
+
+docs_agent
+
+## Assigned Task
+
+CAD-S3-DOCS-004
+
+## Files Read
+
+- `skills/autocad-tianzheng-automation/SKILL.md`
+- `skills/autocad-tianzheng-automation/references/product_adapter_model.md`
+- `skills/autocad-tianzheng-automation/references/runtime_modes.md`
+- `skills/autocad-tianzheng-automation/references/architecture.md`
+- `skills/autocad-tianzheng-automation/references/known_limitations.md`
+- `skills/autocad-tianzheng-automation/references/upgrade_roadmap.md`
+- `skills/autocad-tianzheng-automation/capabilities/product_adapter_matrix.json`
+- `skills/autocad-tianzheng-automation/capabilities/product_workflow_matrix.json`
+- 当前 S3 ProductProfile、ProductAdapter 与 Workflow Registry 静态代码合同（仅审计）
+
+## Files Modified
+
+- `skills/autocad-tianzheng-automation/SKILL.md`
+- `skills/autocad-tianzheng-automation/references/product_adapter_model.md`
+- `skills/autocad-tianzheng-automation/references/runtime_modes.md`
+- `skills/autocad-tianzheng-automation/references/architecture.md`
+- `skills/autocad-tianzheng-automation/references/known_limitations.md`
+- `skills/autocad-tianzheng-automation/references/upgrade_roadmap.md`
+- `skills/autocad-tianzheng-automation/capabilities/product_matrix.json`
+- `artifacts/s3_product_unification/20260716T174456+0800_s3_docs/documentation_capability_audit.json`
+- `agent_outbox/docs_agent_report.md`
+
+## Work Completed
+
+- 将 ProductProfile 与 `execution_runtime` 解耦规则写入 Skill 和架构文档，保留旧 `runtime_mode` 仅作为兼容输入映射。
+- 明确 Generic AutoCAD、天正给排水均为 `OFFLINE_PLANNING_IMPLEMENTED`；天正暖通为 `INTERFACE_ONLY`，且通用几何回退不属于天正真实能力。
+- 定义统一 ProductAdapter 的 `inspect()`、`plan()`、`validate()`、`execute()` 离线合同，并明确 execute 不连接 CAD。
+- 新增 `capabilities/product_matrix.json`，覆盖产品、运行时、后端与安全边界真值。
+- 明确 Original adapter 仅离线映射，NextGen Mock 为 `IMPLEMENTED_BASELINE`、Control Plane 为 `PARTIALLY_IMPLEMENTED`、Legacy 为 `DISABLED_CONTRACT_ONLY`，所有 Real/COM/ObjectARX 均未实现或不可用。
+
+## Tests Run
+
+- `python -m json.tool`：3 份产品能力 JSON 解析通过。
+- 文档静态状态词检查：通过。
+
+## Test Result
+
+- `STATIC_DOCUMENTATION_VALIDATION=PASS`
+- pytest：未运行（本任务范围仅限文档/能力矩阵）。
+
+## Safety Check
+
+* Connected to AutoCAD: NO
+* Opened DWG: NO
+* Opened source DWG: NO
+* Used SendCommand: NO
+* Executed Tianzheng command: NO
+* Saved DWG: NO
+* Modified source DWG: NO
+
+## Risks Found
+
+- 文档反映的是当前静态合同；实际 Real AutoCAD、天正、COM、ObjectARX 与生产能力仍无实现或验证证据。
+
+## Remaining Work
+
+- 由 Manager 汇总其他 S3 子任务，运行 S3 全量测试、安装同步和阶段报告；本 Agent 不执行这些步骤。
+
+## Recommendation
+
+- 仅在 S3 全部实现和安全回归通过后，按用户授权创建阶段提交和 Tag；不得把本报告中的 Mock/接口状态升级为真实 CAD 能力。

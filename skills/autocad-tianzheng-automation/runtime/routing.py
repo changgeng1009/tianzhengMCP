@@ -47,6 +47,23 @@ def _product(value: object) -> str:
     return _PRODUCT_ALIASES.get(text, text)
 
 
+def _profile_product(product_config: Mapping[str, Any]) -> str | None:
+    """读取 S3 profile，同时确保没有与 S2 兼容字段静默冲突。"""
+
+    raw_profile = product_config.get("profile")
+    raw_requested = product_config.get("requested_product")
+    profile = _product(raw_profile) if raw_profile not in (None, "") else None
+    requested = _product(raw_requested) if raw_requested not in (None, "") else None
+    if profile is not None and requested is not None and profile != requested:
+        raise ProductModeConflict(
+            "product.profile 与兼容字段 product.requested_product 冲突",
+            field="product.profile",
+            details={"profile": profile, "requested_product": requested},
+            suggested_action="使用同一产品声明，或仅保留 S3 profile 字段",
+        )
+    return profile or requested
+
+
 class RuntimeConflictDetector:
     def validate(
         self,
@@ -97,9 +114,9 @@ class RuntimeRouter:
         runtime = _mapping(manifest.get("runtime"))
         product_config = _mapping(manifest.get("product"))
         declared_mode = runtime.get("runtime_mode", manifest.get("runtime_mode"))
-        requested_product = _product(
-            product_config.get("requested_product", manifest.get("product"))
-        )
+        requested_product = _profile_product(product_config)
+        if requested_product is None:
+            requested_product = _product(manifest.get("product"))
         prohibited = tuple(
             sorted(_product(item) for item in product_config.get("prohibited_products", ()))
         )

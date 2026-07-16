@@ -58,3 +58,17 @@ def test_req_042_ambiguous_auto_detect_fails_closed(canonical_manifest):
     canonical_manifest["product"]["prohibited_products"] = []
     with pytest.raises(RuntimeModeConflict):
         RuntimeRouter().select(canonical_manifest)
+
+
+def test_s3_profile_conflict_is_checked_by_legacy_runtime_router(canonical_manifest):
+    canonical_manifest["product"]["profile"] = "tianzheng_water"
+    with pytest.raises(ProductModeConflict):
+        RuntimeRouter().select(canonical_manifest)
+
+
+def test_s3_profile_is_checked_against_runtime_mode_by_legacy_router(canonical_manifest):
+    canonical_manifest["product"].pop("requested_product")
+    canonical_manifest["product"]["profile"] = "tianzheng_water"
+    canonical_manifest["runtime"]["runtime_mode"] = "plain_autocad"
+    with pytest.raises(ProductModeConflict):
+        RuntimeRouter().select(canonical_manifest)

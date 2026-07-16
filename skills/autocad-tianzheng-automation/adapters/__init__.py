@@ -1,6 +1,8 @@
 """产品与后端适配器。"""
 
 from .generic_autocad import GenericAutoCadAdapter
+from .original_redraw_skill_adapter import OriginalRedrawSkillAdapter
+from .product_adapter import ProductAdapter
 from .registry import (
     BackendAvailability,
     BackendConflict,
@@ -26,6 +28,8 @@ __all__ = [
     "BackendRegistry",
     "BackendSelector",
     "GenericAutoCadAdapter",
+    "OriginalRedrawSkillAdapter",
+    "ProductAdapter",
     "OfflineAnalysisAdapter",
     "ProductAdapterRegistry",
     "ProductCapabilityResolver",

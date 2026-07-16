@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/autocad-tianzheng/product_profile.schema.json",
+  "title": "CAD S3 ProductProfile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["product_id", "cad_platform", "professional_domain", "support_status", "capabilities", "required_backends", "compatible_runtimes", "currently_available_runtimes", "limitations"],
+  "properties": {
+    "product_id": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "offline_analysis"]},
+    "cad_platform": {"type": "string", "minLength": 1},
+    "professional_domain": {"type": "string", "minLength": 1},
+    "support_status": {"enum": ["IMPLEMENTED", "IMPLEMENTED_BASELINE", "PARTIALLY_IMPLEMENTED", "INTERFACE_ONLY", "OFFLINE_PLANNING_IMPLEMENTED", "NOT_IMPLEMENTED"]},
+    "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "required_backends": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "compatible_runtimes": {"type": "array", "items": {"enum": ["offline", "mock", "com", "objectarx"]}, "uniqueItems": true},
+    "currently_available_runtimes": {"type": "array", "items": {"enum": ["offline", "mock"]}, "uniqueItems": true},
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  }
+}

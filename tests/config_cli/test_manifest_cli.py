@@ -32,6 +32,9 @@ def test_req_076_manifest_explain(capsys, cli_manifest):
     assert code == 0
     assert output["resolution"]["source_trace"]
     assert output["runtime"]["trace"]
+    assert output["product_profile"]["product"] == "generic_autocad"
+    assert output["product_profile"]["execution_runtime"] == "offline"
+    assert output["product_profile"]["execution_allowed"] is False
     assert output["workflow"]["trace"]
     assert output["filesystem_accessed_by_path_resolver"] is False
 

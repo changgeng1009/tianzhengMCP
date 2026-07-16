@@ -123,5 +123,6 @@ def test_req_100_original_skill_adapter_is_read_only():
     adapter = OriginalRedrawSkillAdapter()
     patch = adapter.to_manifest_patch("redraw_from_reference")
     assert patch["production_allowed"] is False
+    assert patch["product"] == "generic_autocad"
     with pytest.raises(UnsafeOperation):
         adapter.execute_script(deepcopy(patch))

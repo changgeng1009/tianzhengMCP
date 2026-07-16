@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "matrix_id": "s3_product_workflow_binding",
+  "purpose": "S3 ProductProfile 与既有 S2 Workflow Registry 的静态绑定；不表示真实 CAD 执行能力。",
+  "product_profiles": [
+    {
+      "product_id": "generic_autocad",
+      "status": "OFFLINE_PLANNING_IMPLEMENTED",
+      "execution_runtimes": ["offline", "mock"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "workflow_ids": [
+        "generic_autocad_clone_plan",
+        "generic_autocad_redraw_offline",
+        "image_dimension_parametric_redraw_plan",
+        "pdf_intermediate_dwg_plan"
+      ]
+    },
+    {
+      "product_id": "tianzheng_water",
+      "status": "OFFLINE_PLANNING_IMPLEMENTED",
+      "execution_runtimes": ["offline", "mock"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "workflow_ids": [
+        "tianzheng_water_completion_plan",
+        "tianzheng_water_scan_plan"
+      ]
+    },
+    {
+      "product_id": "tianzheng_hvac",
+      "status": "INTERFACE_ONLY",
+      "execution_runtimes": ["offline", "mock"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "workflow_ids": [
+        "tianzheng_hvac_scan_plan",
+        "tianzheng_hvac_write_placeholder"
+      ],
+      "limitations": [
+        "暖通扫描仅接口合同与离线规划",
+        "暖通写入为 NOT_EXECUTABLE_CURRENTLY",
+        "不得描述为已支持的真实 CAD 能力"
+      ]
+    },
+    {
+      "product_id": "offline_analysis",
+      "status": "IMPLEMENTED",
+      "execution_runtimes": ["offline", "mock"],
+      "real_backend_status": "NOT_IMPLEMENTED",
+      "workflow_ids": [
+        "nextgen_mock_job_simulation",
+        "offline_capability_audit",
+        "offline_document_comparison"
+      ],
+      "limitations": [
+        "nextgen_mock_job_simulation 的 execution_runtime=mock、backend=nextgen_mock",
+        "Mock 证据不构成真实 CAD、COM 或产品实例执行"
+      ]
+    }
+  ],
+  "workflow_bindings": [
+    {"workflow_id": "generic_autocad_clone_plan", "product_id": "generic_autocad", "execution_runtime": "offline", "backend_ids": ["offline"]},
+    {"workflow_id": "generic_autocad_redraw_offline", "product_id": "generic_autocad", "execution_runtime": "offline", "backend_ids": ["offline", "original_redraw_adapter"]},
+    {"workflow_id": "image_dimension_parametric_redraw_plan", "product_id": "generic_autocad", "execution_runtime": "offline", "backend_ids": ["offline", "original_redraw_adapter"]},
+    {"workflow_id": "pdf_intermediate_dwg_plan", "product_id": "generic_autocad", "execution_runtime": "offline", "backend_ids": ["offline", "original_redraw_adapter"]},
+    {"workflow_id": "tianzheng_water_completion_plan", "product_id": "tianzheng_water", "execution_runtime": "offline", "backend_ids": ["offline"], "executable_currently": false},
+    {"workflow_id": "tianzheng_water_scan_plan", "product_id": "tianzheng_water", "execution_runtime": "offline", "backend_ids": ["offline"]},
+    {"workflow_id": "tianzheng_hvac_scan_plan", "product_id": "tianzheng_hvac", "execution_runtime": "offline", "backend_ids": ["offline"]},
+    {"workflow_id": "tianzheng_hvac_write_placeholder", "product_id": "tianzheng_hvac", "execution_runtime": "offline", "backend_ids": ["offline"], "executable_currently": false},
+    {"workflow_id": "nextgen_mock_job_simulation", "product_id": "offline_analysis", "execution_runtime": "mock", "backend_ids": ["nextgen_mock"]},
+    {"workflow_id": "offline_capability_audit", "product_id": "offline_analysis", "execution_runtime": "offline", "backend_ids": ["offline"]},
+    {"workflow_id": "offline_document_comparison", "product_id": "offline_analysis", "execution_runtime": "offline", "backend_ids": ["offline"]}
+  ],
+  "safety_boundary": {
+    "production_allowed": false,
+    "production_d1_allowed": false,
+    "real_cad_access": false,
+    "real_backend": false
+  }
+}

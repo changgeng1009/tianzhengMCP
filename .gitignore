@@ -40,6 +40,8 @@ build/
 dist/
 output/
 artifacts/
+*.dwg
+*.dxf
 *.zip
 *.7z
 *.rar

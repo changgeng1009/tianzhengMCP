@@ -1,7 +1,8 @@
-from runtime.contracts import ICadProductAdapter, RuntimeMode
+from adapters.product_adapter import ProductAdapter
+from runtime.contracts import RuntimeMode
 
 
-class GenericAutoCadAdapter(ICadProductAdapter):
+class GenericAutoCadAdapter(ProductAdapter):
     mode = RuntimeMode.PLAIN_AUTOCAD
     PRODUCT_NAMES = frozenset({"autocad", "generic_autocad"})
     TIANZHENG_CALLS_ALLOWED = False

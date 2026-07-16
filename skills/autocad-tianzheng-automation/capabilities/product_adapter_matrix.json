@@ -52,7 +52,7 @@
     {
       "adapter": "OfflineAnalysisAdapter",
       "runtime_mode": "offline_analysis",
-      "product": "unknown",
+      "product": "offline_analysis",
       "status": "IMPLEMENTED",
       "read_supported": true,
       "write_supported": false,

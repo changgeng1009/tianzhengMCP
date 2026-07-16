@@ -68,7 +68,9 @@ def test_17_product_conflict_stops():
     manifest = load_example(); manifest["product"] = "tianzheng_water"
     with pytest.raises(ProductInstanceConflict): select_runtime(manifest)
 def test_18_original_adapter_is_mapping_only():
-    adapter = OriginalRedrawSkillAdapter(); assert adapter.to_manifest_patch("visual_review")["preferred_backend"] == "offline"
+    adapter = OriginalRedrawSkillAdapter(); patch = adapter.to_manifest_patch("visual_review")
+    assert patch["preferred_backend"] == "offline"
+    assert patch["product"] == "generic_autocad"
     with pytest.raises(UnsafeOperation): adapter.execute_script({})
 def test_19_legacy_backend_disabled():
     with pytest.raises(UnsafeOperation): LegacyComBackend().execute({})

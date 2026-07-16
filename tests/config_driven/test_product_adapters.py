@@ -15,7 +15,7 @@ from adapters.registry import (
         (35, "plain_autocad", "generic_autocad", "GenericAutoCadAdapter"),
         (36, "tianzheng_water", "tianzheng_water", "TianzhengWaterAdapter"),
         (37, "tianzheng_hvac", "tianzheng_hvac", "TianzhengHvacAdapter"),
-        (38, "offline_analysis", "unknown", "OfflineAnalysisAdapter"),
+        (38, "offline_analysis", "offline_analysis", "OfflineAnalysisAdapter"),
     ],
 )
 def test_req_035_to_038_product_adapter_selection(requirement, mode, product, adapter):
@@ -35,3 +35,9 @@ def test_hvac_and_water_contracts_are_not_interchangeable():
     hvac = ProductCapabilityResolver().resolve("tianzheng_hvac")
     assert water.adapter != hvac.adapter
     assert water.supported_capabilities != hvac.supported_capabilities
+
+
+@pytest.mark.parametrize("legacy_alias", ["unknown", "offline"])
+def test_s3_offline_analysis_accepts_s2_legacy_aliases(legacy_alias):
+    result = ProductCapabilityResolver().resolve("offline_analysis", requested_product=legacy_alias)
+    assert result.product == "offline_analysis"

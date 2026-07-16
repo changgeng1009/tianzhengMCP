@@ -131,3 +131,85 @@ CAD-CONFIG-S2-WP3-PREP / WP3_IMPLEMENT — 配置驱动 Runtime、Workflow、Exe
 
 WP3 实现可进入 test_agent 统一回归。验收时应重点核对：11/10 数量、旧 1.0 Planner 合同、backend 不静默 fallback、Water/HVAC 写入模板 blocked、NextGen Mock 不冒充 Real，以及同一 Canonical Manifest 的计划哈希稳定性。
 
+---
+
+# Agent Report
+
+## Agent Name
+
+intent_mapper_agent
+
+## Assigned Task
+
+CAD-S3-WORKFLOW-003 — Workflow 与 ProductProfile 显式绑定。
+
+## Files Read
+
+- `AGENTS.md`
+- `agent_inbox/intent_mapper_agent.md`
+- `skills/autocad-tianzheng-automation/runtime/contracts.py`
+- `skills/autocad-tianzheng-automation/runtime/routing.py`
+- `skills/autocad-tianzheng-automation/runtime/workflow_registry.py`
+- `skills/autocad-tianzheng-automation/runtime/product_profile.py`
+- `skills/autocad-tianzheng-automation/adapters/registry.py`
+- `skills/autocad-tianzheng-automation/config/workflows/*.json`
+- `tests/config_driven/*.py`
+
+## Files Modified
+
+- `skills/autocad-tianzheng-automation/runtime/workflow_registry.py`
+- `skills/autocad-tianzheng-automation/config/workflows/offline_document_comparison.json`
+- `skills/autocad-tianzheng-automation/config/workflows/offline_capability_audit.json`
+- `skills/autocad-tianzheng-automation/config/workflows/nextgen_mock_job_simulation.json`
+- `skills/autocad-tianzheng-automation/capabilities/product_workflow_matrix.json`
+- `tests/config_driven/test_s3_workflow_product_binding.py`
+- `artifacts/s3_product_unification/20260716T174250+0800_s3/workflow_product_binding_audit.json`
+- `agent_outbox/intent_mapper_agent_report.md`
+
+## Work Completed
+
+- 保留全部 11 个既有 S2 `workflow_id`，并按 S3 ProductProfile 绑定：Generic AutoCAD 4 项、天正给排水 2 项、天正暖通 2 项、离线分析 3 项。
+- 将三个离线工作流的历史产品值 `unknown` 显式升级为 `offline_analysis`；Registry 保留 `unknown|offline -> offline_analysis` 规范化层，S2 OfflineAnalysisAdapter 旧合同仍可选择。
+- 新增机器可读 `product_workflow_matrix.json`，明确每项产品、离线/Mock 执行运行时、Backend 合同和不可执行写入占位。
+- 扩展 Workflow 路由 trace：runtime、product、workflow 与 backend 分别记录独立证据，禁止由 workflow/backend 静默反推产品或运行时。
+- NextGen Mock 工作流明确为 `product_id=offline_analysis`、`execution_runtime=mock`、`backend=nextgen_mock`，并声明无真实执行支持。
+- 生成可复核审计证据 `workflow_product_binding_audit.json`。
+
+## Tests Run
+
+- `python -m pytest -q tests/config_driven/test_s3_workflow_product_binding.py tests/config_driven/test_backend_workflow.py tests/config_driven/test_runtime_product_routing.py`
+  - 23 passed
+- `python -m pytest -q tests/config_driven`
+  - 133 passed
+
+## Test Result
+
+PASS。11 项工作流均被唯一 ProductProfile 绑定；S2 兼容别名、独立 trace 与 NextGen Mock 真值合同均通过纯离线测试。
+
+## Safety Check
+
+* Connected to AutoCAD: NO
+* Opened DWG: NO
+* Opened source DWG: NO
+* Read or hashed DWG/DXF content: NO
+* Used SendCommand: NO
+* Executed Tianzheng command: NO
+* Enabled Legacy backend: NO
+* Enabled Real backend: NO
+* Saved DWG: NO
+* Modified source DWG: NO
+* Performed Git operation: NO
+
+## Risks Found
+
+- S3 只统一静态产品/工作流合同；不提供真实 CAD、COM、ObjectARX、天正 SDK 或生产写入能力。
+- `tianzheng_water_completion_plan`、`tianzheng_hvac_write_placeholder` 仍为不可执行的安全占位，不能描述为已实现写入。
+- `nextgen_mock` 只提供 Mock 证据，绝非 NextGen Real backend。
+
+## Remaining Work
+
+- Manager 合并其他 S3 Work Package 后运行阶段级完整回归、Skill 同步和 Git 阶段发布。
+
+## Recommendation
+
+本 Work Package 可进入 S3 汇总验收；保持 `production_allowed=false`、`production_d1_allowed=false`、`real_cad_access=false` 与 `real_backend=false`。

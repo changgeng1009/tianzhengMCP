@@ -1,7 +1,8 @@
-from runtime.contracts import ICadProductAdapter, RuntimeMode, SupportLevel
+from adapters.product_adapter import ProductAdapter
+from runtime.contracts import RuntimeMode, SupportLevel
 
 
-class TianzhengHvacAdapter(ICadProductAdapter):
+class TianzhengHvacAdapter(ProductAdapter):
     mode = RuntimeMode.TIANZHENG_HVAC
     PRODUCT_NAMES = frozenset({"tianzheng_hvac"})
     WATER_CALLS_ALLOWED = False

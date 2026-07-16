@@ -14,6 +14,8 @@ from runtime.contracts import ICadProductAdapter, RuntimeMode
 from runtime.errors import SkillRuntimeError
 
 from .generic_autocad import GenericAutoCadAdapter
+from .original_redraw_skill_adapter import OriginalRedrawSkillAdapter
+from .product_adapter import ProductAdapter
 from .tianzheng_hvac import TianzhengHvacAdapter
 from .tianzheng_water import TianzhengWaterAdapter
 
@@ -82,10 +84,12 @@ class BackendOverrideForbidden(RegistryError):
     code = "CONFIG_BACKEND_OVERRIDE_FORBIDDEN"
 
 
-class OfflineAnalysisAdapter(ICadProductAdapter):
+class OfflineAnalysisAdapter(ProductAdapter):
     """不接触 CAD 文件的离线分析适配器。"""
 
     mode = RuntimeMode.OFFLINE_ANALYSIS
+    # ``unknown``/``offline`` remain accepted S2 input aliases.  S3 contracts
+    # always publish the canonical ProductProfile identifier below.
     PRODUCT_NAMES = frozenset({"unknown", "offline", "offline_analysis"})
     STATUS = AdapterStatus.IMPLEMENTED.value
 
@@ -94,7 +98,7 @@ class OfflineAnalysisAdapter(ICadProductAdapter):
             "adapter": type(self).__name__,
             "mode": self.mode.value,
             "runtime_mode": self.mode.value,
-            "product": "unknown",
+            "product": "offline_analysis",
             "status": self.STATUS,
             "read_supported": True,
             "write_supported": False,
@@ -143,12 +147,13 @@ class ProductAdapterRegistry:
         RuntimeMode.PLAIN_AUTOCAD: "generic_autocad",
         RuntimeMode.TIANZHENG_WATER: "tianzheng_water",
         RuntimeMode.TIANZHENG_HVAC: "tianzheng_hvac",
-        RuntimeMode.OFFLINE_ANALYSIS: "unknown",
+        RuntimeMode.OFFLINE_ANALYSIS: "offline_analysis",
     }
     _PRODUCT_ALIASES = {
         "autocad": "generic_autocad",
-        "offline": "unknown",
-        "offline_analysis": "unknown",
+        "unknown": "offline_analysis",
+        "offline": "offline_analysis",
+        "offline_analysis": "offline_analysis",
     }
 
     def __init__(self, adapters: Iterable[ICadProductAdapter] | None = None) -> None:
@@ -164,6 +169,9 @@ class ProductAdapterRegistry:
         self._by_mode = {adapter.mode: adapter for adapter in selected}
         if len(self._by_mode) != len(selected):
             raise ValueError("每个 runtime mode 只能注册一个 Product Adapter")
+        self._compatibility_adapters: tuple[ProductAdapter, ...] = (
+            OriginalRedrawSkillAdapter(),
+        )
 
     @staticmethod
     def _runtime_mode(value: str | RuntimeMode) -> RuntimeMode:
@@ -205,6 +213,11 @@ class ProductAdapterRegistry:
 
     def list(self) -> tuple[ICadProductAdapter, ...]:
         return tuple(self._by_mode[mode] for mode in self._EXPECTED_PRODUCT)
+
+    def list_contracts(self) -> tuple[dict[str, Any], ...]:
+        """返回标准产品与兼容适配器的可审计静态合同。"""
+        adapters = (*self.list(), *self._compatibility_adapters)
+        return tuple(adapter.contract() for adapter in adapters)
 
 
 class ProductCapabilityResolver:

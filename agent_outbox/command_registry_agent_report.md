@@ -147,6 +147,62 @@ CLI-002 可交付 test_agent。正式验收应继续保持离线守卫，使用 
 
 ---
 
+## CAD-S3-PRODUCT-CORE-001（ProductProfile 与 Product/Runtime 解耦）
+
+### Files Modified
+
+- `skills/autocad-tianzheng-automation/runtime/product_profile.py`
+- `skills/autocad-tianzheng-automation/schemas/product_profile.schema.json`
+- `skills/autocad-tianzheng-automation/schemas/project_manifest.schema.json`
+- `tests/config_driven/test_s3_product_profile.py`
+- `artifacts/s3_product_unification/20260716T173813+0800/product_schema_audit.json`
+- 本 outbox（追加本节）
+
+### Work Completed
+
+- 新增不可变 `ProductProfileRegistry`：只包含 `generic_autocad`、`tianzheng_water`、`tianzheng_hvac` 与 `offline_analysis`；暖通状态明确为 `INTERFACE_ONLY`。
+- 新增独立 `ExecutionRuntime`：`offline`、`mock`、`com`、`objectarx`；前两者仅是离线/Mock 合同，后两者固定 `NOT_AVAILABLE`，选择时 fail-closed。
+- 新增 `ProductRuntimeRouter`，产品与执行运行时独立选择；其结果始终 `execution_allowed=false`，不提供真实 CAD 执行。
+- Canonical Manifest Schema 接受 S3 可选字段 `product.profile` 与 `runtime.execution_runtime`，同时保留原 `requested_product`/`runtime_mode` 的 S2 兼容入口。
+
+### Tests Run
+
+```powershell
+$env:PYTHONPATH='.'
+python -m pytest -q tests/config_driven/test_s3_product_profile.py tests/config_driven/test_manifest_schema.py tests/config_driven/test_runtime_product_routing.py tests/config_driven/test_product_adapters.py
+```
+
+结果：`35 passed`。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Connected to Tianzheng: NO
+* Used COM: NO
+* Opened or read DWG/DXF: NO
+* Started CAD/Real backend: NO
+* Executed Git command: NO
+* Modified original GitHub Skill: NO
+
+### Remaining Integration
+
+- Workflow/Adapter Agent 可按四个稳定 product_id 完成绑定；CLI 若需要展示新运行时应调用 `ProductRuntimeRouter`，不得把 `mock` 描述为真实执行。
+
+### Post-audit Minimal Fix
+
+- `product.profile` 与 S2 兼容字段 `product.requested_product` 同时存在时，先对 `autocad`、`unknown`、`offline` 等别名归一化；归一化后不同即 `PRODUCT_MODE_CONFLICT` fail-closed。
+- S3 profile 与既有 `runtime.runtime_mode` 不一致时，在新 Router 与既有 `RuntimeRouter` 两条路径均 fail-closed，消除静默不一致。
+- 所有 `com`/`objectarx` 请求（含 `offline_analysis` 的不兼容分支）统一带有 `runtime_status=NOT_AVAILABLE` 与 `real_backend=NOT_IMPLEMENTED` 结构化证据。
+- 回归命令：`PYTHONPATH=. python -m pytest -q tests/config_driven/test_s3_product_profile.py tests/config_driven/test_runtime_product_routing.py tests/config_driven/test_manifest_schema.py`，结果：`35 passed`。
+
+### CLI 最小集成
+
+- `_resolve_pipeline` 已调用 `ProductRuntimeRouter.select_from_manifest`，将独立产品/执行运行时选择保存为 `product_runtime` context；不修改 ExecutionPlan Schema，也不调用 backend。
+- `manifest explain` 输出 `product_profile`；`product select` 在原 Adapter 选择字段外追加 `product_profile`，其中明确 `execution_allowed=false`。
+- 回归命令：`PYTHONPATH=. python -m pytest -q tests/config_cli/test_manifest_cli.py tests/config_cli/test_routing_cli.py tests/config_driven/test_s3_product_profile.py tests/config_driven/test_runtime_product_routing.py`，结果：`37 passed`。
+
+---
+
 ## CAD-CONFIG-S2-TEMPLATE-OUTPUT-011（安装态模板外部临时输出修正）
 
 ### Files Read

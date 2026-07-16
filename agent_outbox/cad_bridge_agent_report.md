@@ -129,3 +129,144 @@ cad_bridge_agent
 ## Recommendation
 
 `CAD_CONFIG_S2_WP2_COMPLETE_OFFLINE_STATIC_CONTRACT`
+
+---
+
+## S3 Addendum
+
+### Assigned Task
+
+`CAD-S3-ADAPTER-002`
+
+### Files Read
+
+- `skills/autocad-tianzheng-automation/adapters/**` 的 Python 源码
+- `skills/autocad-tianzheng-automation/runtime/contracts.py`
+- `tests/config_driven/test_product_adapters.py`
+- 仅文本形式的项目测试配置与现有 adapter matrix
+
+未读取、解析、扫描或哈希任何 DWG/DXF。
+
+### Files Modified
+
+- `skills/autocad-tianzheng-automation/adapters/product_adapter.py`（新增）
+- `skills/autocad-tianzheng-automation/adapters/__init__.py`
+- `skills/autocad-tianzheng-automation/adapters/registry.py`
+- `skills/autocad-tianzheng-automation/adapters/generic_autocad/adapter.py`
+- `skills/autocad-tianzheng-automation/adapters/tianzheng_water/adapter.py`
+- `skills/autocad-tianzheng-automation/adapters/tianzheng_hvac/adapter.py`
+- `skills/autocad-tianzheng-automation/adapters/original_skill/original_redraw_skill_adapter.py`
+- `tests/config_driven/test_product_adapter_contract.py`（新增）
+- `artifacts/s3_product_unification/20260716T173813+0800/adapter_contract_audit.json`
+- `agent_outbox/cad_bridge_agent_report.md`
+
+### Work Completed
+
+- 新增统一 `ProductAdapter` 合同，全部适配器均实现 `inspect()`、`plan()`、`validate()`、`execute()`。
+- `GenericAutoCadAdapter`、`TianzhengWaterAdapter`、`TianzhengHvacAdapter` 和 `OriginalRedrawSkillAdapter` 均接入该合同；`OfflineAnalysisAdapter` 同样继承该安全实现。
+- `execute()` 永不执行或导入 CAD/COM：`offline` 请求返回 `REAL_CAD_EXECUTION_BLOCKED`；`nextgen_mock` 仅返回 `MOCK_EXECUTION_CONTRACT_ONLY`，`executed=false`。
+- 请求 `legacy_com`、`nextgen_real`、`autocad_dotnet_plugin`、`tianzheng_*_real`、`objectarx` 或 `com` 时，`validate()` 返回 `BACKEND_NOT_AVAILABLE`。
+- Tianzheng HVAC 继续声明 read=`PARTIALLY_IMPLEMENTED`、write=`INTERFACE_ONLY`、real=`NOT_IMPLEMENTED`；未将接口占位描述为真实支持。
+- Registry 新增 `list_contracts()`，在不改变既有 runtime 路由的前提下暴露四类产品和 `OriginalRedrawSkillAdapter` 兼容合同。
+- 已生成 adapter 合同审计证据：`artifacts/s3_product_unification/20260716T173813+0800/adapter_contract_audit.json`。
+
+### Tests Run
+
+```powershell
+$env:PYTHONPATH='.'
+$env:PYTHONUTF8='1'
+python -m pytest -q tests/config_driven/test_product_adapters.py tests/config_driven/test_product_adapter_contract.py skills/autocad-tianzheng-automation/tests/test_skill.py
+```
+
+### Test Result
+
+`83 passed in 1.47s`
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Opened DWG: NO
+* Opened source DWG: NO
+* Used SendCommand: NO
+* Executed Tianzheng command: NO
+* Saved DWG: NO
+* Modified source DWG: NO
+* Read, parsed, scanned or hashed DWG/DXF: NO
+* Imported COM/real executor: NO
+* Enabled Legacy or Real backend: NO
+* Production D1 allowed: NO
+
+### Risks Found
+
+- `ProductAdapter.execute()` 是安全合同接口，不是 JobRunner；未来接入任何 Real backend 前必须独立获得安全设计、审批模型和实证测试。
+- `OriginalRedrawSkillAdapter` 只提供工作流映射和离线合同，未自动定位或执行原始 Skill 脚本。
+
+### Recommendation
+
+`CAD-S3-ADAPTER-002_COMPLETE_OFFLINE_CONTRACT`
+
+---
+
+## S3 Offline Product ID Consistency Fix
+
+### Work Completed
+
+- S3 对外 `OfflineAnalysisAdapter.capabilities()["product"]` 改为规范 ID `offline_analysis`。
+- `ProductAdapterRegistry._EXPECTED_PRODUCT` 的离线项改为 `offline_analysis`；`unknown` 与 `offline` 仅保留为 S2 输入兼容别名，并统一归一化为该规范 ID。
+- 更新 Product Adapter Matrix 与本任务审计 JSON，避免外部能力合同继续输出 `unknown`。
+- 新增 alias 回归断言，确认旧 Manifest 输入 `unknown`/`offline` 仍可选中离线 Adapter，但输出为 `offline_analysis`。
+
+### Tests Run
+
+```powershell
+$env:PYTHONPATH='.'
+$env:PYTHONUTF8='1'
+python -m pytest -q tests/config_driven/test_product_adapters.py tests/config_driven/test_product_adapter_contract.py tests/config_driven/test_s3_workflow_product_binding.py
+```
+
+### Test Result
+
+`26 passed in 0.62s`
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Opened DWG: NO
+* Opened source DWG: NO
+* Read, parsed, scanned or hashed DWG/DXF: NO
+* Imported COM/real executor: NO
+* Enabled Legacy or Real backend: NO
+
+### Recommendation
+
+`CAD-S3-OFFLINE_PRODUCT_ID_CONSISTENCY_PASS`
+
+---
+
+## S3 Original Skill Canonical Product ID Fix
+
+### Work Completed
+
+- `OriginalRedrawSkillAdapter.to_manifest_patch()` 的对外产品 ID 从历史别名 `autocad` 更正为 S3 规范 ID `generic_autocad`。
+- 补充 Skill 与安全边界回归断言；不新增 legacy 字段，原始工作流映射、离线 backend 与安全阻断均未变更。
+
+### Targeted Test Result
+
+```powershell
+$env:PYTHONPATH='.'
+$env:PYTHONUTF8='1'
+python -m pytest -q skills/autocad-tianzheng-automation/tests/test_skill.py tests/config_driven/test_safety_boundaries.py -k 'test_18_original_adapter_is_mapping_only or test_req_100_original_skill_adapter_is_read_only'
+```
+
+`2 passed, 72 deselected in 0.39s`
+
+### Non-Task Observation
+
+运行上述两个文件的全量集合时，`test_04_required_skill_sections` 因当前 `SKILL.md` 缺少旧标题文本失败。该项不是本次 adapter 产品 ID 改动引起，未越权修改文档；已通知 Manager 由文档/集成职责处理。
+
+### Safety Check
+
+* Connected to AutoCAD: NO
+* Opened DWG: NO
+* Read, parsed, scanned or hashed DWG/DXF: NO
+* Imported COM/real executor: NO

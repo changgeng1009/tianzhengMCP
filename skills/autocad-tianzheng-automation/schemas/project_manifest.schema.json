@@ -48,9 +48,14 @@
     },
     "runtime": {
       "type": "object", "additionalProperties": false,
-      "required": ["runtime_mode", "auto_detect_policy", "conflict_policy", "offline_only"],
+      "required": ["auto_detect_policy", "conflict_policy", "offline_only"],
+      "anyOf": [
+        {"required": ["runtime_mode"]},
+        {"required": ["execution_runtime"]}
+      ],
       "properties": {
         "runtime_mode": {"enum": ["plain_autocad", "tianzheng_water", "tianzheng_hvac", "auto_detect", "offline_analysis"]},
+        "execution_runtime": {"enum": ["offline", "mock", "com", "objectarx"]},
         "auto_detect_policy": {"enum": ["explicit_metadata_only", "disabled"]},
         "conflict_policy": {"const": "fail_closed"},
         "offline_only": {"type": "boolean"}
@@ -96,9 +101,14 @@
     },
     "product": {
       "type": "object", "additionalProperties": false,
-      "required": ["requested_product", "required_capabilities", "prohibited_products", "product_detection_policy"],
+      "required": ["required_capabilities", "prohibited_products", "product_detection_policy"],
+      "anyOf": [
+        {"required": ["requested_product"]},
+        {"required": ["profile"]}
+      ],
       "properties": {
         "requested_product": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "unknown"]},
+        "profile": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac", "offline_analysis"]},
         "required_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "prohibited_products": {"type": "array", "items": {"enum": ["generic_autocad", "tianzheng_water", "tianzheng_hvac"]}, "uniqueItems": true},
         "product_detection_policy": {"enum": ["explicit_metadata_only", "disabled"]}

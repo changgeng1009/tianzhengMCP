@@ -167,3 +167,13 @@ Template reject error-code fix、postfix2 Phase D/E 已通过。执行最终安�
 - `security_state.json`：production_allowed/d1=false、real_cad_access/backend=false、AutoCAD/天正/COM=0。
 
 可运行只读 quick_validate 与 hash 比对，不得同步、修改Skill、改Git、连CAD或读DWG/DXF。更新 command_registry outbox。
+
+## S3 Product Schema and Runtime Decoupling
+
+### Task ID: CAD-S3-PRODUCT-CORE-001
+
+以当前 S2 Tag 为起点，实现纯离线的 ProductProfile 模型与 Product/Runtime 解耦。Product 仅允许 `generic_autocad`、`tianzheng_water`、`tianzheng_hvac`、`offline_analysis`；Runtime 独立于产品，至少支持 `offline`、`mock`、`com`、`objectarx`，其中后两者必须 NOT_AVAILABLE。
+
+实现/更新仅限配置与路由合同（选择现有结构最小扩展）：ProductProfile schema/registry、产品-运行时兼容选择、明确状态/required backend/capabilities。不得将 runtime_mode 继续作为 product；保留 S2 兼容 wrapper。不得接入任何真实 backend、CAD、COM。
+
+新增针对性测试和报告 `artifacts/s3_product_unification/<run_id>/product_schema_audit.json`。完成后更新 command_registry outbox，列明实际改动与状态。

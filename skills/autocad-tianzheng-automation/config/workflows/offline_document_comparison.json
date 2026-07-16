@@ -6,7 +6,7 @@
     "offline_analysis"
   ],
   "supported_products": [
-    "unknown"
+    "offline_analysis"
   ],
   "required_capabilities": [
     "offline_document_comparison"

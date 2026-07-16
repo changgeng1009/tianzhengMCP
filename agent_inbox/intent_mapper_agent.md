@@ -146,3 +146,11 @@ Manager 已确认 WP2 完成且 WP1 公共 API 稳定，可开始实施。必须
 强制要求：旧 selector/planner 保持兼容；runtime/product 冲突 fail-closed；Backend 不可用不自动替代；写入/L3/L4/Real workflow 生成 blocked plan；nextgen_mock 不冒充 Real；plan/hash 排除时间、notes、随机值和临时目录并归一化 JSON 键序及路径斜杠；simulation 只返回离线/Mock 证据，不启动子进程。
 
 只运行 Owned Files 的轻量离线自检，不运行全量 pytest。完成后更新 `agent_outbox/intent_mapper_agent_report.md`。
+
+## S3 Workflow Product Binding
+
+### Task ID: CAD-S3-WORKFLOW-003
+
+将机器可读 Workflow Registry 与明确 ProductProfile 绑定：通用重绘/PDF/图像属于 generic_autocad；给排水扫描/补全属于 tianzheng_water；暖通扫描/写入占位属于 tianzheng_hvac；比较/能力审计属于 offline_analysis；NextGen mock simulation 明确 product/runtime/backend 真值。保留现有 workflow id 与 S2 兼容性。
+
+生成产品-Workflow capability matrix，扩展路由 trace，使产品选择和 runtime/backend 选择是独立证据。新增测试与 `artifacts/s3_product_unification/<run_id>/workflow_product_binding_audit.json`。不得实现真实执行，不得CAD/COM/DWG/Git。
