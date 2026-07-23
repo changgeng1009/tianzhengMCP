@@ -46,10 +46,16 @@ reports/                   # 阶段报告
 ```
 
 ## 测试状态
+
+统一开发测试环境使用仓库外的 `D:\PythonEnvs\tianzheng-dev`：
+
+```powershell
+D:\PythonEnvs\tianzheng-dev\Scripts\python.exe -m pip install -r requirements-dev.txt
+D:\PythonEnvs\tianzheng-dev\Scripts\python.exe -m pytest --collect-only -q
+D:\PythonEnvs\tianzheng-dev\Scripts\python.exe -m pytest -q
 ```
-全量: 593 passed / 600 total (7 预存失败)
-M3: 48 tests | M2: 21 tests | M1: 18 tests
-```
+
+默认 pytest 自动启用真实 CAD 文件访问守卫并排除真实/外部 CAD marker。真实 AutoCAD 集成只可显式 opt-in，详见 [S6.0 测试环境说明](docs/s6_0_test_environment.md)。
 
 ## 安全
 所有操作默认禁用。d1_allowed=false, source_modification_allowed=false。

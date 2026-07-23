@@ -14,3 +14,4 @@
 - 关闭安全测试问题不代表真实 CAD 能力已实现，也不改变 Legacy disabled、Real backend `NOT_IMPLEMENTED`、`production_allowed=false` 或 `production_d1_allowed=false`。
 - S5 `real-autocad-com` 为已人工验收的 synthetic Sandbox MVP：最大许可范围是当前 job 新建的 DWG 中的 Line、Circle、Polyline，以及 L3 单次审批下的保存、重开、持久化和幂等验证。它不能读取、哈希、扫描、复制、打开、修改或关闭任何用户 DWG/DXF，也不支持天正、生产、L4、Legacy、NextGen Real、ObjectARX 或 AutoCAD .NET。
 - AutoCAD 关闭最后一个 synthetic 文档后可能自动创建默认空白文档。当前 MVP 不依赖关闭该默认文档来判定核心闭环成功；只要 synthetic 文档已经完成持久化与幂等验证、没有用户文件操作且最终 `acad.exe=0`，该行为记录为 `ALLOWED_DIFFERENCE_AUTOCAD_AUTO_CREATED_DEFAULT_DOCUMENT`，属于生命周期差异而非绘图能力失败。
+- S6.0 的默认开发测试环境是仓库外的 `tianzheng-dev`；它与真实 S5 COM 集成环境分离。默认 pytest 仅执行 Mock/Fake/离线测试，并由文件访问守卫阻止真实 CAD 扩展名、CAD 子进程与真实 COM import。真实 AutoCAD 集成仍需显式环境变量和 marker，绝不因默认回归通过而自动启用。

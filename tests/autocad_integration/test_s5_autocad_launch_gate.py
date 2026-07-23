@@ -15,6 +15,9 @@ pytestmark = [
     pytest.mark.external_integration,
     pytest.mark.autocad_required,
     pytest.mark.com_required,
+    pytest.mark.real_autocad,
+    pytest.mark.integration,
+    pytest.mark.requires_autocad,
     pytest.mark.synthetic_cad,
 ]
 

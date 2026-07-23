@@ -1,0 +1,10 @@
+# 统一开发与默认 pytest 环境；真实 AutoCAD 集成仍使用独立的 tianzheng-s5 环境并显式 opt-in。
+-r requirements.txt
+
+# 默认收集与 Mock/离线测试所需的项目依赖。
+numpy>=2.0,<3
+PyYAML>=6.0,<7
+Pillow>=10.0,<12
+jsonschema>=4.0,<5
+PyPDF2>=3.0,<4
+scipy>=1.14,<2

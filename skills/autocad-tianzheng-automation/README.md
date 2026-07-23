@@ -6,14 +6,18 @@
 
 ```powershell
 $env:PYTHONUTF8='1'
-python -m scripts.skill_cli validate-manifest examples/plain_autocad_redraw.json
-python -m scripts.skill_cli build-plan examples/plain_autocad_redraw.json --dry-run
-pytest -q -m "not real_dwg and not external_integration and not autocad_required and not tianzheng_required and not com_required and not production_only"
-python -m scripts.verify_safe_test_baseline --baseline "artifacts/cad_safe_test_baseline/20260714T220937+0800" --project-root "."
+$dev='D:\PythonEnvs\tianzheng-dev\Scripts\python.exe'
+& $dev -m scripts.skill_cli validate-manifest examples/plain_autocad_redraw.json
+& $dev -m scripts.skill_cli build-plan examples/plain_autocad_redraw.json --dry-run
+& $dev -m pytest --collect-only -q
+& $dev -m pytest -q
+& $dev -m scripts.verify_safe_test_baseline --baseline "artifacts/cad_safe_test_baseline/20260714T220937+0800" --project-root "."
 ./scripts/validate_skill.ps1
 ```
 
 离线入口不连接 AutoCAD，不读取 DWG/DXF 内容。真实 Legacy COM、NextGen MCP、.NET 插件及天正真实后端均不可用。
+
+默认 pytest 会自动排除真实/外部 CAD marker；S5 真实 synthetic 集成必须同时使用显式环境变量和 `real_autocad`、`integration`、`requires_autocad` marker，且不属于默认回归。
 
 ## 安全测试基线
 

@@ -19,7 +19,8 @@ import traceback
 from typing import Any, Iterable
 
 
-CAD_EXTENSIONS = {".dwg", ".dxf"}
+CAD_EXTENSIONS = {".dwg", ".dxf", ".dwt", ".dws", ".bak", ".sv$"}
+SYNTHETIC_CAD_EXTENSIONS = {".dwg", ".dxf"}
 EXTERNAL_READONLY_MARKERS = {"real_dwg", "external_integration"}
 CAD_PROCESS_NAMES = {
     "acad",
@@ -132,7 +133,7 @@ class RealCadAccessGuard:
         owner_test_id: str | None = None,
     ) -> None:
         owner = self._owner(owner_test_id)
-        if self._suffix(path) not in CAD_EXTENSIONS:
+        if self._suffix(path) not in SYNTHETIC_CAD_EXTENSIONS:
             raise ValueError("仅 CAD 扩展名文件需要 synthetic 登记")
         normalized = self._norm(path)
         if not synthetic_test_file:
@@ -320,9 +321,12 @@ class RealCadAccessGuard:
             "Path.read_bytes": Path.read_bytes,
             "Path.read_text": Path.read_text,
             "os.open": os.open,
+            "os.rename": os.rename,
+            "os.replace": os.replace,
             "shutil.copy": shutil.copy,
             "shutil.copy2": shutil.copy2,
             "shutil.copyfile": shutil.copyfile,
+            "shutil.move": shutil.move,
             "subprocess.Popen": subprocess.Popen,
         }
         guard = self
@@ -380,20 +384,41 @@ class RealCadAccessGuard:
 
             return wrapper
 
-        def guarded_popen(args, *popen_args, **popen_kwargs):
-            reason = guard.check_command("subprocess.Popen", args)
-            result = guard._originals["subprocess.Popen"](
-                args, *popen_args, **popen_kwargs
-            )
-            guard._record(
-                operation="subprocess.started",
-                path=subprocess.list2cmdline(_flatten_command(args)),
-                mode="execute",
-                allowed=True,
-                reason=reason,
-                process=True,
-            )
+        def make_rename_wrapper(name):
+            def wrapper(src, dst, *args, **kwargs):
+                src_reason, src_normalized = guard.check_path(f"os.{name}:src", src, "rb")
+                dst_reason, dst_normalized = guard.check_path(f"os.{name}:dst", dst, "wb")
+                result = guard._originals[f"os.{name}"](src, dst, *args, **kwargs)
+                guard.record_completed_path(f"os.{name}:src", src_normalized, "rb", src_reason)
+                guard.record_completed_path(f"os.{name}:dst", dst_normalized, "wb", dst_reason)
+                return result
+
+            return wrapper
+
+        def guarded_move(src, dst, *args, **kwargs):
+            src_reason, src_normalized = guard.check_path("shutil.move:src", src, "rb")
+            dst_reason, dst_normalized = guard.check_path("shutil.move:dst", dst, "wb")
+            result = guard._originals["shutil.move"](src, dst, *args, **kwargs)
+            guard.record_completed_path("shutil.move:src", src_normalized, "rb", src_reason)
+            guard.record_completed_path("shutil.move:dst", dst_normalized, "wb", dst_reason)
             return result
+
+        original_popen = guard._originals["subprocess.Popen"]
+
+        class GuardedPopen(original_popen):
+            """保留类语义，避免破坏 Windows asyncio 对 Popen 的继承。"""
+
+            def __init__(self, args, *popen_args, **popen_kwargs):
+                reason = guard.check_command("subprocess.Popen", args)
+                super().__init__(args, *popen_args, **popen_kwargs)
+                guard._record(
+                    operation="subprocess.started",
+                    path=subprocess.list2cmdline(_flatten_command(args)),
+                    mode="execute",
+                    allowed=True,
+                    reason=reason,
+                    process=True,
+                )
 
         def guarded_import(name, globals=None, locals=None, fromlist=(), level=0):
             root_name = str(name).split(".", 1)[0].lower()
@@ -423,10 +448,13 @@ class RealCadAccessGuard:
         Path.read_bytes = guarded_read_bytes
         Path.read_text = guarded_read_text
         os.open = guarded_os_open
+        os.rename = make_rename_wrapper("rename")
+        os.replace = make_rename_wrapper("replace")
         shutil.copy = make_copy_wrapper("copy")
         shutil.copy2 = make_copy_wrapper("copy2")
         shutil.copyfile = make_copy_wrapper("copyfile")
-        subprocess.Popen = guarded_popen
+        shutil.move = guarded_move
+        subprocess.Popen = GuardedPopen
         self._installed = True
 
     def uninstall(self) -> None:
@@ -438,9 +466,12 @@ class RealCadAccessGuard:
         Path.read_bytes = self._originals["Path.read_bytes"]
         Path.read_text = self._originals["Path.read_text"]
         os.open = self._originals["os.open"]
+        os.rename = self._originals["os.rename"]
+        os.replace = self._originals["os.replace"]
         shutil.copy = self._originals["shutil.copy"]
         shutil.copy2 = self._originals["shutil.copy2"]
         shutil.copyfile = self._originals["shutil.copyfile"]
+        shutil.move = self._originals["shutil.move"]
         subprocess.Popen = self._originals["subprocess.Popen"]
         self._installed = False
 

@@ -50,6 +50,12 @@ def test_path_read_text_blocks_dxf():
         FAKE_REAL_DWG.with_suffix(".dxf").read_text(encoding="utf-8")
 
 
+@pytest.mark.parametrize("suffix", [".dwt", ".dws", ".bak", ".sv$"])
+def test_additional_cad_related_extensions_are_blocked(suffix):
+    with pytest.raises(RealCadAccessViolation):
+        FAKE_REAL_DWG.with_suffix(suffix).read_bytes()
+
+
 def test_os_open_blocks_unregistered_dwg():
     with pytest.raises(RealCadAccessViolation, match="os.open"):
         os.open(FAKE_REAL_DWG, os.O_RDONLY)
@@ -84,6 +90,11 @@ def test_powershell_scanner_command_with_dxf_is_blocked():
 def test_cad_process_is_blocked_even_without_document_argument():
     with pytest.raises(RealCadAccessViolation, match="cad_process_forbidden"):
         subprocess.Popen(["acad.exe", "/nologo"])
+
+
+def test_popen_guard_remains_class_compatible_for_windows_asyncio():
+    assert isinstance(subprocess.Popen, type)
+    assert issubclass(subprocess.Popen, subprocess.Popen.__mro__[1])
 
 
 def test_normal_json_read_is_allowed(tmp_path):
@@ -206,6 +217,17 @@ def test_other_external_markers_do_not_release_readonly(
 def test_artifacts_dwg_is_blocked():
     with pytest.raises(RealCadAccessViolation):
         FAKE_ARTIFACT_DWG.read_bytes()
+
+
+@pytest.mark.parametrize("operation", ["rename", "replace"])
+def test_os_rename_family_blocks_real_cad(operation, tmp_path):
+    with pytest.raises(RealCadAccessViolation):
+        getattr(os, operation)(FAKE_REAL_DWG, tmp_path / "output.bin")
+
+
+def test_shutil_move_blocks_real_cad(tmp_path):
+    with pytest.raises(RealCadAccessViolation):
+        shutil.move(FAKE_REAL_DWG, tmp_path / "output.bin")
 
 
 def test_artifacts_json_is_allowed_by_policy(tmp_path):
