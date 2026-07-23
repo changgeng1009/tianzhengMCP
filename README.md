@@ -17,6 +17,12 @@
 
 > **安全状态**: d1_allowed=false, production_d1_allowed=false, source_modification_allowed=false。所有操作限制在 dry-run / preparation 阶段。真实执行需要用户明确批准。
 
+## 统一 CAD Skill 当前能力（S5 / S6）
+
+`real_autocad_com` 已完成 `AVAILABLE_SANDBOX_MVP`：只能在显式 L3 审批下，为当前 job 新建的 synthetic sandbox 执行普通 AutoCAD 操作。S6 支持 Line、Circle、Polyline、Arc、Rectangle、Text、MText、普通 BlockDefinition/BlockReference、受限查询与变换、基础样式、保存重开、持久化和 journal 幂等重放。
+
+这不授予用户已有 DWG/DXF、天正、生产写入、L4、Legacy Real、NextGen Real 或 AutoCAD .NET/ObjectARX 权限。真实 COM 集成永不作为默认 pytest 的一部分。
+
 ## 目录结构
 ```
 tianzheng_interface/       # 天正接口层 (M1-M2)
@@ -56,6 +62,8 @@ D:\PythonEnvs\tianzheng-dev\Scripts\python.exe -m pytest -q
 ```
 
 默认 pytest 自动启用真实 CAD 文件访问守卫并排除真实/外部 CAD marker。真实 AutoCAD 集成只可显式 opt-in，详见 [S6.0 测试环境说明](docs/s6_0_test_environment.md)。
+
+S6 操作合同、Mock/Real Backend 边界及真实 synthetic 验收说明见 [S6 CAD 能力说明](docs/s6_cad_capabilities.md)。
 
 ## 安全
 所有操作默认禁用。d1_allowed=false, source_modification_allowed=false。

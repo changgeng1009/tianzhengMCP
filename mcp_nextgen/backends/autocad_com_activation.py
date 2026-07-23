@@ -361,7 +361,14 @@ class ProcessLaunchRuntime:
 
 
 class IsolatedComActivator:
-    """使用 injected client 的 DispatchEx 独立激活，拒绝普通 Dispatch。"""
+    """使用 injected client 的 DispatchEx 独立激活，拒绝普通 Dispatch。
+
+    AutoCAD 2026 在刚完成 COM activation 时偶发返回动态 ``CDispatch``；该
+    对象的属性表可能暂时没有 ``Documents``，即使同一对象的 ``Version`` 已
+    经可读。若 pywin32 已能从 *同一个* IDispatch 建立 makepy wrapper，便将
+    其包装为静态代理。这里绝不再次激活 COM、不会调用 GetActiveObject，也不
+    会通过字符串 ``Dispatch`` 选择另一实例。
+    """
 
     def __init__(self, *, client_importer: Callable[[], Any]) -> None:
         self._client_importer = client_importer
@@ -375,6 +382,17 @@ class IsolatedComActivator:
         if not callable(dispatch_ex):
             raise AutoCadLauncherError("AUTOCAD_COM_ACTIVATION_UNAVAILABLE", "win32com client 不支持 DispatchEx")
         try:
-            return dispatch_ex(progid)
+            application = dispatch_ex(progid)
         except Exception as exc:
             raise AutoCadLauncherError("AUTOCAD_COM_ACTIVATION_FAILED", "AutoCAD DispatchEx 独立激活失败") from exc
+        # ``EnsureDispatch(application)`` 只包装 DispatchEx 已返回的同一个
+        # IDispatch；其内部不会按 ProgID 新建或附着 AutoCAD。包装失败时保留
+        # 原对象，由现有有界 startup-busy retry 继续处理真实 COM 启动窗口。
+        gencache = getattr(client, "gencache", None)
+        ensure_dispatch = getattr(gencache, "EnsureDispatch", None)
+        if not callable(ensure_dispatch):
+            return application
+        try:
+            return ensure_dispatch(application)
+        except Exception:
+            return application

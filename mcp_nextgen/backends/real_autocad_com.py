@@ -31,6 +31,13 @@ S5_ALLOWED_OPERATIONS = frozenset(
         "REOPEN_SYNTHETIC_DOCUMENT",
         "VERIFY_SYNTHETIC_DOCUMENT",
         "CLOSE_SYNTHETIC_DOCUMENT",
+        # S6 仍只允许当前 job 新建的 L3 synthetic sandbox；这些名称不是
+        # production 权限，也不会被默认测试或普通 Manifest 自动授予。
+        "CREATE_ARC", "CREATE_RECTANGLE", "CREATE_TEXT", "CREATE_MTEXT",
+        "CREATE_BLOCK_DEFINITION", "INSERT_BLOCK_REFERENCE", "QUERY_ENTITIES",
+        "MOVE_ENTITY", "COPY_ENTITY", "ROTATE_ENTITY", "SCALE_ENTITY", "DELETE_ENTITY",
+        "ENSURE_LAYER", "ENSURE_TEXT_STYLE", "ENSURE_DIMENSION_STYLE",
+        "S6_EXECUTE_SYNTHETIC_PLAN",
     }
 )
 
@@ -277,8 +284,10 @@ class RealAutoCadComBackend:
         return {
             "backend": S5_BACKEND, "support_level": "AVAILABLE_SANDBOX_MVP",
             "synthetic_only": True, "user_dwg_access": "FORBIDDEN", "production_write": "FORBIDDEN",
-            "supported_entities": ["line", "circle", "polyline"], "tianzheng_support": "NOT_IMPLEMENTED",
-            "transactional_rollback": "NOT_AVAILABLE", "real_cad_access": "EXPLICIT_INTEGRATION_ONLY",
+            "supported_entities": ["line", "circle", "polyline", "arc", "rectangle", "text", "mtext", "block_definition", "block_reference"],
+            "supported_operations": ["query", "move", "copy", "rotate", "scale", "delete", "ensure_layer", "ensure_text_style", "ensure_dimension_style"],
+            "tianzheng_support": "NOT_IMPLEMENTED", "transactional_rollback": "NOT_AVAILABLE",
+            "batch_semantics": "BEST_EFFORT_REAL__ALL_OR_NOTHING_MOCK_ONLY", "real_cad_access": "EXPLICIT_INTEGRATION_ONLY",
         }
 
     def reserve_synthetic_document(self, *, run_id: str, job_id: str, plan_hash: str, output_path: str | Path) -> SyntheticAutoCadDocumentIdentity:

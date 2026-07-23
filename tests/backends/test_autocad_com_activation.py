@@ -81,6 +81,21 @@ class FakeClient:
         raise AssertionError("普通 Dispatch 不得被调用")
 
 
+class FakeGeneratedDispatchCache:
+    def __init__(self) -> None:
+        self.inputs: list[object] = []
+
+    def EnsureDispatch(self, application: object) -> object:
+        self.inputs.append(application)
+        return {"wrapped": application}
+
+
+class FakeClientWithGeneratedDispatch(FakeClient):
+    def __init__(self) -> None:
+        super().__init__()
+        self.gencache = FakeGeneratedDispatchCache()
+
+
 class FakeComBusyError(RuntimeError):
     def __init__(self, hresult: int) -> None:
         super().__init__(hresult, "synthetic COM startup busy")
@@ -192,6 +207,15 @@ def test_isolated_activator_uses_dispatchex_not_dispatch() -> None:
     assert result == {"progid": "AutoCAD.Application.25.1"}
     assert client.dispatch_ex_calls == ["AutoCAD.Application.25.1"]
     assert client.dispatch_calls == []
+
+
+def test_isolated_activator_wraps_the_same_dispatchex_object_without_reactivation() -> None:
+    client = FakeClientWithGeneratedDispatch()
+    result = IsolatedComActivator(client_importer=lambda: client).activate("AutoCAD.Application.25.1")
+    assert result == {"wrapped": {"progid": "AutoCAD.Application.25.1"}}
+    assert client.dispatch_ex_calls == ["AutoCAD.Application.25.1"]
+    assert client.dispatch_calls == []
+    assert client.gencache.inputs == [{"progid": "AutoCAD.Application.25.1"}]
 
 
 def test_startup_busy_retry_retries_two_call_rejected_then_succeeds_without_reactivation() -> None:

@@ -15,6 +15,8 @@ description: 统一、安全地编排普通 AutoCAD、天正给排水、天正�
 
 S5 的 `RealAutoCadComBackend` 已完成受证据约束的合成 Sandbox MVP 人工验收：只有显式选择 `backend=real_autocad_com`、`execution_runtime=com`、`product=generic_autocad`，并通过单次 L3 审批、Synthetic Document Registry 与外部集成门后，才可在当前 job 新建的 synthetic DWG 中处理 Line/Circle/Polyline。它不允许读取或操作用户 DWG/DXF、课程图纸或天正文件；不支持天正、生产写入、L4、Legacy 或 NextGen Real。状态是 `AVAILABLE_SANDBOX_MVP`，但默认仍是 `offline`，`com` 绝不是普通或生产可用运行时。AutoCAD 关闭最后一个 synthetic 文档后可能自动创建默认空白文档；若核心持久化/幂等验证已完成、无用户文件操作且最终 `acad.exe=0`，该行为记录为 `ALLOWED_DIFFERENCE_AUTOCAD_AUTO_CREATED_DEFAULT_DOCUMENT`，不构成绘图能力失败。
 
+S6 在同一 L3 synthetic-only 边界内扩展了结构化普通 CAD 操作：Line、Circle、Polyline、Arc、Rectangle、Text、MText、普通 BlockDefinition/BlockReference，以及受限 Query/Move/Copy/Rotate/Scale/Delete、图层与基础样式确保、保存重开、真实持久化查询和 append-only journal 幂等重放。它已取得显式 Real COM synthetic 验收，能力为 `ordinary_autocad_operations=AVAILABLE_SANDBOX_MVP`；真实 COM batch 只提供可解释的 `best_effort`，`all_or_nothing` 仅由 Mock 模拟，绝不宣称数据库级事务。默认 pytest 仍不加载真实集成。
+
 `SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=CAD-SAFE-20260714T220937+0800` 关闭，权威最终 SHA256 为 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。`13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9` 仅是 freeze-time provenance SHA，不是当前 S2 预检或验收应使用的基线 SHA。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
 
 ```powershell

@@ -3,7 +3,7 @@
   "$id": "https://example.invalid/autocad-tianzheng/capability.schema.json",
   "title": "能力矩阵",
   "$defs": {
-    "supportLevel": {"enum": ["IMPLEMENTED", "IMPLEMENTED_BASELINE", "PARTIALLY_IMPLEMENTED", "INTERFACE_ONLY", "DISABLED_CONTRACT_ONLY", "NOT_IMPLEMENTED", "UNSAFE"]},
+    "supportLevel": {"enum": ["IMPLEMENTED", "IMPLEMENTED_BASELINE", "AVAILABLE_SANDBOX_MVP", "PARTIALLY_IMPLEMENTED", "INTERFACE_ONLY", "DISABLED_CONTRACT_ONLY", "NOT_IMPLEMENTED", "UNSAFE"]},
     "capability": {
       "type": "object", "additionalProperties": false,
       "required": ["capability", "support_level", "read_supported", "write_supported", "verification_level", "approval_required", "known_limitations", "evidence"],
@@ -53,7 +53,7 @@
       "required": ["backend", "support_level", "available", "execution_allowed", "notes"],
       "properties": {
         "backend": {"type": "string"}, "component": {"type": "string"},
-        "support_level": {"$ref": "#/$defs/supportLevel"}, "available": {"type": "boolean"},
+        "support_level": {"$ref": "#/$defs/supportLevel"}, "control_plane_status": {"$ref": "#/$defs/supportLevel"}, "available": {"type": "boolean"},
         "execution_allowed": {"type": "boolean"}, "notes": {"type": "string"}
       }
     },
