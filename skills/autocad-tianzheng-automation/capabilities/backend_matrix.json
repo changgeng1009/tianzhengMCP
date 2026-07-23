@@ -41,6 +41,14 @@
       "notes": "availability=AVAILABLE_FOR_MOCK；S4 Mock-only control plane=IMPLEMENTED_BASELINE（13 tools/3 resources/2 prompts）；无 listener，不代表真实 CAD"
     },
     {
+      "backend": "real_autocad_com",
+      "component": "RealAutoCadComBackend",
+      "support_level": "AVAILABLE_SANDBOX_MVP",
+      "available": true,
+      "execution_allowed": true,
+      "notes": "仅允许显式 external integration、generic_autocad + com + L3、当前 job 新建的 synthetic sandbox；仅 Line/Circle/Polyline。用户 DWG/DXF、生产写入、天正、L4、Legacy 和 NextGen Real 均为 FORBIDDEN/NOT_IMPLEMENTED。"
+    },
+    {
       "backend": "legacy_contract_disabled",
       "component": "LegacyAdapter",
       "support_level": "DISABLED_CONTRACT_ONLY",

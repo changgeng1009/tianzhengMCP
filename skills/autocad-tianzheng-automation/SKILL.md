@@ -13,6 +13,8 @@ description: 统一、安全地编排普通 AutoCAD、天正给排水、天正�
 
 本 Skill 已提供 `NextGenMcpMockBackend=IMPLEMENTED_BASELINE` 和 S4 `NextGenControlPlane=IMPLEMENTED_BASELINE` 的 Mock-only 控制面：13 个版本化工具、3 个只读资源、2 个安全提示，以及纯 Mock 的作业、审批、进度、checkpoint/journal 合同。它没有 listener，绝不代表真实 CAD 能力。NextGen 真实写入后端仍为 `NOT_IMPLEMENTED`，`NextGenMcpBackendPlaceholder` 只描述该未实现边界。天正暖通写入保持 `INTERFACE_ONLY`。
 
+S5 的 `RealAutoCadComBackend` 已完成受证据约束的合成 Sandbox MVP 人工验收：只有显式选择 `backend=real_autocad_com`、`execution_runtime=com`、`product=generic_autocad`，并通过单次 L3 审批、Synthetic Document Registry 与外部集成门后，才可在当前 job 新建的 synthetic DWG 中处理 Line/Circle/Polyline。它不允许读取或操作用户 DWG/DXF、课程图纸或天正文件；不支持天正、生产写入、L4、Legacy 或 NextGen Real。状态是 `AVAILABLE_SANDBOX_MVP`，但默认仍是 `offline`，`com` 绝不是普通或生产可用运行时。AutoCAD 关闭最后一个 synthetic 文档后可能自动创建默认空白文档；若核心持久化/幂等验证已完成、无用户文件操作且最终 `acad.exe=0`，该行为记录为 `ALLOWED_DIFFERENCE_AUTOCAD_AUTO_CREATED_DEFAULT_DOCUMENT`，不构成绘图能力失败。
+
 `SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=CAD-SAFE-20260714T220937+0800` 关闭，权威最终 SHA256 为 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。`13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9` 仅是 freeze-time provenance SHA，不是当前 S2 预检或验收应使用的基线 SHA。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
 
 ```powershell
@@ -23,7 +25,7 @@ python -m scripts.verify_safe_test_baseline --baseline "artifacts/cad_safe_test_
 
 ## 产品、运行时与后端
 
-S3 统一产品档案使用 `generic_autocad`、`tianzheng_water`、`tianzheng_hvac` 和 `offline_analysis`。可声明的执行运行时为 `offline`、`mock`、`com`、`objectarx`；当前只有前两者可用于离线/Mock 计划。`com` 与 `objectarx` 都是未来接口，当前为 `NOT_AVAILABLE`，不能因 Manifest 声明而启用。
+S3 统一产品档案使用 `generic_autocad`、`tianzheng_water`、`tianzheng_hvac` 和 `offline_analysis`。可声明的执行运行时为 `offline`、`mock`、`com`、`objectarx`；`com` 仅对 S5 显式 L3 synthetic sandbox 合同可用，`objectarx` 仍为 `NOT_AVAILABLE`。不能因 Manifest 声明而启用其他真实能力。
 
 - `generic_autocad`：`OFFLINE_PLANNING_IMPLEMENTED`；普通 CAD 检查、参考分析、重绘和比对仅生成离线计划。
 - `tianzheng_water`：`OFFLINE_PLANNING_IMPLEMENTED`；给排水扫描、缺失检测和补全仅生成离线计划，天正真实后端未实现。

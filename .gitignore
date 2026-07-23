@@ -10,6 +10,7 @@ coverage.xml
 
 # Virtual environments
 .venv/
+.venv-s5/
 venv/
 env/
 
