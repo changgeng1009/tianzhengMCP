@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Pure protocol layer: framing, request/response DTOs, validation, error model.
+    net8.0 (NOT -windows): NO AutoCAD dependency, fully unit-testable off-box.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>TianzhengCadPlugin.Protocol</AssemblyName>
+    <RootNamespace>TianzhengCadPlugin.Protocol</RootNamespace>
+    <Version>$(PluginVersion)</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Version constants injected from Directory.Build.props for a single source of truth. -->
+    <AssemblyMetadata Include="ProtocolVersion" Value="$(ProtocolVersion)" />
+    <AssemblyMetadata Include="CapabilityVersion" Value="$(CapabilityVersion)" />
+    <AssemblyMetadata Include="PluginVersion" Value="$(PluginVersion)" />
+  </ItemGroup>
+
+</Project>

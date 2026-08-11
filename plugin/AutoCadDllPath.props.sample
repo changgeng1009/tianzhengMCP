@@ -1,0 +1,14 @@
+<Project>
+  <!--
+    LOCAL, MACHINE-SPECIFIC override for the AutoCAD 2026 managed DLL directory.
+
+    Copy this file to  AutoCadDllPath.props  (same folder) and edit the path.
+    AutoCadDllPath.props is git-ignored so machine paths never enter the repo.
+
+    Alternatively, set the ACAD_MANAGED_DIR environment variable, or pass
+    -p:AutoCadManagedDir=<dir> to dotnet build.
+  -->
+  <PropertyGroup>
+    <AutoCadManagedDir>E:\AutoCAD 2026</AutoCadManagedDir>
+  </PropertyGroup>
+</Project>

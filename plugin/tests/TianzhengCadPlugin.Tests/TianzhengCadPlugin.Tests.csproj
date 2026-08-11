@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Isolated C# unit tests. net8.0, NO AutoCAD reference.
+    Covers ONLY off-AutoCAD logic: framing, DTO/JSON, protocol version,
+    validation, auth (constant-time), queue, size limit, error result,
+    session/nonce. AutoCAD-coupled code is deliberately NOT referenced here
+    and is NOT presented as integration-tested.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TianzhengCadPlugin.Protocol\TianzhengCadPlugin.Protocol.csproj" />
+    <ProjectReference Include="..\..\src\TianzhengCadPlugin.Transport\TianzhengCadPlugin.Transport.csproj" />
+  </ItemGroup>
+
+</Project>

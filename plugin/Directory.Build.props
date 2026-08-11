@@ -1,0 +1,41 @@
+<Project>
+
+  <!--
+    Shared build configuration for the S7 AutoCAD Managed .NET Plugin.
+
+    AutoCAD 2026 managed reference assemblies (acmgd.dll / acdbmgd.dll /
+    accoremgd.dll, v25.1.60.0.0, net8.0) are resolved from a CONFIGURABLE
+    location, never a single hardcoded absolute path. Resolution order:
+
+      1. MSBuild property  -p:AutoCadManagedDir=<dir>
+      2. Environment var   ACAD_MANAGED_DIR=<dir>
+      3. Local override    plugin/AutoCadDllPath.props  (git-ignored)
+      4. Fallback default  E:\AutoCAD 2026   (this machine; overridable)
+
+    The reference DLLs are marked Private=false and are NEVER copied to the
+    plugin output directory, and NEVER committed to git.
+  -->
+
+  <!-- (3) Optional local override, git-ignored. Import first so it can set the property. -->
+  <Import Project="$(MSBuildThisFileDirectory)AutoCadDllPath.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)AutoCadDllPath.props')" />
+
+  <PropertyGroup>
+    <!-- (2) Environment variable, if the property was not already set by (1) or (3). -->
+    <AutoCadManagedDir Condition="'$(AutoCadManagedDir)' == '' and '$(ACAD_MANAGED_DIR)' != ''">$(ACAD_MANAGED_DIR)</AutoCadManagedDir>
+    <!-- (4) Machine fallback default. Overridable by any of the above. -->
+    <AutoCadManagedDir Condition="'$(AutoCadManagedDir)' == ''">E:\AutoCAD 2026</AutoCadManagedDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- Plugin version surfaced in handshake / responses. -->
+    <PluginVersion>0.1.0-s7.1a</PluginVersion>
+    <ProtocolVersion>1.0.0</ProtocolVersion>
+    <CapabilityVersion>s7.1a</CapabilityVersion>
+  </PropertyGroup>
+
+</Project>

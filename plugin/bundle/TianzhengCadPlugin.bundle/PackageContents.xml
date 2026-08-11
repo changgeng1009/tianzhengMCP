@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ApplicationPlugins bundle manifest for the Tianzheng S7 AutoCAD plugin.
+
+  Constrained to AutoCAD 2026 (release R25.1) on 64-bit Windows. The plugin loads on
+  application startup and exposes only read-only operator commands plus the loopback
+  Protocol 2.0 listener; it performs no CAD work unless driven through that protocol.
+
+  This bundle intentionally contains ONLY the plugin's own assemblies. AutoCAD managed
+  DLLs (acmgd/acdbmgd/accoremgd) are supplied by the AutoCAD process and are never
+  redistributed here.
+-->
+<ApplicationPackage
+    SchemaVersion="1.0"
+    AutodeskProduct="AutoCAD"
+    ProductType="Application"
+    Name="TianzhengCadPlugin"
+    AppVersion="0.2.0"
+    Description="Tianzheng CAD MCP synthetic-sandbox plugin backend (S7 MVP)"
+    Author="Tianzheng CAD MCP project"
+    ProductCode="{6F2B1A34-9C57-4E80-9B1D-7A3E5C0D8F21}"
+    UpgradeCode="{2D9C4B71-58E3-4A16-8C0F-1B6D93A7E504}">
+
+  <CompanyDetails Name="Tianzheng CAD MCP project" />
+
+  <!-- Windows + AutoCAD 2026 only. R25.1 is AutoCAD 2026. -->
+  <RuntimeRequirements
+      OS="Win64"
+      Platform="AutoCAD"
+      SeriesMin="R25.1"
+      SeriesMax="R25.1" />
+
+  <Components Description="Tianzheng S7 plugin backend">
+    <RuntimeRequirements
+        OS="Win64"
+        Platform="AutoCAD"
+        SeriesMin="R25.1"
+        SeriesMax="R25.1" />
+    <!-- LoadOnAutoCADStartup: the listener still refuses to start without an injected token. -->
+    <ComponentEntry
+        AppName="TianzhengCadPlugin"
+        Version="0.2.0"
+        ModuleName="./Contents/TianzhengCadPlugin.dll"
+        AppDescription="Loopback Protocol 2.0 backend for job-owned synthetic documents"
+        LoadOnAutoCADStartup="True"
+        LoadOnCommandInvocation="False" />
+  </Components>
+</ApplicationPackage>

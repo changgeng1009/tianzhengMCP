@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    AutoCAD-coupled plugin host. net8.0-windows to match AutoCAD 2026 managed
+    runtime (acmgd/acdbmgd/accoremgd v25.1.60.0.0, tfm net8.0).
+    References the installed AutoCAD managed DLLs via a CONFIGURABLE HintPath.
+    Private=false: NOT copied to output and NEVER committed.
+
+    NOTE: This project cannot be unit-tested off AutoCAD; its AutoCAD-bound code
+    is validated only under the explicit real-AutoCAD opt-in stage (S7.1-B+).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <AssemblyName>TianzhengCadPlugin</AssemblyName>
+    <RootNamespace>TianzhengCadPlugin</RootNamespace>
+    <Version>$(PluginVersion)</Version>
+    <!-- Plugin is loaded into acad.exe; produce a library, do not copy AutoCAD deps. -->
+    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+    <UseWindowsForms>false</UseWindowsForms>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <EnableDefaultItems>true</EnableDefaultItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TianzhengCadPlugin.Protocol\TianzhengCadPlugin.Protocol.csproj" />
+    <ProjectReference Include="..\TianzhengCadPlugin.Transport\TianzhengCadPlugin.Transport.csproj" />
+  </ItemGroup>
+
+  <!-- AutoCAD 2026 managed reference assemblies: configurable dir, never copied, never committed. -->
+  <ItemGroup>
+    <Reference Include="acmgd">
+      <HintPath>$(AutoCadManagedDir)\acmgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="acdbmgd">
+      <HintPath>$(AutoCadManagedDir)\acdbmgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="accoremgd">
+      <HintPath>$(AutoCadManagedDir)\accoremgd.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="VerifyAutoCadReferences" BeforeTargets="ResolveReferences">
+    <Warning Condition="!Exists('$(AutoCadManagedDir)\acmgd.dll')"
+             Text="AutoCAD managed DLLs not found at '$(AutoCadManagedDir)'. Set AutoCadManagedDir / ACAD_MANAGED_DIR or create AutoCadDllPath.props." />
+  </Target>
+
+  <!--
+    Hard guarantee that NOTHING from the AutoCAD installation is copied to our output.
+    Private=false covers the three direct references, but acmgd/acdbmgd/accoremgd also
+    pull in transitive AutoCAD assemblies (AdWindows, AcWindows, AcCustomize, ...) which
+    MSBuild would otherwise mark copy-local. Those DLLs are supplied by the AutoCAD
+    process at runtime and must never be redistributed with the plugin.
+  -->
+  <Target Name="StripAutoCadCopyLocal" AfterTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths
+        Remove="@(ReferenceCopyLocalPaths)"
+        Condition="$([System.String]::new('%(ReferenceCopyLocalPaths.FullPath)').StartsWith('$(AutoCadManagedDir)'))" />
+    </ItemGroup>
+  </Target>
+
+</Project>

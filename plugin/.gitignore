@@ -1,0 +1,25 @@
+# Build output
+bin/
+obj/
+
+# Local, machine-specific AutoCAD DLL path override
+AutoCadDllPath.props
+
+# AutoCAD managed reference assemblies must NEVER be committed
+acmgd.dll
+acdbmgd.dll
+accoremgd.dll
+*.arx
+*.dbx
+*.crx
+
+# Injected transport token / secrets must never be committed
+*.token
+token.txt
+secret.*
+appsettings.Local.json
+
+# VS / Rider
+.vs/
+.idea/
+*.user
