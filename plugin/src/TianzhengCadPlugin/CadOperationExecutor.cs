@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using Autodesk.AutoCAD.ApplicationServices;
@@ -80,6 +81,10 @@ namespace TianzhengCadPlugin
                     OperationType.Save => SaveDocument(request),
                     OperationType.Close => CloseDocument(request),
                     OperationType.Reopen => ReopenDocument(request),
+                    OperationType.DiagnosticQueryRxClass => QueryRxClass(request),
+                    OperationType.DiagnosticScanDatabase => ScanDatabase(request),
+                    OperationType.DiagnosticCreateNativePipe => StartNativePipePoc(request),
+                    OperationType.DiagnosticNativePipeResult => ReadNativePipePocResult(request),
                     OperationType.BatchExecute => ExecuteBatch(request, single: false),
                     OperationType.CreateLayer or OperationType.CreateLine
                         or OperationType.CreateCircle or OperationType.CreatePolyline
@@ -600,6 +605,172 @@ namespace TianzhengCadPlugin
         }
 
         private static Point3d ToPoint3d(Point3 point) => new(point.X, point.Y, point.Z);
+
+        // ---------------------------------------------------------------- diagnostics
+
+        /// <summary>
+        /// Resolve one or more runtime classes by name from the live AutoCAD process.
+        ///
+        /// Read-only: no document is opened, no lock is taken, no transaction is started and
+        /// nothing is created. Runs on the AutoCAD main thread like every other operation.
+        /// </summary>
+        private PluginResponse QueryRxClass(PluginRequest request)
+        {
+            var names = new List<string>();
+            if (request.Parameters.ValueKind == JsonValueKind.Object)
+            {
+                if (request.Parameters.TryGetProperty("class_name", out JsonElement single) &&
+                    single.ValueKind == JsonValueKind.String)
+                {
+                    names.Add(single.GetString() ?? "");
+                }
+                if (request.Parameters.TryGetProperty("class_names", out JsonElement many) &&
+                    many.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (JsonElement item in many.EnumerateArray())
+                        if (item.ValueKind == JsonValueKind.String) names.Add(item.GetString() ?? "");
+                }
+            }
+
+            names = names.Where(n => !string.IsNullOrWhiteSpace(n)).Distinct(StringComparer.Ordinal).ToList();
+            if (names.Count == 0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "class_name or class_names is required");
+
+            var results = new List<RxClassInfo>();
+            foreach (string name in names) results.Add(RxClassProbe.Query(name));
+
+            string prefix = ReadStringFilter(request.Parameters, "list_prefix") ?? "";
+            var payload = new Dictionary<string, object?>
+            {
+                ["classes"] = results,
+                ["autocad_version"] = SafeGetAutoCadVersion(),
+                ["plugin_version"] = ProtocolConstants.PluginVersion,
+                // Any resolved Tianzheng class proves the Tianzheng runtime is live in-process.
+                ["tianzheng_loaded"] = results.Any(r => r.Found && r.RuntimeClassName.StartsWith("TDb", StringComparison.Ordinal)),
+                ["available_runtime_api"] = RxClassProbe.DescribeAvailableApi(),
+                ["prefix_matches"] = prefix.Length > 0 ? RxClassProbe.ListClassesWithPrefix(prefix) : new List<string>(),
+            };
+
+            _log.Info(LogCategory.Entity,
+                $"rxclass probe: {string.Join(",", results.Select(r => $"{r.RequestedClassName}={r.Found}"))}");
+
+            PluginResponse response = Success(request, Stages.Handshake, ToElement(payload));
+            response.SanitizedMessage = "rxclass diagnostic completed";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        // ------------------------------------------------------- S8 native creation PoC
+
+        /// <summary>Read-only model-space snapshot of the active document.</summary>
+        private PluginResponse ScanDatabase(PluginRequest request)
+        {
+            Document? doc = AcApp.DocumentManager.MdiActiveDocument;
+            if (doc == null)
+                return Failure(request, ErrorCodes.InternalError, Stages.Document, "no active document");
+
+            bool readGeometry = ReadBoolFlag(request.Parameters, "read_geometry");
+            List<DbObjectRecord> objects = DatabaseScanner.ScanModelSpace(doc.Database, readGeometry);
+
+            var payload = new Dictionary<string, object?>
+            {
+                ["document_name"] = doc.Name,
+                ["entity_count"] = objects.Count,
+                ["objects"] = objects,
+                ["class_histogram"] = objects.GroupBy(o => o.RuntimeClass)
+                    .ToDictionary(g => g.Key, g => g.Count()),
+            };
+
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = "database scan completed";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        /// <summary>
+        /// Queue the native-pipe PoC. Returns immediately: the creation runs in AutoCAD's own
+        /// command context, and blocking the main thread here would deadlock it.
+        /// </summary>
+        private PluginResponse StartNativePipePoc(PluginRequest request)
+        {
+            if (!TryReadPoint(request.Parameters, "start", out Point3d start))
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "start must be [x,y,z]");
+            if (!TryReadPoint(request.Parameters, "end", out Point3d end))
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "end must be [x,y,z]");
+            if (start.DistanceTo(end) <= 0.0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "start and end must differ");
+
+            bool started = NativePipePoc.Start(start, end);
+            var payload = new Dictionary<string, object?>
+            {
+                ["started"] = started,
+                ["creation_method"] = "tianzheng_fixed_command",
+                ["creation_entry_point"] = NativePipePoc.TianzhengPipeCommand,
+                ["note"] = started
+                    ? "poll diagnostic_native_pipe_result for the outcome"
+                    : "a previous run is still in flight",
+            };
+
+            _log.Info(LogCategory.Entity, $"native pipe poc queued started={started}");
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = started ? "native pipe poc queued" : "poc already running";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse ReadNativePipePocResult(PluginRequest request)
+        {
+            NativePipePocResult? result = NativePipePoc.LatestResult;
+            var payload = new Dictionary<string, object?>
+            {
+                ["running"] = NativePipePoc.IsRunning,
+                ["available"] = result != null,
+                ["result"] = result,
+            };
+
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = result == null ? "no poc result yet" : "poc result available";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private static bool ReadBoolFlag(JsonElement parameters, string name)
+        {
+            if (parameters.ValueKind != JsonValueKind.Object) return false;
+            if (!parameters.TryGetProperty(name, out JsonElement value)) return false;
+            return value.ValueKind == JsonValueKind.True;
+        }
+
+        private static bool TryReadPoint(JsonElement parameters, string name, out Point3d point)
+        {
+            point = default;
+            if (parameters.ValueKind != JsonValueKind.Object) return false;
+            if (!parameters.TryGetProperty(name, out JsonElement value)) return false;
+            if (value.ValueKind != JsonValueKind.Array) return false;
+
+            var parts = new List<double>();
+            foreach (JsonElement item in value.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.Number) return false;
+                double d = item.GetDouble();
+                if (double.IsNaN(d) || double.IsInfinity(d)) return false;
+                parts.Add(d);
+            }
+            if (parts.Count is < 2 or > 3) return false;
+
+            point = new Point3d(parts[0], parts[1], parts.Count > 2 ? parts[2] : 0.0);
+            return true;
+        }
+
+        private static string SafeGetAutoCadVersion()
+        {
+            try { return AcApp.Version.ToString(); }
+            catch (Exception) { return "unknown"; }
+        }
 
         // ---------------------------------------------------------------- lifecycle
 

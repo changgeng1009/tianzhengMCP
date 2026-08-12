@@ -27,12 +27,40 @@ namespace TianzhengCadPlugin.Protocol
         public const string Reopen = "reopen";
         public const string Shutdown = "shutdown";
 
+        /// <summary>
+        /// S8 read-only diagnostic: resolve a runtime (RX) class by name from the live AutoCAD
+        /// process. Creates nothing, opens no document, mutates no database. It exists to prove
+        /// whether a native class such as Tianzheng's TDbPipe is actually registered, rather
+        /// than inferring it from binary strings.
+        /// </summary>
+        public const string DiagnosticQueryRxClass = "diagnostic_query_rxclass";
+
+        /// <summary>
+        /// S8 read-only diagnostic: snapshot model space (handles + runtime classes) so a
+        /// creation attempt can be judged by an actual before/after database difference rather
+        /// than by what appeared on screen.
+        /// </summary>
+        public const string DiagnosticScanDatabase = "diagnostic_scan_database";
+
+        /// <summary>
+        /// S8.1 proof-of-concept: create one native Tianzheng pipe by invoking Tianzheng's own
+        /// fixed creation command. The command name is a compile-time constant and the only
+        /// caller-supplied values are two coordinates; there is no command-string, LISP or
+        /// passthrough surface behind this operation.
+        /// </summary>
+        public const string DiagnosticCreateNativePipe = "diagnostic_create_native_pipe";
+
+        /// <summary>Read the outcome of the queued creation PoC (it runs in AutoCAD's own command context).</summary>
+        public const string DiagnosticNativePipeResult = "diagnostic_native_pipe_result";
+
         /// <summary>Every operation_type the protocol will ACCEPT (parse without UNKNOWN_OPERATION).</summary>
         public static readonly IReadOnlySet<string> All = new HashSet<string>
         {
             Health, Capabilities,
             CreateSyntheticDocument, CreateLayer, CreateLine, CreateCircle, CreatePolyline,
             QueryEntities, BatchExecute, Save, Close, Reopen, Shutdown,
+            DiagnosticQueryRxClass, DiagnosticScanDatabase,
+            DiagnosticCreateNativePipe, DiagnosticNativePipeResult,
         };
 
         /// <summary>Operations actually IMPLEMENTED and answerable in S7.1-A (read-only host skeleton).</summary>
