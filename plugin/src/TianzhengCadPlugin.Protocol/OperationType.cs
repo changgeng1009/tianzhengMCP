@@ -70,6 +70,19 @@ namespace TianzhengCadPlugin.Protocol
         /// <summary>Count native pipes and their related fittings, so replay can prove no duplicates.</summary>
         public const string TianzhengPipeInventory = "tianzheng_pipe_inventory";
 
+        // --- S10.1 native valve --------------------------------------------------------------
+        // Structured position plus a target pipe handle. The Tianzheng command is a compile-time
+        // constant inside the adapter and never appears on this boundary.
+
+        /// <summary>Create one native Tianzheng valve on an existing native pipe.</summary>
+        public const string TianzhengCreateValve = "tianzheng_create_valve";
+
+        /// <summary>Read the outcome of the queued valve creation (it runs in AutoCAD's command context).</summary>
+        public const string TianzhengValveResult = "tianzheng_valve_result";
+
+        /// <summary>Query one native valve by handle, including its observed topology.</summary>
+        public const string TianzhengQueryValve = "tianzheng_query_valve";
+
         /// <summary>Every operation_type the protocol will ACCEPT (parse without UNKNOWN_OPERATION).</summary>
         public static readonly IReadOnlySet<string> All = new HashSet<string>
         {
@@ -80,6 +93,7 @@ namespace TianzhengCadPlugin.Protocol
             DiagnosticCreateNativePipe, DiagnosticNativePipeResult,
             TianzhengCreatePipe, TianzhengQueryPipe,
             TianzhengValidatePipeIdentity, TianzhengPipeInventory,
+            TianzhengCreateValve, TianzhengValveResult, TianzhengQueryValve,
         };
 
         /// <summary>Operations actually IMPLEMENTED and answerable in S7.1-A (read-only host skeleton).</summary>

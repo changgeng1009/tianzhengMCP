@@ -40,7 +40,12 @@ namespace TianzhengCadPlugin.Tests
             Assert.False(OperationType.IsKnown("tianzheng_run_command"));
             Assert.False(OperationType.IsKnown("tianzheng_send_command"));
             Assert.False(OperationType.IsKnown("tianzheng_execute_lisp"));
-            Assert.False(OperationType.IsKnown("tianzheng_create_valve"));
+            // Object families with no adapter behind them stay unknown. Valve moved out of this
+            // list in S10.1 when tianzheng_create_valve became a real registered operation;
+            // that registration says nothing about its capability, which is still
+            // NOT_IMPLEMENTED until creation, topology, persistence and idempotency are proven.
+            Assert.False(OperationType.IsKnown("tianzheng_create_equipment"));
+            Assert.False(OperationType.IsKnown("tianzheng_create_annotation"));
         }
 
         [Fact]

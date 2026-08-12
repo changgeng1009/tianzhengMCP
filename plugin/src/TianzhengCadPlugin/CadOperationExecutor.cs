@@ -89,6 +89,9 @@ namespace TianzhengCadPlugin
                     OperationType.TianzhengQueryPipe => TianzhengQueryPipe(request),
                     OperationType.TianzhengValidatePipeIdentity => TianzhengValidatePipeIdentity(request),
                     OperationType.TianzhengPipeInventory => TianzhengPipeInventoryOp(request),
+                    OperationType.TianzhengCreateValve => TianzhengCreateValve(request),
+                    OperationType.TianzhengValveResult => TianzhengValveResultOp(request),
+                    OperationType.TianzhengQueryValve => TianzhengQueryValve(request),
                     OperationType.BatchExecute => ExecuteBatch(request, single: false),
                     OperationType.CreateLayer or OperationType.CreateLine
                         or OperationType.CreateCircle or OperationType.CreatePolyline
@@ -899,6 +902,105 @@ namespace TianzhengCadPlugin
 
             PluginResponse response = Success(request, Stages.Entity, ToElement(inventory));
             response.SanitizedMessage = "pipe inventory returned";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        // ----------------------------------------------------- S10.1 native valve surface
+
+        /// <summary>
+        /// Create one native valve on an existing native pipe.
+        ///
+        /// The caller supplies a position and the handle of the pipe to attach to. It cannot
+        /// name a command or send command text: FMFJ lives inside the adapter.
+        /// </summary>
+        private PluginResponse TianzhengCreateValve(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+
+            if (!TianzhengRuntime.IsAvailable(out string probeDetail))
+                return Failure(request, TianzhengErrorCodes.NotLoaded, Stages.Document, probeDetail);
+
+            if (!TryReadPoint(request.Parameters, "position", out Point3d position))
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "position must be [x,y,z]");
+
+            string pipeHandle = ReadStringFilter(request.Parameters, "target_pipe_handle") ?? "";
+            if (pipeHandle.Length == 0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "target_pipe_handle is required: a valve attaches to a pipe");
+
+            var handle = (AutoCadDocumentHandle)record.Handle;
+
+            // The target must really be a native pipe before anything is created.
+            TianzhengPipeSnapshot target = TianzhengPipeQuery.Query(
+                handle.Document.Database, pipeHandle);
+            if (target.RuntimeClass.Length == 0)
+                return Failure(request, TianzhengErrorCodes.PipeNotFound, Stages.Entity,
+                    "target_pipe_handle does not resolve in this drawing");
+            if (!target.NativeIdentityConfirmed)
+                return Failure(request, TianzhengErrorCodes.NativeIdentityMismatch, Stages.Entity,
+                    $"target handle is {target.RuntimeClass}, not {TianzhengClasses.Pipe}");
+
+            Document? active = AcApp.DocumentManager.MdiActiveDocument;
+            if (active == null || !ReferenceEquals(active, handle.Document))
+                return Failure(request, ErrorCodes.DocumentNotJobOwned, Stages.Document,
+                    "the owned document is not the active document; refusing to run the creation command");
+
+            string idempotencyKey = ReadStringFilter(request.Parameters, "idempotency_key") ?? "";
+            if (!NativeValveAdapter.Start(position, pipeHandle, idempotencyKey))
+                return Failure(request, ErrorCodes.InternalError, Stages.Entity,
+                    "a previous valve creation is still in flight");
+
+            var payload = new Dictionary<string, object?>
+            {
+                ["started"] = true,
+                ["creation_method"] = "tianzheng_fixed_command",
+                ["target_pipe_handle"] = pipeHandle,
+                ["note"] = "poll tianzheng_valve_result for the outcome",
+            };
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = "native valve creation queued";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse TianzhengValveResultOp(PluginRequest request)
+        {
+            NativeValveResult? result = NativeValveAdapter.LatestResult;
+            var payload = new Dictionary<string, object?>
+            {
+                ["running"] = NativeValveAdapter.IsRunning,
+                ["available"] = result != null,
+                ["result"] = result,
+            };
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = result == null ? "no valve result yet" : "valve result available";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse TianzhengQueryValve(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+
+            string valveHandle = ReadStringFilter(request.Parameters, "handle") ?? "";
+            if (valveHandle.Length == 0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation, "handle is required");
+
+            string? pipeHandle = ReadStringFilter(request.Parameters, "target_pipe_handle");
+            var handle = (AutoCadDocumentHandle)record.Handle;
+            TianzhengValveSnapshot snapshot = TianzhengValveQuery.Query(
+                handle.Document.Database, valveHandle, pipeHandle);
+
+            if (snapshot.RuntimeClass.Length == 0)
+                return Failure(request, TianzhengErrorCodes.PipeNotFound, Stages.Entity,
+                    "no object with that handle in this drawing");
+
+            PluginResponse response = Success(request, Stages.Entity, ToElement(snapshot));
+            response.SanitizedMessage = "valve snapshot returned";
             AddDispatchMarker(response);
             return response;
         }
