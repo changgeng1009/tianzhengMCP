@@ -437,10 +437,43 @@ S8_TIANZHENG_TOOLS: dict[str, dict[str, Any]] = {
 }
 
 
-#: Everything dispatch_tool can serve: the S4 Mock baseline, the S7 plugin tools and the
-#: S8 Tianzheng tools. NEXTGEN_TOOLS itself stays Mock-only, which its self-check enforces.
+_ENGINEERING_TASK_INPUT = {
+    "task_id": id_property(),
+    "intent": {"type": "string", "maxLength": 512},
+    "start": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"type": "number"}},
+    "end": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"type": "number"}},
+    "include_valve_intent": {"type": "boolean"},
+}
+
+S9_ENGINEERING_TOOLS: dict[str, dict[str, Any]] = {
+    # Planning and validation are pure: they touch no CAD. Execution is deliberately NOT a
+    # tool - the executor is a client of cad.tianzheng.*, so exposing it here would make the
+    # dispatcher re-enter itself. A caller supplies a task descriptor, never an operation
+    # list, so the planner's capability gate cannot be bypassed.
+    "cad.engineering.plan": _tool(
+        "cad.engineering.plan",
+        "把结构化工程任务转换为 EngineeringOperationPlan 并附带 Dry Run；不接触 CAD。",
+        _input(_ENGINEERING_TASK_INPUT),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+    ),
+    "cad.engineering.validate_plan": _tool(
+        "cad.engineering.validate_plan",
+        "对工程任务计划执行确定性校验：能力、几何、安全、依赖与幂等；不接触 CAD。",
+        _input(_ENGINEERING_TASK_INPUT),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+    ),
+}
+
+
+#: Everything dispatch_tool can serve: the S4 Mock baseline, the S7 plugin tools, the
+#: S8 Tianzheng tools and the S9 engineering task tools. NEXTGEN_TOOLS itself stays
+#: Mock-only, which its self-check enforces.
 ALL_DISPATCHABLE_TOOLS: dict[str, dict[str, Any]] = {
-    **NEXTGEN_TOOLS, **S7_PLUGIN_TOOLS, **S8_TIANZHENG_TOOLS}
+    **NEXTGEN_TOOLS, **S7_PLUGIN_TOOLS, **S8_TIANZHENG_TOOLS, **S9_ENGINEERING_TOOLS}
 
 def get_tool(name: str) -> dict[str, Any] | None:
     tool = NEXTGEN_TOOLS.get(name)

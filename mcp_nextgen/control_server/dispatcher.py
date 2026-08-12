@@ -65,6 +65,53 @@ def tianzheng_route_service() -> Any:
     return _TIANZHENG_ROUTE_SERVICE
 
 
+_ENGINEERING_ROUTE_SERVICE: Any = None
+
+
+def configure_engineering_route_service(service: Any) -> None:
+    """绑定或清除 cad.engineering.* 工具使用的 S9 路由服务；由宿主显式注入。"""
+
+    global _ENGINEERING_ROUTE_SERVICE
+    _ENGINEERING_ROUTE_SERVICE = service
+
+
+def engineering_route_service() -> Any:
+    return _ENGINEERING_ROUTE_SERVICE
+
+
+def _dispatch_engineering_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
+    """Route a ``cad.engineering.*`` tool to the S9 planner.
+
+    These tools are pure: they plan and validate, and never reach a CAD backend. Execution
+    stays with the EngineeringTaskExecutor, which drives the already-registered
+    ``cad.tianzheng.*`` tools.
+    """
+    service = _ENGINEERING_ROUTE_SERVICE
+    if service is None:
+        return _result(
+            payload, status="UNAVAILABLE", error_code="ENGINEERING_PLANNER_NOT_CONFIGURED",
+            data={"actual_backend_used": None,
+                  "message": "S9 engineering planner is not configured in this process."})
+
+    from mcp_nextgen.s9.route import EngineeringRouteError
+
+    handlers = {
+        "cad.engineering.plan": service.plan_task,
+        "cad.engineering.validate_plan": service.validate_plan,
+    }
+    handler = handlers.get(tool_name)
+    if handler is None:
+        raise ControlPlaneError("UNKNOWN_METHOD", f"未知工程工具: {tool_name!r}")
+
+    try:
+        data = handler(payload)
+    except EngineeringRouteError as exc:
+        return _result(payload, status="FAILED", error_code=exc.error_code,
+                       data={"actual_backend_used": None, "details": exc.details})
+
+    return _result(payload, status="OK", data=data)
+
+
 def _dispatch_tianzheng_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
     """Route a ``cad.tianzheng.*`` tool to the S8 native backend.
 
@@ -299,6 +346,10 @@ def dispatch_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
     # --- S8: Tianzheng native backend, dispatched from this same main path ---
     if tool_name.startswith("cad.tianzheng."):
         return _dispatch_tianzheng_tool(tool_name, payload)
+
+    # --- S9: engineering task layer, dispatched from this same main path ---
+    if tool_name.startswith("cad.engineering."):
+        return _dispatch_engineering_tool(tool_name, payload)
 
     if tool_name == "cad.documents.list":
         return _result(payload, status="OK", data={"documents": [], "mock_only": True})
