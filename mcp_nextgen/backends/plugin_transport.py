@@ -130,6 +130,14 @@ class PluginCapabilities:
     tianzheng_support: str
     autocad_version: str = ""
 
+    # --- S8 handshake: distinguishes a plain AutoCAD session from a full Tianzheng one ---
+    tianzheng_loaded: bool = False
+    tianzheng_product: str = ""
+    tianzheng_version: str = ""
+    tianzheng_runtime_available: bool = False
+    tdbpipe_rxclass_available: bool = False
+    supported_tianzheng_operations: tuple[str, ...] = ()
+
     @classmethod
     def from_result(cls, result: Mapping[str, Any]) -> "PluginCapabilities":
         return cls(
@@ -152,6 +160,14 @@ class PluginCapabilities:
             persistence_support=bool(result.get("persistence_support", False)),
             tianzheng_support=str(result.get("tianzheng_support", "NOT_AVAILABLE")),
             autocad_version=str(result.get("autocad_version", "")),
+            # Default to "not there": a handshake that omits these must never imply Tianzheng.
+            tianzheng_loaded=bool(result.get("tianzheng_loaded", False)),
+            tianzheng_product=str(result.get("tianzheng_product", "")),
+            tianzheng_version=str(result.get("tianzheng_version", "")),
+            tianzheng_runtime_available=bool(result.get("tianzheng_runtime_available", False)),
+            tdbpipe_rxclass_available=bool(result.get("tdbpipe_rxclass_available", False)),
+            supported_tianzheng_operations=tuple(
+                result.get("supported_tianzheng_operations") or ()),
         )
 
     def supports(self, operation: str) -> bool:
@@ -177,6 +193,12 @@ class PluginCapabilities:
             "persistence_support": self.persistence_support,
             "tianzheng_support": self.tianzheng_support,
             "autocad_version": self.autocad_version,
+            "tianzheng_loaded": self.tianzheng_loaded,
+            "tianzheng_product": self.tianzheng_product,
+            "tianzheng_version": self.tianzheng_version,
+            "tianzheng_runtime_available": self.tianzheng_runtime_available,
+            "tdbpipe_rxclass_available": self.tdbpipe_rxclass_available,
+            "supported_tianzheng_operations": list(self.supported_tianzheng_operations),
             # session_nonce is intentionally omitted: it is session state, not a report field.
         }
 

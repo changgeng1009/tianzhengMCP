@@ -71,8 +71,28 @@ namespace TianzhengCadPlugin.Protocol
         /// <summary>Save / close / reopen lifecycle with verified persistence.</summary>
         [JsonPropertyName("persistence_support")] public bool PersistenceSupport { get; init; }
 
-        /// <summary>Always NOT_AVAILABLE in S7. The plugin has no Tianzheng capability.</summary>
+        /// <summary>Overall Tianzheng capability. S8 raises this only when the runtime is really live.</summary>
         [JsonPropertyName("tianzheng_support")] public string TianzhengSupport { get; init; } = CapabilityStatus.NotAvailable;
+
+        // --- S8 handshake: tell a plain AutoCAD session apart from a full Tianzheng one ---
+        // Set from a live runtime probe at plugin start, never from configuration, so a caller
+        // can never be told Tianzheng is present when it is not.
+
+        /// <summary>True only when Tianzheng's own classes resolve in THIS process.</summary>
+        [JsonPropertyName("tianzheng_loaded")] public bool TianzhengLoaded { get; init; }
+
+        [JsonPropertyName("tianzheng_product")] public string TianzhengProduct { get; init; } = "";
+        [JsonPropertyName("tianzheng_version")] public string TianzhengVersion { get; init; } = "";
+
+        /// <summary>Whether the Tianzheng application runtime is usable for native work.</summary>
+        [JsonPropertyName("tianzheng_runtime_available")] public bool TianzhengRuntimeAvailable { get; init; }
+
+        /// <summary>Whether TDbPipe itself resolves as a registered runtime class.</summary>
+        [JsonPropertyName("tdbpipe_rxclass_available")] public bool TdbPipeRxClassAvailable { get; init; }
+
+        /// <summary>Tianzheng operations this session can actually serve. Empty when not loaded.</summary>
+        [JsonPropertyName("supported_tianzheng_operations")]
+        public List<string> SupportedTianzhengOperations { get; init; } = new();
 
         /// <summary>
         /// Whether the host can accept protocol requests at all. This is a BOOLEAN and says
@@ -156,10 +176,18 @@ namespace TianzhengCadPlugin.Protocol
         /// explicitly negative below.
         /// </summary>
         public static PluginRuntimeInfo ForEntityMvp(
-            string sessionId, int processId, string autoCadVersion, string sessionNonce)
+            string sessionId, int processId, string autoCadVersion, string sessionNonce,
+            TianzhengRuntimeStatus? tianzheng = null)
         {
+            TianzhengRuntimeStatus status = tianzheng ?? TianzhengRuntimeStatus.NotLoaded;
             return new PluginRuntimeInfo
             {
+                TianzhengLoaded = status.Loaded,
+                TianzhengProduct = status.Product,
+                TianzhengVersion = status.Version,
+                TianzhengRuntimeAvailable = status.RuntimeAvailable,
+                TdbPipeRxClassAvailable = status.TdbPipeAvailable,
+                SupportedTianzhengOperations = new List<string>(status.Operations),
                 SessionId = sessionId,
                 SessionNonce = sessionNonce,
                 ProcessId = processId,
@@ -181,8 +209,10 @@ namespace TianzhengCadPlugin.Protocol
                 IdempotencySupport = CapabilityStatus.AvailableSandboxMvp,
                 PersistenceSupport = true,
 
-                // --- deliberately NOT claimed ---
-                TianzhengSupport = CapabilityStatus.NotAvailable,
+                // Raised ONLY when the probe found Tianzheng live in this very process.
+                TianzhengSupport = status.RuntimeAvailable
+                    ? CapabilityStatus.AvailableSandboxMvp
+                    : CapabilityStatus.NotAvailable,
 
                 ActiveDocumentStatus = DocumentStatus.NotTracked,
                 Readiness = true,

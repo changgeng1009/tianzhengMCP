@@ -28,6 +28,36 @@ namespace TianzhengCadPlugin
             runtimeClass.StartsWith("AcDbZombie", StringComparison.Ordinal);
     }
 
+    /// <summary>Is the Tianzheng object model live in this very process?</summary>
+    internal static class TianzhengRuntime
+    {
+        /// <summary>
+        /// Answered by resolving TDbPipe in the runtime class registry. That can only succeed
+        /// if Tianzheng's modules loaded and registered their object model here, so it cannot
+        /// be faked by configuration or an environment variable.
+        /// </summary>
+        public static bool IsAvailable(out string detail)
+        {
+            try
+            {
+                RxClassInfo pipe = RxClassProbe.Query(TianzhengClasses.Pipe);
+                if (pipe.Found)
+                {
+                    detail = $"{TianzhengClasses.Pipe} resolved in this process";
+                    return true;
+                }
+                detail = $"{TianzhengClasses.Pipe} is not a registered runtime class in this " +
+                         "AutoCAD session; start Tianzheng through its own launcher";
+                return false;
+            }
+            catch (Exception ex)
+            {
+                detail = $"Tianzheng runtime probe failed ({ex.GetType().Name})";
+                return false;
+            }
+        }
+    }
+
     /// <summary>One property value plus where it actually came from.</summary>
     internal sealed class PropertyValue
     {

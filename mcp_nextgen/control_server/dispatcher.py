@@ -51,6 +51,83 @@ def plugin_route_service() -> Any:
     return _PLUGIN_ROUTE_SERVICE
 
 
+_TIANZHENG_ROUTE_SERVICE: Any = None
+
+
+def configure_tianzheng_route_service(service: Any) -> None:
+    """绑定或清除 cad.tianzheng.* 工具使用的 S8 路由服务；由宿主显式注入。"""
+
+    global _TIANZHENG_ROUTE_SERVICE
+    _TIANZHENG_ROUTE_SERVICE = service
+
+
+def tianzheng_route_service() -> Any:
+    return _TIANZHENG_ROUTE_SERVICE
+
+
+def _dispatch_tianzheng_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
+    """Route a ``cad.tianzheng.*`` tool to the S8 native backend.
+
+    This is the ONLY place the Tianzheng backend is reachable from MCP. The payload carries
+    structured geometry; there is no command, LISP or socket surface behind it, and a
+    Tianzheng-specific failure keeps its own error code rather than becoming INTERNAL_ERROR.
+    """
+    service = _TIANZHENG_ROUTE_SERVICE
+    if service is None:
+        return _result(
+            payload,
+            status="UNAVAILABLE",
+            error_code="TIANZHENG_NOT_LOADED",
+            data={
+                "actual_backend_used": None,
+                "real_backend_available": False,
+                "message": "Tianzheng native backend is not configured in this process.",
+            },
+            backend_kind=BackendKind.REAL_PLUGIN.value,
+        )
+
+    # Imported lazily so the default dispatcher import never pulls in transport code.
+    from mcp_nextgen.s8.tianzheng_route import TianzhengRouteError
+
+    if tool_name == "cad.tianzheng.capabilities":
+        try:
+            capabilities = service.capability_snapshot()
+        except Exception as exc:
+            return _result(
+                payload, status="UNAVAILABLE", error_code="TIANZHENG_NOT_LOADED",
+                data={"actual_backend_used": None, "reason": type(exc).__name__},
+                backend_kind=BackendKind.REAL_PLUGIN.value)
+        return _result(payload, status="OK",
+                       data={"capabilities": capabilities, "actual_backend_used": None},
+                       backend_kind=BackendKind.REAL_PLUGIN.value)
+
+    handlers = {
+        "cad.tianzheng.create_pipe": service.create_pipe,
+        "cad.tianzheng.query_pipe": service.query_pipe,
+        "cad.tianzheng.validate_pipe_identity": service.validate_pipe_identity,
+    }
+    handler = handlers.get(tool_name)
+    if handler is None:
+        raise ControlPlaneError("UNKNOWN_METHOD", f"未知天正工具: {tool_name!r}")
+
+    try:
+        outcome = handler(payload)
+    except TianzhengRouteError as exc:
+        # Structured Tianzheng failures survive to the caller.
+        return _result(
+            payload, status="FAILED", error_code=exc.error_code,
+            data={"actual_backend_used": None, "details": exc.details},
+            backend_kind=BackendKind.REAL_PLUGIN.value)
+
+    return _result(
+        payload,
+        status=outcome.status,
+        data={**outcome.data, "actual_backend_used": outcome.actual_backend_used},
+        error_code=outcome.error_code,
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+    )
+
+
 def _control_plane_service() -> ControlPlaneService:
     """延迟创建仅用于当前进程的临时 Mock 作业存储。"""
 
@@ -218,6 +295,10 @@ def dispatch_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
     # --- S7: AutoCAD plugin backend, dispatched from this same main path ---
     if tool_name in {"cad.plugin.capabilities", "cad.plugin.execute"}:
         return _dispatch_plugin_tool(tool_name, payload)
+
+    # --- S8: Tianzheng native backend, dispatched from this same main path ---
+    if tool_name.startswith("cad.tianzheng."):
+        return _dispatch_tianzheng_tool(tool_name, payload)
 
     if tool_name == "cad.documents.list":
         return _result(payload, status="OK", data={"documents": [], "mock_only": True})

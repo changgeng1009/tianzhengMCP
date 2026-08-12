@@ -62,8 +62,11 @@ namespace TianzhengCadPlugin
                 // AutoCAD-derived value captured HERE, on the main thread, once.
                 string autoCadVersion = SafeGetAutoCadVersion();
 
+                // Probe for Tianzheng in THIS process. Nothing here trusts configuration.
+                TianzhengRuntimeStatus tianzheng = ProbeTianzheng();
+
                 _runtimeInfo = PluginRuntimeInfo.ForEntityMvp(
-                    sessionId, processId, autoCadVersion, sessionNonce);
+                    sessionId, processId, autoCadVersion, sessionNonce, tianzheng);
 
                 _queue = new OperationQueue();
                 _registry = new DocumentOwnershipRegistry(sessionId);
@@ -151,6 +154,37 @@ namespace TianzhengCadPlugin
         {
             try { return AcCoreApp.Version.ToString(); }
             catch (Exception) { return "unknown"; }
+        }
+
+        /// <summary>
+        /// Ask the live runtime whether Tianzheng is actually here.
+        ///
+        /// TDbPipe resolving as a registered class is the only thing that counts: it can only
+        /// happen if Tianzheng's modules loaded and registered their object model in this
+        /// process. A plain AutoCAD session fails this and is reported as not loaded.
+        /// </summary>
+        private static TianzhengRuntimeStatus ProbeTianzheng()
+        {
+            try
+            {
+                RxClassInfo pipe = RxClassProbe.Query(TianzhengClasses.Pipe);
+                if (!pipe.Found) return TianzhengRuntimeStatus.NotLoaded;
+
+                return new TianzhengRuntimeStatus
+                {
+                    Loaded = true,
+                    RuntimeAvailable = true,
+                    TdbPipeAvailable = true,
+                    Product = "T30天正给排水 T30-WT",
+                    Version = "V1.0",
+                    Operations = TianzhengRuntimeStatus.PipeOperations,
+                };
+            }
+            catch (Exception)
+            {
+                // A probe that cannot run is reported as "not loaded", never as available.
+                return TianzhengRuntimeStatus.NotLoaded;
+            }
         }
 
         private static void WriteLine(string message)

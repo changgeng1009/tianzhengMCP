@@ -359,8 +359,88 @@ S7_PLUGIN_TOOLS: dict[str, dict[str, Any]] = {
 }
 
 
-#: Everything dispatch_tool can serve: the S4 Mock baseline plus the S7 plugin tools.
-ALL_DISPATCHABLE_TOOLS: dict[str, dict[str, Any]] = {**NEXTGEN_TOOLS, **S7_PLUGIN_TOOLS}
+S8_TIANZHENG_TOOLS: dict[str, dict[str, Any]] = {
+    # Structured pipe parameters only. There is deliberately no command, command_text, lisp
+    # or passthrough field anywhere in these schemas, and the schemas are strict, so an
+    # attempt to smuggle one is rejected before dispatch.
+    "cad.tianzheng.capabilities": _tool(
+        "cad.tianzheng.capabilities",
+        "读取天正原生后端的运行期能力；天正未加载时如实返回 NOT_AVAILABLE。",
+        _input(),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+    "cad.tianzheng.create_pipe": _tool(
+        "cad.tianzheng.create_pipe",
+        "在 job-owned synthetic 文档中创建一根天正原生 TDbPipe；仅接受结构化几何参数。",
+        _input(
+            {
+                "job_id": id_property(),
+                "document_token": {"type": "string", "minLength": 1},
+                "start": {"type": "array", "minItems": 2, "maxItems": 3,
+                          "items": {"type": "number"}},
+                "end": {"type": "array", "minItems": 2, "maxItems": 3,
+                        "items": {"type": "number"}},
+                "operation_id": {"type": ["string", "null"]},
+            },
+            ["job_id", "document_token", "start", "end"],
+        ),
+        read_only=False,
+        allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L3_SANDBOX_WRITE],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+    "cad.tianzheng.query_pipe": _tool(
+        "cad.tianzheng.query_pipe",
+        "按 handle 查询天正原生管道快照；不返回 DBObject 或 native 指针。",
+        _input(
+            {
+                "job_id": id_property(),
+                "document_token": {"type": "string", "minLength": 1},
+                "handle": {"type": "string", "minLength": 1, "maxLength": 32},
+                "related_handles": {"type": "array", "maxItems": 64,
+                                    "items": {"type": "string", "maxLength": 32}},
+            },
+            ["job_id", "document_token", "handle"],
+        ),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+    "cad.tianzheng.validate_pipe_identity": _tool(
+        "cad.tianzheng.validate_pipe_identity",
+        "重新读取对象并确认其仍为活的原生 TDbPipe；Proxy 一律判定为不通过。",
+        _input(
+            {
+                "job_id": id_property(),
+                "document_token": {"type": "string", "minLength": 1},
+                "handle": {"type": "string", "minLength": 1, "maxLength": 32},
+            },
+            ["job_id", "document_token", "handle"],
+        ),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+}
+
+
+#: Everything dispatch_tool can serve: the S4 Mock baseline, the S7 plugin tools and the
+#: S8 Tianzheng tools. NEXTGEN_TOOLS itself stays Mock-only, which its self-check enforces.
+ALL_DISPATCHABLE_TOOLS: dict[str, dict[str, Any]] = {
+    **NEXTGEN_TOOLS, **S7_PLUGIN_TOOLS, **S8_TIANZHENG_TOOLS}
 
 def get_tool(name: str) -> dict[str, Any] | None:
     tool = NEXTGEN_TOOLS.get(name)

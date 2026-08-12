@@ -188,8 +188,74 @@ only have come out of the DWG file.
 On replay the stored handles are **re-resolved and their runtime classes re-read** from the
 current database. A record alone is never trusted — if the pipe is gone, creation runs again.
 
+## MCP integration (S8.6)
+
+```
+MCP tool → Control Plane dispatcher → S8 route service
+        → TianzhengBackend → S7 plugin transport → Tianzheng pipe adapter
+```
+
+No second MCP server. Four tools, registered on the same `dispatch_tool` main path:
+
+| Tool | Read-only |
+|---|---|
+| `cad.tianzheng.capabilities` | yes |
+| `cad.tianzheng.create_pipe` | no |
+| `cad.tianzheng.query_pipe` | yes |
+| `cad.tianzheng.validate_pipe_identity` | yes |
+
+Create accepts `start`, `end`, `job_id`, `document_token`, `operation_id`, `idempotency_key` and
+nothing else. The schemas are strict, so an extra `command` field is rejected as `INVALID_PARAMS`
+before dispatch, and a test asserts no schema mentions command/lisp/sendcommand/script/keystroke/hzgx.
+
+`NEXTGEN_TOOLS` stays Mock-only; the Tianzheng tools live in `S8_TIANZHENG_TOOLS` and join only
+`ALL_DISPATCHABLE_TOOLS`, so the S4 registry self-check is unaffected.
+
+### Handshake
+
+The plugin probes for Tianzheng at start by resolving `TDbPipe` in the runtime class registry —
+never from configuration or an environment variable — and reports `tianzheng_loaded`,
+`tianzheng_product`, `tianzheng_version`, `tianzheng_runtime_available`,
+`tdbpipe_rxclass_available` and `supported_tianzheng_operations`.
+
+A plain AutoCAD session reports `tianzheng_loaded=false`, every `AVAILABLE_SANDBOX_MVP` capability
+collapses to `NOT_AVAILABLE`, and creation returns **`TIANZHENG_NOT_LOADED`**. It never falls back
+to an ordinary Polyline.
+
+### Error codes
+
+`TIANZHENG_NOT_LOADED`, `TIANZHENG_NATIVE_CLASS_NOT_FOUND`, `TIANZHENG_PIPE_CREATE_FAILED`,
+`TIANZHENG_PIPE_NOT_FOUND`, `TIANZHENG_PIPE_NATIVE_IDENTITY_MISMATCH`,
+`TIANZHENG_PIPE_PROPERTY_UNAVAILABLE`, `TIANZHENG_PIPE_PERSISTENCE_FAILED`,
+`TIANZHENG_PIPE_IDEMPOTENCY_CONFLICT` all survive to the MCP caller. Nothing collapses into
+`INTERNAL_ERROR`; an unrecognised code stays visible rather than being flattened.
+
+## Supported / not supported
+
+**Supported:** native `TDbPipe` creation, native identity validation, geometry query,
+save/reopen persistence, persistent idempotency, MCP routing.
+
+**Not supported:** reliable diameter read, reliable system read, arbitrary diameter/system
+assignment, valve, equipment, annotation, user DWG editing, production write.
+
+HZGX takes diameter and system from Tianzheng's own palette defaults (给水 / DN25 / elevation 0).
+Those observed defaults are **not** an API capability: the registry reports
+`tianzheng_pipe_diameter_control=NOT_AVAILABLE` and `tianzheng_pipe_system_control=NOT_AVAILABLE`.
+
+This is a native pipe MVP, **not** full Tianzheng water-supply-and-drainage support.
+
+## Final acceptance
+
+```bash
+python scripts/s8_final_acceptance.py
+```
+
+Enters through `dispatch_tool`. Document lifecycle (create synthetic / save / close / reopen) is an
+S7 plugin-transport concern and is not an MCP tool.
+
 ## Not yet done
 
-MCP tool exposure, update/delete, valve/fitting/equipment as first-class operations, and a full
-process-restart replay (the proven boundary is document close + reopen-from-disk, not an
-AutoCAD restart, because the plugin can only reopen documents it owns within a session).
+Update/delete, valve/fitting/equipment as first-class operations, and a process-restart replay.
+The last one is `PROCESS_RESTART_PERSISTENCE_NOT_AUTOMATED`: `reopen` requires the token's session
+id to match the current plugin session and no operation accepts a path, both deliberate S7 safety
+properties. The proven boundary is document close + reopen-from-disk.

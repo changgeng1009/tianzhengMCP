@@ -76,7 +76,7 @@ namespace TianzhengCadPlugin.Tests
             Assert.NotEmpty(codes);
             Assert.Equal(codes.Count, codes.Distinct().Count());
             foreach (string code in codes)
-                Assert.StartsWith("TIANZHENG_PIPE_", code);
+                Assert.StartsWith("TIANZHENG_", code);
         }
 
         [Fact]

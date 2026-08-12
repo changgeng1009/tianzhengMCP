@@ -9,6 +9,18 @@ namespace TianzhengCadPlugin.Protocol
     /// </summary>
     public static class TianzhengErrorCodes
     {
+        /// <summary>
+        /// This AutoCAD session has no Tianzheng runtime. Native work refuses to run rather
+        /// than silently degrading to an ordinary Polyline, which would be a fake.
+        /// </summary>
+        public const string NotLoaded = "TIANZHENG_NOT_LOADED";
+
+        /// <summary>Tianzheng is loaded but the required native class is not registered.</summary>
+        public const string NativeClassNotFound = "TIANZHENG_NATIVE_CLASS_NOT_FOUND";
+
+        /// <summary>The creation adapter ran but did not produce a native pipe.</summary>
+        public const string PipeCreateFailed = "TIANZHENG_PIPE_CREATE_FAILED";
+
         /// <summary>The requested handle or identity does not resolve in this drawing.</summary>
         public const string PipeNotFound = "TIANZHENG_PIPE_NOT_FOUND";
 

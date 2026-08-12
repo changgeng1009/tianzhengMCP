@@ -784,6 +784,11 @@ namespace TianzhengCadPlugin
             if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
                 return rejection!;
 
+            // Refuse rather than fall back: a plain AutoCAD session must never be served an
+            // ordinary entity dressed up as a Tianzheng object.
+            if (!TianzhengRuntime.IsAvailable(out string probeDetail))
+                return Failure(request, TianzhengErrorCodes.NotLoaded, Stages.Document, probeDetail);
+
             if (!TryReadPoint(request.Parameters, "start", out Point3d start))
                 return Failure(request, ErrorCodes.MissingField, Stages.Validation, "start must be [x,y,z]");
             if (!TryReadPoint(request.Parameters, "end", out Point3d end))
