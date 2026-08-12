@@ -53,6 +53,23 @@ namespace TianzhengCadPlugin.Protocol
         /// <summary>Read the outcome of the queued creation PoC (it runs in AutoCAD's own command context).</summary>
         public const string DiagnosticNativePipeResult = "diagnostic_native_pipe_result";
 
+        // --- S8.2 TianzhengBackend minimal surface -------------------------------------------
+        // Structured pipe parameters only. No command name, command text, LISP or keystrokes
+        // cross this boundary: the Tianzheng command is an internal implementation detail of
+        // the creation adapter.
+
+        /// <summary>Create one native Tianzheng pipe from a structured spec, honouring idempotency_key.</summary>
+        public const string TianzhengCreatePipe = "tianzheng_create_pipe";
+
+        /// <summary>Query one native pipe by handle. Returns a snapshot, never a DBObject or native pointer.</summary>
+        public const string TianzhengQueryPipe = "tianzheng_query_pipe";
+
+        /// <summary>Re-validate that a handle still denotes a live native TDbPipe.</summary>
+        public const string TianzhengValidatePipeIdentity = "tianzheng_validate_pipe_identity";
+
+        /// <summary>Count native pipes and their related fittings, so replay can prove no duplicates.</summary>
+        public const string TianzhengPipeInventory = "tianzheng_pipe_inventory";
+
         /// <summary>Every operation_type the protocol will ACCEPT (parse without UNKNOWN_OPERATION).</summary>
         public static readonly IReadOnlySet<string> All = new HashSet<string>
         {
@@ -61,6 +78,8 @@ namespace TianzhengCadPlugin.Protocol
             QueryEntities, BatchExecute, Save, Close, Reopen, Shutdown,
             DiagnosticQueryRxClass, DiagnosticScanDatabase,
             DiagnosticCreateNativePipe, DiagnosticNativePipeResult,
+            TianzhengCreatePipe, TianzhengQueryPipe,
+            TianzhengValidatePipeIdentity, TianzhengPipeInventory,
         };
 
         /// <summary>Operations actually IMPLEMENTED and answerable in S7.1-A (read-only host skeleton).</summary>

@@ -85,6 +85,10 @@ namespace TianzhengCadPlugin
                     OperationType.DiagnosticScanDatabase => ScanDatabase(request),
                     OperationType.DiagnosticCreateNativePipe => StartNativePipePoc(request),
                     OperationType.DiagnosticNativePipeResult => ReadNativePipePocResult(request),
+                    OperationType.TianzhengCreatePipe => TianzhengCreatePipe(request),
+                    OperationType.TianzhengQueryPipe => TianzhengQueryPipe(request),
+                    OperationType.TianzhengValidatePipeIdentity => TianzhengValidatePipeIdentity(request),
+                    OperationType.TianzhengPipeInventory => TianzhengPipeInventoryOp(request),
                     OperationType.BatchExecute => ExecuteBatch(request, single: false),
                     OperationType.CreateLayer or OperationType.CreateLine
                         or OperationType.CreateCircle or OperationType.CreatePolyline
@@ -704,7 +708,7 @@ namespace TianzhengCadPlugin
                 return Failure(request, ErrorCodes.MissingField, Stages.Validation,
                     "start and end must differ");
 
-            bool started = NativePipePoc.Start(start, end);
+            bool started = NativePipePoc.Start(start, end, idempotencyKey: "");
             var payload = new Dictionary<string, object?>
             {
                 ["started"] = started,
@@ -764,6 +768,134 @@ namespace TianzhengCadPlugin
 
             point = new Point3d(parts[0], parts[1], parts.Count > 2 ? parts[2] : 0.0);
             return true;
+        }
+
+        // ------------------------------------------------- S8.2 TianzhengBackend surface
+
+        /// <summary>
+        /// Create one native pipe in the OWNED document from a structured spec.
+        ///
+        /// The caller sends coordinates and an idempotency key. It cannot name a command, send
+        /// command text, LISP or keystrokes: the Tianzheng command lives inside the creation
+        /// adapter and never appears on this boundary.
+        /// </summary>
+        private PluginResponse TianzhengCreatePipe(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+
+            if (!TryReadPoint(request.Parameters, "start", out Point3d start))
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation, "start must be [x,y,z]");
+            if (!TryReadPoint(request.Parameters, "end", out Point3d end))
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation, "end must be [x,y,z]");
+            if (start.DistanceTo(end) <= 0.0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation, "start and end must differ");
+
+            string idempotencyKey = ReadStringFilter(request.Parameters, "idempotency_key") ?? "";
+
+            // The Tianzheng command executes in the ACTIVE document, so refuse to run unless the
+            // owned document is the active one. Without this the command would silently write
+            // into whatever drawing happened to be in front.
+            var handle = (AutoCadDocumentHandle)record.Handle;
+            Document? active = AcApp.DocumentManager.MdiActiveDocument;
+            if (active == null || !ReferenceEquals(active, handle.Document))
+                return Failure(request, ErrorCodes.DocumentNotJobOwned, Stages.Document,
+                    "the owned document is not the active document; refusing to run the creation command");
+
+            if (!NativePipePoc.Start(start, end, idempotencyKey))
+                return Failure(request, ErrorCodes.InternalError, Stages.Entity,
+                    "a previous creation is still in flight");
+
+            var payload = new Dictionary<string, object?>
+            {
+                ["started"] = true,
+                ["creation_method"] = "tianzheng_fixed_command",
+                ["idempotency_key"] = idempotencyKey.Length > 0 ? idempotencyKey : null,
+                ["note"] = "poll diagnostic_native_pipe_result for the outcome",
+            };
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = "native pipe creation queued";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse TianzhengQueryPipe(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+
+            string handleText = ReadStringFilter(request.Parameters, "handle") ?? "";
+            if (handleText.Length == 0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation, "handle is required");
+
+            var related = new List<string>();
+            if (request.Parameters.ValueKind == JsonValueKind.Object &&
+                request.Parameters.TryGetProperty("related_handles", out JsonElement rel) &&
+                rel.ValueKind == JsonValueKind.Array)
+            {
+                related.AddRange(rel.EnumerateArray()
+                    .Where(i => i.ValueKind == JsonValueKind.String)
+                    .Select(i => i.GetString() ?? ""));
+            }
+
+            var document = (AutoCadDocumentHandle)record.Handle;
+            TianzhengPipeSnapshot snapshot = TianzhengPipeQuery.Query(
+                document.Document.Database, handleText, related);
+
+            if (snapshot.Error != null && snapshot.RuntimeClass.Length == 0)
+                return Failure(request, TianzhengErrorCodes.PipeNotFound, Stages.Entity,
+                    "no object with that handle in this drawing");
+
+            PluginResponse response = Success(request, Stages.Entity, ToElement(snapshot));
+            response.SanitizedMessage = "pipe snapshot returned";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse TianzhengValidatePipeIdentity(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+
+            string handleText = ReadStringFilter(request.Parameters, "handle") ?? "";
+            if (handleText.Length == 0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation, "handle is required");
+
+            var document = (AutoCadDocumentHandle)record.Handle;
+            TianzhengPipeSnapshot snapshot = TianzhengPipeQuery.Query(document.Document.Database, handleText);
+
+            if (snapshot.RuntimeClass.Length == 0)
+                return Failure(request, TianzhengErrorCodes.PipeNotFound, Stages.Entity,
+                    "no object with that handle in this drawing");
+
+            if (!snapshot.NativeIdentityConfirmed)
+            {
+                // A proxy means the Tianzheng module was not loaded in THIS session. That is a
+                // different problem from a wrong class, so say which one it is.
+                string detail = TianzhengClasses.IsProxy(snapshot.RuntimeClass)
+                    ? $"object is a proxy ({snapshot.RuntimeClass}): the defining Tianzheng module is not loaded"
+                    : $"object runtime class is {snapshot.RuntimeClass}, not {TianzhengClasses.Pipe}";
+                return Failure(request, TianzhengErrorCodes.NativeIdentityMismatch, Stages.Entity, detail);
+            }
+
+            PluginResponse ok = Success(request, Stages.Entity, ToElement(snapshot));
+            ok.SanitizedMessage = "native identity confirmed";
+            AddDispatchMarker(ok);
+            return ok;
+        }
+
+        private PluginResponse TianzhengPipeInventoryOp(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+
+            var document = (AutoCadDocumentHandle)record.Handle;
+            TianzhengPipeInventory inventory = TianzhengPipeQuery.TakeInventory(document.Document.Database);
+
+            PluginResponse response = Success(request, Stages.Entity, ToElement(inventory));
+            response.SanitizedMessage = "pipe inventory returned";
+            AddDispatchMarker(response);
+            return response;
         }
 
         private static string SafeGetAutoCadVersion()

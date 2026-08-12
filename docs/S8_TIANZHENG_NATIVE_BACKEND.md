@@ -112,7 +112,84 @@ python scripts/s8_native_pipe_poc.py
 Both need `TIANZHENG_PLUGIN_TOKEN` and `TIANZHENG_PLUGIN_PORT`, and a live Tianzheng session with
 the plugin NETLOADed. Default tests never launch AutoCAD or Tianzheng.
 
+## TianzhengBackend (S8.2)
+
+`mcp_nextgen/s8/tianzheng_backend.py` is a thin layer over the existing S7 transport — not a
+rewrite of it. It reuses `job_id`, `operation_id`, `idempotency_key`, structured results and
+errors, the capability registry and the plugin's main-thread scheduling.
+
+It declares exactly three capabilities — `create_native_pipe`, `query_native_pipe`,
+`validate_native_pipe_identity`. Valves, fittings-as-first-class, equipment, annotation and
+network editing are **absent rather than declared-and-broken**.
+
+```
+CreateTianzhengPipe (spec: start, end)
+  → TianzhengBackend
+    → plugin op tianzheng_create_pipe
+      → TianzhengPipeCreationAdapter   ← the only place a command name exists
+        → fixed HZGX execution
+          → database diff
+            → native identity validation
+```
+
+A creation reports the **primary** object and its **related** objects separately, because one
+HZGX yields a `TDbPipe` plus two `TDbPipeFitting` nodes. Idempotency keys off the pipe, but the
+fittings are counted too — a replay that held the pipe count steady while doubling the nodes
+would still be broken.
+
+## Property access (S8.3)
+
+Every property carries its own source. Nothing is echoed back from the request.
+
+| Property | Source |
+|---|---|
+| `start`, `end`, `length` | `AcDbCurve` interface on the object |
+| `elevation` | Z of the object's start point |
+| `diameter` | `NOT_READABLE_WITH_CURRENT_SURFACE` |
+| `system` | `NOT_READABLE_WITH_CURRENT_SURFACE` |
+
+`GetDnDiameter`, `GetSysType` and `GetPipeSystemName` exist as native C++ members with no managed
+wrapper. XData and the extension dictionary were probed and did not carry them. The layer
+Tianzheng assigns (`PIPE-给水`) does encode the system, but it is reported as
+`system_layer_indicator` — an indirect hint, deliberately not the `system` property.
+
+**Debt:** reading diameter and system needs a route into the native property surface.
+
+## Persistence round trip (S8.4)
+
+```bash
+python scripts/s8_persistence_roundtrip.py
+```
+
+create synthetic document → create pipe → snapshot → SaveAs to sandbox → close → reopen from the
+exact recorded path → snapshot again → compare.
+
+`reopen` calls `DocumentManager.Open` on the on-disk file after the original was closed, so the
+reopened `Database` really is rebuilt from the DWG. The verdict requires the runtime class, the
+geometry and every *comparable* property to match. A property that was unreadable on either side
+is excluded rather than compared as null-equals-null.
+
+A proxy on the way back is treated as an environment fault, not a destroyed object: it means the
+Tianzheng module was not loaded in the reading session. The round trip is only valid inside a
+full `TGStart.exe` session.
+
+Handle stability is recorded, but semantic equivalence never rests on the handle alone —
+`TianzhengPipeSignature` is native class + geometry + whichever properties were genuinely readable.
+
+## Persistent idempotency (S8.5)
+
+Reuses the S7 in-document store (`TIANZHENG_S7_IDEMPOTENCY`, a Named Objects Dictionary entry
+holding an `Xrecord`) — no third idempotency system.
+
+There is no in-memory key registry anywhere in the plugin; `IdempotencyStore` only reads and
+writes the NOD. So when a replay after close/reopen resolves to `already_applied`, the record can
+only have come out of the DWG file.
+
+On replay the stored handles are **re-resolved and their runtime classes re-read** from the
+current database. A record alone is never trusted — if the pipe is gone, creation runs again.
+
 ## Not yet done
 
-Persistence across save/close/reopen, idempotency, a full `TianzhengBackend`, MCP tool exposure,
-update/delete, and valve/fitting/equipment as first-class operations.
+MCP tool exposure, update/delete, valve/fitting/equipment as first-class operations, and a full
+process-restart replay (the proven boundary is document close + reopen-from-disk, not an
+AutoCAD restart, because the plugin can only reopen documents it owns within a session).
