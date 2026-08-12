@@ -124,6 +124,25 @@ class S7PluginRouteService:
         self._plugin_backend = plugin_backend
         self._approval_granted = approval_granted
 
+    def capability_snapshot(self) -> dict[str, Any]:
+        """Runtime capability for the ``cad.plugin.capabilities`` tool.
+
+        Reports honestly when no plugin backend is bound rather than implying availability.
+        """
+        if self._plugin_backend is None:
+            return {"plugin_backend_configured": False,
+                    "autocad_plugin_backend": "NOT_CONFIGURED",
+                    "registered_backends": list(self._router.registered_backends)}
+
+        capabilities = self._plugin_backend.client.connect()
+        return {
+            "plugin_backend_configured": True,
+            "autocad_plugin_backend": "AVAILABLE_SANDBOX_MVP"
+            if capabilities.readiness_state.startswith("AVAILABLE") else capabilities.readiness_state,
+            "registered_backends": list(self._router.registered_backends),
+            **capabilities.to_dict(),
+        }
+
     def plan_capability(self, plan: CadOperationPlan) -> dict[str, Any]:
         supported, blocker = plan_supported(plan)
         return {"plugin_supports_plan": supported, "unsupported_reason": blocker}

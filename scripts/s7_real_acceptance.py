@@ -35,6 +35,8 @@ from mcp_nextgen.s6.contracts import (
     EntitySpec,
     LayerSpec,
 )
+from mcp_nextgen.control_server.dispatcher import configure_plugin_route_service, dispatch_tool
+from mcp_nextgen.protocol.version import PROTOCOL_VERSION
 from mcp_nextgen.s7.plugin_route import build_plugin_route_service
 
 #: The S6 contract mandates its dedicated synthetic layer, and S6 is authoritative:
@@ -87,8 +89,24 @@ def main() -> int:
     backend = AutoCadPluginBackend(client, job_id=JOB_ID)
     service = build_plugin_route_service(plugin_backend=backend, mock_available=True, com_available=False)
 
+    # Record the binary identity of the plugin actually loaded, so evidence is tied to a
+    # specific Host DLL rather than merely to "some build".
+    import hashlib as _hashlib
+    host_dll = (Path(__file__).resolve().parents[1] / "plugin" / "src" / "TianzhengCadPlugin"
+                / "bin" / "Release" / "net8.0-windows" / "TianzhengCadPlugin.dll")
+    binary_identity: dict[str, Any] = {}
+    for name in ("TianzhengCadPlugin.dll", "TianzhengCadPlugin.Protocol.dll",
+                 "TianzhengCadPlugin.Transport.dll"):
+        candidate = host_dll.parent / name
+        if candidate.is_file():
+            binary_identity[name] = {
+                "sha256": _hashlib.sha256(candidate.read_bytes()).hexdigest().upper(),
+                "bytes": candidate.stat().st_size,
+            }
+
     report: dict[str, Any] = {
         "acceptance": "s7_6_full_chain_mcp_to_autocad",
+        "binary_identity": binary_identity,
         "path": "structured request -> S6 plan -> CapabilityRouter -> AutoCadPluginBackend "
                 "-> PluginTransportClient -> AutoCAD plugin",
         "token_digest": redact_token(token),
@@ -266,7 +284,52 @@ def main() -> int:
             },
         })
 
-        # ---- 10. unsupported plan is refused before sending ----
+        # ---- 10. THE REAL MCP MAIN PATH: dispatch_tool -> plugin -> AutoCAD ----
+        # Proves the plugin is reachable from the registered MCP dispatcher, not only from
+        # a parallel service object.
+        configure_plugin_route_service(service)
+        import uuid as _uuid
+
+        def _envelope(**extra):
+            payload = {
+                "schema_version": PROTOCOL_VERSION,
+                "request_id": "mcp-" + _uuid.uuid4().hex[:10],
+                "idempotency_key": "mcp-key-" + _uuid.uuid4().hex[:8],
+            }
+            payload.update(extra)
+            return payload
+
+        mcp_caps = dispatch_tool("cad.plugin.capabilities", _envelope())
+        before_mcp = len(backend.list_entities(reopened.session_id))
+        mcp_exec = dispatch_tool("cad.plugin.execute", _envelope(
+            job_id=JOB_ID,
+            session_id=reopened.session_id,
+            layer=LAYER,
+            entities=[{"type": "circle",
+                       "geometry": {"center": {"x": 3000, "y": 3000}, "radius": 120}}],
+            require_atomic_batch=True,
+        ))
+        after_mcp = backend.list_entities(reopened.session_id)
+        mcp_data = mcp_exec.get("data") or {}
+
+        checks.append({
+            "name": "mcp_dispatch_tool_main_path",
+            "capabilities_status": mcp_caps.get("status"),
+            "execute_status": mcp_exec.get("status"),
+            "backend_kind": mcp_exec.get("backend_kind"),
+            "actual_backend_used": mcp_data.get("actual_backend_used"),
+            "assertions": {
+                "caps_tool_ok": mcp_caps.get("status") == "OK",
+                "caps_reports_plugin_configured": bool(
+                    (mcp_caps.get("data") or {}).get("capabilities", {}).get("plugin_backend_configured")),
+                "execute_completed": mcp_exec.get("status") == "COMPLETED",
+                "provenance_is_real_plugin": mcp_exec.get("backend_kind") == "REAL_PLUGIN",
+                "actual_backend_is_plugin": mcp_data.get("actual_backend_used") == PLUGIN_BACKEND,
+                "entity_created_via_mcp": len(after_mcp) == before_mcp + 1,
+            },
+        })
+
+        # ---- 11. unsupported plan is refused before sending ----
         text_plan = CadOperationPlan(
             job_id=JOB_ID, document_token=new_binding.document_token,
             batch_policy="all_or_nothing",
@@ -275,14 +338,16 @@ def main() -> int:
                     "text", {"text": "no", "insertion_point": {"x": 0, "y": 0}, "height": 10},
                     layer=LAYER)),
             ))
+        entities_before_unsupported = len(backend.list_entities(reopened.session_id))
         unsupported_decision = service.route(text_plan, require_atomic_batch=True)
         after_unsupported = backend.list_entities(reopened.session_id)
         checks.append({
             "name": "unsupported_plan_not_routed_to_plugin",
             "selected_backend": unsupported_decision.selected_backend,
+            "entity_count": len(after_unsupported),
             "assertions": {
                 "plugin_not_selected": unsupported_decision.selected_backend != PLUGIN_BACKEND,
-                "nothing_created": len(after_unsupported) == 3,
+                "nothing_created": len(after_unsupported) == entities_before_unsupported,
             },
         })
 

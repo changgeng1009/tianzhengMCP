@@ -38,7 +38,9 @@ _RESULT_OUTPUT = strict_object(
         "job_id": {"type": ["string", "null"]},
         "idempotency_key": id_property(),
         "status": {"type": "string", "minLength": 1},
-        "backend_kind": {"type": "string", "const": BackendKind.MOCK.value},
+        # MOCK for every control-plane tool. REAL_PLUGIN only for the S7 cad.plugin.* tools,
+        # so a result can never claim Mock provenance for work the AutoCAD plugin performed.
+        "backend_kind": {"type": "string", "enum": [BackendKind.MOCK.value, BackendKind.REAL_PLUGIN.value]},
         "production_allowed": {"type": "boolean", "const": False},
         "production_d1_allowed": {"type": "boolean", "const": False},
         "dry_run": {"type": "boolean"},
@@ -71,6 +73,9 @@ def _tool(
     read_only: bool,
     allowed_levels: list[ApprovalLevel],
     status: str = "NOT_IMPLEMENTED",
+    backend_kind: str = BackendKind.MOCK.value,
+    real_backend_available: bool = False,
+    allowed_execution_runtimes: list[str] | None = None,
 ) -> dict[str, Any]:
     if status not in {"IMPLEMENTED_BASELINE", "PARTIALLY_IMPLEMENTED", "NOT_IMPLEMENTED"}:
         raise ValueError(f"非法工具状态: {status}")
@@ -82,10 +87,10 @@ def _tool(
         "errorSchema": deepcopy(_ERROR_OUTPUT),
         "version": PROTOCOL_VERSION,
         "read_only": read_only,
-        "backend_kind": BackendKind.MOCK.value,
-        "real_backend_available": False,
+        "backend_kind": backend_kind,
+        "real_backend_available": real_backend_available,
         "production_d1_allowed": False,
-        "allowed_execution_runtimes": ["offline", "mock"],
+        "allowed_execution_runtimes": allowed_execution_runtimes or ["offline", "mock"],
         "status": status,
         "available": status == "IMPLEMENTED_BASELINE",
         "allowed_approval_levels": [level.value for level in allowed_levels],
@@ -303,6 +308,59 @@ NEXTGEN_TOOLS: dict[str, dict[str, Any]] = {
     ),
 }
 
+
+
+#: S7 plugin tools live in their OWN registry, deliberately NOT in NEXTGEN_TOOLS.
+#:
+#: NEXTGEN_TOOLS is the S4 Mock-only baseline whose exact membership is contractual —
+#: existing S4 tests assert that every registered tool is Mock-backed. Adding a real
+#: backend there would silently break that guarantee. Keeping them separate preserves the
+#: S4 invariant while `dispatch_tool` still serves both from the one MCP entry point.
+S7_PLUGIN_TOOLS: dict[str, dict[str, Any]] = {
+    # These are the only registered tools whose backend_kind is not MOCK. They accept a
+    # STRUCTURED request only: there is no raw-protocol, command-string or passthrough
+    # field, so the plugin wire protocol stays an implementation detail of the backend.
+    "cad.plugin.capabilities": _tool(
+        "cad.plugin.capabilities",
+        "读取 AutoCAD 插件后端的运行期能力；插件未接入时安全返回 unavailable。",
+        _input(),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+    "cad.plugin.execute": _tool(
+        "cad.plugin.execute",
+        "在 job-owned synthetic 文档中执行结构化 S6 计划；经 Capability Router 选择后端。",
+        _input(
+            {
+                "job_id": id_property(),
+                "layer": {"type": "string", "minLength": 1, "maxLength": 64},
+                "entities": {
+                    "type": "array", "minItems": 1, "maxItems": 256,
+                    "items": {"type": "object"},
+                },
+                "session_id": {"type": "string", "minLength": 1},
+                "dry_run": {"type": "boolean"},
+                "require_atomic_batch": {"type": "boolean"},
+                "preferred_backend": {"type": ["string", "null"]},
+            },
+            ["job_id", "layer", "entities", "session_id"],
+        ),
+        read_only=False,
+        allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L3_SANDBOX_WRITE],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+}
+
+
+#: Everything dispatch_tool can serve: the S4 Mock baseline plus the S7 plugin tools.
+ALL_DISPATCHABLE_TOOLS: dict[str, dict[str, Any]] = {**NEXTGEN_TOOLS, **S7_PLUGIN_TOOLS}
 
 def get_tool(name: str) -> dict[str, Any] | None:
     tool = NEXTGEN_TOOLS.get(name)

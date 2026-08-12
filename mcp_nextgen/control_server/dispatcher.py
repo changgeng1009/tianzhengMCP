@@ -8,7 +8,7 @@ from typing import Any
 
 from ..protocol.enums import BackendKind
 from ..protocol.version import PROTOCOL_VERSION
-from ..schemas.tools import NEXTGEN_TOOLS, list_tools
+from ..schemas.tools import ALL_DISPATCHABLE_TOOLS, NEXTGEN_TOOLS, list_tools
 from ..schemas.validator import SchemaValidationError, validate_instance
 from ..safety.canonical import sha256_hex
 from .service import ControlPlaneJobError, ControlPlaneService
@@ -34,6 +34,23 @@ def configure_control_plane_service(service: ControlPlaneService | None) -> None
         _CONTROL_PLANE_TEMPORARY_ROOT = None
 
 
+#: Injected S7 plugin route service. None (the default) means the AutoCAD plugin backend is
+#: not wired in, so the cad.plugin.* tools answer "unavailable" rather than touching CAD.
+#: This default is what keeps the standard test suite from ever starting AutoCAD.
+_PLUGIN_ROUTE_SERVICE: Any = None
+
+
+def configure_plugin_route_service(service: Any) -> None:
+    """绑定或清除 cad.plugin.* 工具使用的 S7 路由服务；由宿主显式注入，不自行创建真实 backend。"""
+
+    global _PLUGIN_ROUTE_SERVICE
+    _PLUGIN_ROUTE_SERVICE = service
+
+
+def plugin_route_service() -> Any:
+    return _PLUGIN_ROUTE_SERVICE
+
+
 def _control_plane_service() -> ControlPlaneService:
     """延迟创建仅用于当前进程的临时 Mock 作业存储。"""
 
@@ -50,6 +67,7 @@ def _result(
     status: str,
     data: dict[str, Any] | None = None,
     error_code: str | None = None,
+    backend_kind: str = BackendKind.MOCK.value,
 ) -> dict[str, Any]:
     return {
         "schema_version": PROTOCOL_VERSION,
@@ -57,7 +75,8 @@ def _result(
         "job_id": payload.get("job_id"),
         "idempotency_key": payload["idempotency_key"],
         "status": status,
-        "backend_kind": BackendKind.MOCK.value,
+        # Honest provenance: only the S7 plugin tools may report REAL_PLUGIN.
+        "backend_kind": backend_kind,
         "production_allowed": False,
         "production_d1_allowed": False,
         "dry_run": bool(payload.get("dry_run", True)),
@@ -71,7 +90,7 @@ def _validate_approval(tool_name: str, payload: dict[str, Any]) -> None:
     approval = payload.get("approval_context")
     if approval is None:
         return
-    tool = NEXTGEN_TOOLS[tool_name]
+    tool = ALL_DISPATCHABLE_TOOLS[tool_name]
     if approval["approval_level"] not in tool["allowed_approval_levels"]:
         raise ControlPlaneError("APPROVAL_LEVEL_REJECTED", "审批等级不允许调用该工具")
     if approval["request_id"] != payload["request_id"]:
@@ -93,10 +112,85 @@ def _validate_approval(tool_name: str, payload: dict[str, Any]) -> None:
         raise ControlPlaneError("APPROVAL_EXPIRED", "审批已过期")
 
 
+def _dispatch_plugin_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
+    """Route a ``cad.plugin.*`` tool through the S7 capability router and backend.
+
+    This is the ONLY place the AutoCAD plugin is reachable from MCP. The payload is a
+    validated structured request; no raw plugin frame, command string or document token is
+    accepted from, or returned to, the caller.
+    """
+    service = _PLUGIN_ROUTE_SERVICE
+    if service is None:
+        # Not wired in: report unavailable honestly rather than pretending or touching CAD.
+        return _result(
+            payload,
+            status="UNAVAILABLE",
+            error_code="PLUGIN_BACKEND_NOT_CONFIGURED",
+            data={
+                "actual_backend_used": None,
+                "real_backend_available": False,
+                "message": "AutoCAD plugin backend is not configured in this process.",
+            },
+            backend_kind=BackendKind.REAL_PLUGIN.value,
+        )
+
+    # Imported lazily so the default dispatcher import never pulls in transport code.
+    from mcp_nextgen.s7.plugin_route import PluginRouteError, build_plan_from_structured_request
+
+    if tool_name == "cad.plugin.capabilities":
+        try:
+            capabilities = service.capability_snapshot()
+        except Exception as exc:
+            return _result(
+                payload, status="UNAVAILABLE",
+                error_code="PLUGIN_UNAVAILABLE",
+                data={"actual_backend_used": None, "reason": type(exc).__name__},
+                backend_kind=BackendKind.REAL_PLUGIN.value)
+        return _result(payload, status="OK",
+                       data={"capabilities": capabilities, "actual_backend_used": None},
+                       backend_kind=BackendKind.REAL_PLUGIN.value)
+
+    # cad.plugin.execute
+    try:
+        plan = build_plan_from_structured_request({
+            "job_id": payload["job_id"],
+            "layer": payload["layer"],
+            "entities": payload["entities"],
+            "dry_run": payload.get("dry_run", False),
+        })
+    except PluginRouteError as exc:
+        raise ControlPlaneError(exc.error_code, str(exc), details=exc.details) from exc
+
+    try:
+        outcome = service.execute(
+            plan,
+            session_id=payload["session_id"],
+            require_atomic_batch=bool(payload.get("require_atomic_batch", True)),
+            preferred_backend=payload.get("preferred_backend"),
+            idempotency_key=payload["idempotency_key"],
+        )
+    except Exception as exc:
+        return _result(
+            payload, status="FAILED",
+            error_code=getattr(exc, "error_code", "PLUGIN_EXECUTION_FAILED"),
+            data={"actual_backend_used": None, "reason": type(exc).__name__},
+                backend_kind=BackendKind.REAL_PLUGIN.value)
+
+    status = {"completed": "COMPLETED", "blocked": "BLOCKED",
+              "delegated": "DELEGATED", "failed": "FAILED"}.get(outcome.status, "FAILED")
+    return _result(
+        payload,
+        status=status,
+        error_code=(outcome.execution or {}).get("error_code") if status == "FAILED" else None,
+        data=outcome.to_dict(),
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+    )
+
+
 def dispatch_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
     """严格验证并分派；只调用 Mock-only 控制面，绝不调用真实 CAD backend。"""
 
-    tool = NEXTGEN_TOOLS.get(tool_name)
+    tool = ALL_DISPATCHABLE_TOOLS.get(tool_name)
     if tool is None:
         raise ControlPlaneError("UNKNOWN_METHOD", f"未知 NextGen 工具: {tool_name!r}")
     try:
@@ -121,6 +215,10 @@ def dispatch_tool(tool_name: str, payload: dict[str, Any]) -> dict[str, Any]:
                 "tools": list_tools(),
             },
         )
+    # --- S7: AutoCAD plugin backend, dispatched from this same main path ---
+    if tool_name in {"cad.plugin.capabilities", "cad.plugin.execute"}:
+        return _dispatch_plugin_tool(tool_name, payload)
+
     if tool_name == "cad.documents.list":
         return _result(payload, status="OK", data={"documents": [], "mock_only": True})
     if tool_name == "cad.document.inspect":
