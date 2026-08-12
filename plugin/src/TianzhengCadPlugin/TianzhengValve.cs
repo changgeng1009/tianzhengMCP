@@ -362,7 +362,8 @@ namespace TianzhengCadPlugin
     internal static class NativeValveAdapter
     {
         public const string TianzhengValveCommand = "FMFJ";
-        internal const string CommandName = "TZS10CREATEVALVE";
+        // No wrapper CommandMethod: FMFJ is queued directly onto the document input queue and
+        // finalized from its own CommandEnded event, so there is nothing to wrap.
 
         private static readonly object Gate = new();
         private static NativeValveResult? _result;
@@ -381,6 +382,27 @@ namespace TianzhengCadPlugin
             get { lock (Gate) return _running; }
         }
 
+        private static Document? _watched;
+        private static NativeValveResult? _pending;
+        private static HashSet<string> _beforeHandles = new(StringComparer.Ordinal);
+
+        /// <summary>
+        /// Queue the fixed FMFJ sequence and finish when AutoCAD says FMFJ ended.
+        ///
+        /// WHY NOT Editor.Command: two rounds of that produced no object. FMFJ opens a modeless
+        /// valve palette on entry, and it does not consume input handed to it that way.
+        /// SendStringToExecute puts the command and its input on the document's normal input
+        /// queue, which is the path a real user's typing takes.
+        ///
+        /// WHY EVENT-DRIVEN: SendStringToExecute is asynchronous. Scanning the database straight
+        /// after the call would look before FMFJ had run - exactly the trap that made the first
+        /// attempt look like a creation failure. So the diff is taken from the CommandEnded /
+        /// CommandCancelled / CommandFailed handler instead, and nothing sleeps or guesses.
+        ///
+        /// The command name is still a compile-time constant and the caller still supplies only
+        /// a position and a pipe handle. SendStringToExecute is an implementation detail here,
+        /// not a new capability: no command text reaches this method from outside.
+        /// </summary>
         public static bool Start(Point3d position, string targetPipeHandle, string idempotencyKey)
         {
             lock (Gate)
@@ -392,80 +414,101 @@ namespace TianzhengCadPlugin
                 _targetPipeHandle = targetPipeHandle ?? "";
                 _idempotencyKey = idempotencyKey ?? "";
             }
-            AcApp.DocumentManager.MdiActiveDocument
-                .SendStringToExecute($"{CommandName} ", true, false, true);
-            return true;
-        }
 
-        internal static void Run()
-        {
-            Point3d position;
-            string pipeHandle, key;
-            lock (Gate)
-            {
-                position = _position;
-                pipeHandle = _targetPipeHandle;
-                key = _idempotencyKey;
-            }
+            Document doc = AcApp.DocumentManager.MdiActiveDocument;
+            Database db = doc.Database;
 
             var result = new NativeValveResult
             {
                 CreationEntryPoint = $"{TianzhengValveCommand} (twt_pipecmd.arx, group TWT_PIPECMD)",
                 RequestedPosition = new[] { position.X, position.Y, position.Z },
-                TargetPipeHandle = pipeHandle,
-                IdempotencyKey = string.IsNullOrEmpty(key) ? null : key,
+                TargetPipeHandle = _targetPipeHandle,
+                IdempotencyKey = string.IsNullOrEmpty(_idempotencyKey) ? null : _idempotencyKey,
                 PlanHash = TianzhengPipePlan.ComputeHash(position, position),
             };
 
             try
             {
-                Document doc = AcApp.DocumentManager.MdiActiveDocument;
-                Database db = doc.Database;
-                Editor ed = doc.Editor;
-
                 TianzhengPipeInventory inventoryBefore = TianzhengPipeQuery.TakeInventory(db);
                 result.PipeCountBefore = inventoryBefore.PipeCount;
                 result.FittingCountBefore = inventoryBefore.FittingCount;
                 result.ValveCountBefore = TianzhengValveQuery.CountValves(db);
 
-                if (!string.IsNullOrEmpty(key) && TryReplay(db, key, pipeHandle, result))
+                if (!string.IsNullOrEmpty(_idempotencyKey) &&
+                    TryReplay(db, _idempotencyKey, _targetPipeHandle, result))
                 {
                     result.PipeCountAfter = result.PipeCountBefore;
                     result.FittingCountAfter = result.FittingCountBefore;
                     result.ValveCountAfter = result.ValveCountBefore;
-                    return;
+                    lock (Gate) { _result = result; _running = false; }
+                    return true;
                 }
 
                 List<DbObjectRecord> before = DatabaseScanner.ScanModelSpace(db, readGeometry: false);
                 result.BeforeEntityCount = before.Count;
-                var beforeHandles = new HashSet<string>(before.Select(o => o.Handle), StringComparer.Ordinal);
+                _beforeHandles = new HashSet<string>(before.Select(o => o.Handle), StringComparer.Ordinal);
+                _pending = result;
 
-                // One point, then ENTER to take the prompt's <退出> default and end the loop.
-                //
-                // The coordinate goes as a STRING, not a Point3d. FMFJ opens its modeless valve
-                // palette on entry and reads the insertion point the way the command line does;
-                // a typed "x,y" is what was observed to work interactively, whereas a Point3d
-                // was swallowed and produced nothing.
-                string point = position.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture)
-                               + "," +
-                               position.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
-                ed.Command(TianzhengValveCommand, point, "");
+                _watched = doc;
+                doc.CommandEnded += OnCommandFinished;
+                doc.CommandCancelled += OnCommandFinished;
+                doc.CommandFailed += OnCommandFinished;
 
-                // Termination check. Inside a CommandMethod, CommandInProgress reports OUR own
-                // command, so that name is the expected idle state here - only a DIFFERENT
-                // command still running means FMFJ failed to exit its insertion loop.
-                result.CommandInProgressAfter = doc.CommandInProgress ?? "";
-                result.CommandTerminatedCleanly =
-                    string.IsNullOrEmpty(result.CommandInProgressAfter) ||
-                    result.CommandInProgressAfter.Equals(CommandName, StringComparison.OrdinalIgnoreCase);
-                if (!result.CommandTerminatedCleanly)
-                    result.Warnings.Add(
-                        $"a foreign command is still in progress after the adapter finished: " +
-                        $"{result.CommandInProgressAfter}");
+                // One command, one point, one ENTER to take the prompt's <退出> default.
+                string point =
+                    position.X.ToString("R", System.Globalization.CultureInfo.InvariantCulture) + "," +
+                    position.Y.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+                doc.SendStringToExecute($"{TianzhengValveCommand}\n{point}\n\n", true, false, true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                result.Status = "failed";
+                result.ErrorCode = TianzhengErrorCodes.PipeCreateFailed;
+                result.Error = $"{ex.GetType().Name}: {ex.Message}";
+                Unsubscribe();
+                lock (Gate) { _result = result; _running = false; }
+                return true;
+            }
+        }
+
+        private static void Unsubscribe()
+        {
+            Document? doc = _watched;
+            _watched = null;
+            if (doc == null) return;
+            try
+            {
+                doc.CommandEnded -= OnCommandFinished;
+                doc.CommandCancelled -= OnCommandFinished;
+                doc.CommandFailed -= OnCommandFinished;
+            }
+            catch (Exception) { /* teardown is best effort */ }
+        }
+
+        /// <summary>Finalize as soon as AutoCAD reports that FMFJ itself has finished.</summary>
+        private static void OnCommandFinished(object? sender, CommandEventArgs e)
+        {
+            if (!string.Equals(e.GlobalCommandName, TianzhengValveCommand,
+                               StringComparison.OrdinalIgnoreCase))
+                return;   // some other command ended; keep waiting for ours
+
+            NativeValveResult? result = _pending;
+            _pending = null;
+            Unsubscribe();
+            if (result == null) return;
+
+            try
+            {
+                Document doc = AcApp.DocumentManager.MdiActiveDocument;
+                Database db = doc.Database;
+
+                result.CommandTerminatedCleanly = true;
+                result.CommandInProgressAfter = "";
 
                 List<DbObjectRecord> after = DatabaseScanner.ScanModelSpace(db, readGeometry: true);
                 result.AfterEntityCount = after.Count;
-                result.NewObjects = after.Where(o => !beforeHandles.Contains(o.Handle)).ToList();
+                result.NewObjects = after.Where(o => !_beforeHandles.Contains(o.Handle)).ToList();
                 result.NewObjectCount = result.NewObjects.Count;
 
                 TianzhengPipeInventory inventoryAfter = TianzhengPipeQuery.TakeInventory(db);
@@ -481,22 +524,22 @@ namespace TianzhengCadPlugin
                     result.Status = "no_native_valve_in_diff";
                     result.ErrorCode = TianzhengErrorCodes.NativeIdentityMismatch;
                     result.Warnings.Add(result.NewObjectCount == 0
-                        ? "the command produced no new model-space objects"
+                        ? "FMFJ ended but produced no new model-space objects"
                         : "new objects appeared but none were " + TianzhengValveQuery.ValveClass +
                           "; classes seen: " +
                           string.Join(",", result.NewObjects.Select(o => o.RuntimeClass).Distinct()));
-                    return;
                 }
-
-                result.PrimaryHandle = valve.Handle;
-                result.PrimaryRuntimeClass = valve.RuntimeClass;
-                result.NativeIdentityConfirmed = true;
-                result.DuplicateCreated = result.ValveCountAfter > result.ValveCountBefore + 1;
-                result.Status = "created";
-                result.Snapshot = TianzhengValveQuery.Query(db, valve.Handle, pipeHandle);
-
-                if (!string.IsNullOrEmpty(key))
-                    result.RecordPersisted = WriteRecord(db, key, result);
+                else
+                {
+                    result.PrimaryHandle = valve.Handle;
+                    result.PrimaryRuntimeClass = valve.RuntimeClass;
+                    result.NativeIdentityConfirmed = true;
+                    result.DuplicateCreated = result.ValveCountAfter > result.ValveCountBefore + 1;
+                    result.Status = "created";
+                    result.Snapshot = TianzhengValveQuery.Query(db, valve.Handle, result.TargetPipeHandle);
+                    if (!string.IsNullOrEmpty(result.IdempotencyKey))
+                        result.RecordPersisted = WriteRecord(db, result.IdempotencyKey!, result);
+                }
             }
             catch (Exception ex)
             {
@@ -506,13 +549,10 @@ namespace TianzhengCadPlugin
             }
             finally
             {
-                lock (Gate)
-                {
-                    _result = result;
-                    _running = false;
-                }
+                lock (Gate) { _result = result; _running = false; }
             }
         }
+
 
         private static bool TryReplay(Database db, string key, string pipeHandle,
                                       NativeValveResult result)
@@ -573,13 +613,4 @@ namespace TianzhengCadPlugin
         }
     }
 
-    /// <summary>
-    /// Command host for the valve adapter. Exists because AutoCAD's command registration walks
-    /// instantiable types and silently skips static ones.
-    /// </summary>
-    public sealed class NativeValveCommands
-    {
-        [CommandMethod("TZS10CREATEVALVE", CommandFlags.Modal)]
-        public void RunNativeValve() => NativeValveAdapter.Run();
-    }
 }
