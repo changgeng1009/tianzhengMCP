@@ -83,6 +83,16 @@ namespace TianzhengCadPlugin.Protocol
         /// <summary>Query one native valve by handle, including its observed topology.</summary>
         public const string TianzhengQueryValve = "tianzheng_query_valve";
 
+        // --- S10.3 native equipment (pump) -------------------------------------------------
+        /// <summary>Create one native Tianzheng pump from a structured position.</summary>
+        public const string TianzhengCreatePump = "tianzheng_create_pump";
+
+        /// <summary>Read the outcome of the queued pump creation.</summary>
+        public const string TianzhengPumpResult = "tianzheng_pump_result";
+
+        /// <summary>Query one native equipment object by handle.</summary>
+        public const string TianzhengQueryEquipment = "tianzheng_query_equipment";
+
         /// <summary>Every operation_type the protocol will ACCEPT (parse without UNKNOWN_OPERATION).</summary>
         public static readonly IReadOnlySet<string> All = new HashSet<string>
         {
@@ -94,6 +104,7 @@ namespace TianzhengCadPlugin.Protocol
             TianzhengCreatePipe, TianzhengQueryPipe,
             TianzhengValidatePipeIdentity, TianzhengPipeInventory,
             TianzhengCreateValve, TianzhengValveResult, TianzhengQueryValve,
+            TianzhengCreatePump, TianzhengPumpResult, TianzhengQueryEquipment,
         };
 
         /// <summary>Operations actually IMPLEMENTED and answerable in S7.1-A (read-only host skeleton).</summary>

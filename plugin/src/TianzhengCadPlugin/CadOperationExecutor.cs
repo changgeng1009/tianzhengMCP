@@ -92,6 +92,9 @@ namespace TianzhengCadPlugin
                     OperationType.TianzhengCreateValve => TianzhengCreateValve(request),
                     OperationType.TianzhengValveResult => TianzhengValveResultOp(request),
                     OperationType.TianzhengQueryValve => TianzhengQueryValve(request),
+                    OperationType.TianzhengCreatePump => TianzhengCreatePump(request),
+                    OperationType.TianzhengPumpResult => TianzhengPumpResultOp(request),
+                    OperationType.TianzhengQueryEquipment => TianzhengQueryEquipment(request),
                     OperationType.BatchExecute => ExecuteBatch(request, single: false),
                     OperationType.CreateLayer or OperationType.CreateLine
                         or OperationType.CreateCircle or OperationType.CreatePolyline
@@ -1001,6 +1004,79 @@ namespace TianzhengCadPlugin
 
             PluginResponse response = Success(request, Stages.Entity, ToElement(snapshot));
             response.SanitizedMessage = "valve snapshot returned";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        // -------------------------------------------------- S10.3 native equipment (pump)
+
+        private PluginResponse TianzhengCreatePump(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+            if (!TianzhengRuntime.IsAvailable(out string probeDetail))
+                return Failure(request, TianzhengErrorCodes.NotLoaded, Stages.Document, probeDetail);
+            if (!TryReadPoint(request.Parameters, "position", out Point3d position))
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "position must be [x,y,z]");
+
+            var handle = (AutoCadDocumentHandle)record.Handle;
+            Document? active = AcApp.DocumentManager.MdiActiveDocument;
+            if (active == null || !ReferenceEquals(active, handle.Document))
+                return Failure(request, ErrorCodes.DocumentNotJobOwned, Stages.Document,
+                    "the owned document is not the active document; refusing to run the creation command");
+
+            string key = ReadStringFilter(request.Parameters, "idempotency_key") ?? "";
+            if (!NativePumpAdapter.Start(position, key))
+                return Failure(request, ErrorCodes.InternalError, Stages.Entity,
+                    "a previous pump creation is still in flight");
+
+            var payload = new Dictionary<string, object?>
+            {
+                ["started"] = true,
+                ["creation_method"] = "tianzheng_fixed_command",
+                ["note"] = "poll tianzheng_pump_result for the outcome",
+            };
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = "native pump creation queued";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse TianzhengPumpResultOp(PluginRequest request)
+        {
+            NativePumpResult? result = NativePumpAdapter.LatestResult;
+            var payload = new Dictionary<string, object?>
+            {
+                ["running"] = NativePumpAdapter.IsRunning,
+                ["available"] = result != null,
+                ["result"] = result,
+            };
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = result == null ? "no pump result yet" : "pump result available";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse TianzhengQueryEquipment(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+            string objectHandle = ReadStringFilter(request.Parameters, "handle") ?? "";
+            if (objectHandle.Length == 0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation, "handle is required");
+
+            var document = (AutoCadDocumentHandle)record.Handle;
+            TianzhengEquipmentSnapshot snapshot = TianzhengEquipmentQuery.Query(
+                document.Document.Database, objectHandle,
+                ReadStringFilter(request.Parameters, "equipment_type") ?? "pump");
+
+            if (snapshot.RuntimeClass.Length == 0)
+                return Failure(request, TianzhengErrorCodes.PipeNotFound, Stages.Entity,
+                    "no object with that handle in this drawing");
+
+            PluginResponse response = Success(request, Stages.Entity, ToElement(snapshot));
+            response.SanitizedMessage = "equipment snapshot returned";
             AddDispatchMarker(response);
             return response;
         }
