@@ -95,6 +95,8 @@ namespace TianzhengCadPlugin
                     OperationType.TianzhengCreatePump => TianzhengCreatePump(request),
                     OperationType.TianzhengPumpResult => TianzhengPumpResultOp(request),
                     OperationType.TianzhengQueryEquipment => TianzhengQueryEquipment(request),
+                    OperationType.TianzhengAnnotatePipe => TianzhengAnnotatePipe(request),
+                    OperationType.TianzhengAnnotationResult => TianzhengAnnotationResultOp(request),
                     OperationType.BatchExecute => ExecuteBatch(request, single: false),
                     OperationType.CreateLayer or OperationType.CreateLine
                         or OperationType.CreateCircle or OperationType.CreatePolyline
@@ -1077,6 +1079,82 @@ namespace TianzhengCadPlugin
 
             PluginResponse response = Success(request, Stages.Entity, ToElement(snapshot));
             response.SanitizedMessage = "equipment snapshot returned";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        // ------------------------------------------------ S10.4 native pipe annotation
+
+        private PluginResponse TianzhengAnnotatePipe(PluginRequest request)
+        {
+            if (!TryResolve(request, out DocumentRecord record, out PluginResponse? rejection))
+                return rejection!;
+            if (!TianzhengRuntime.IsAvailable(out string probeDetail))
+                return Failure(request, TianzhengErrorCodes.NotLoaded, Stages.Document, probeDetail);
+
+            string pipeHandle = ReadStringFilter(request.Parameters, "target_pipe_handle") ?? "";
+            if (pipeHandle.Length == 0)
+                return Failure(request, ErrorCodes.MissingField, Stages.Validation,
+                    "target_pipe_handle is required");
+
+            var handle = (AutoCadDocumentHandle)record.Handle;
+            Database db = handle.Document.Database;
+
+            // The target must be a real native pipe before anything is annotated.
+            TianzhengPipeSnapshot target = TianzhengPipeQuery.Query(db, pipeHandle);
+            if (target.RuntimeClass.Length == 0)
+                return Failure(request, TianzhengErrorCodes.PipeNotFound, Stages.Entity,
+                    "target_pipe_handle does not resolve in this drawing");
+            if (!target.NativeIdentityConfirmed)
+                return Failure(request, TianzhengErrorCodes.NativeIdentityMismatch, Stages.Entity,
+                    $"target handle is {target.RuntimeClass}, not {TianzhengClasses.Pipe}");
+
+            // Pick the pipe at its own midpoint, READ FROM THE OBJECT and never supplied by the
+            // caller. DGGJ hit-tests this point against the pipe body, so an on-axis point is the
+            // reproducible choice. There is deliberately no caller-supplied pick_point fallback:
+            // the only value that crosses this boundary is target_pipe_handle.
+            if (target.Start == null || target.End == null)
+                return Failure(request, TianzhengErrorCodes.PipeNotFound, Stages.Entity,
+                    "the target pipe reports no readable geometry, so no pick point can be derived");
+            var pick = new Point3d((target.Start[0] + target.End[0]) / 2.0,
+                                   (target.Start[1] + target.End[1]) / 2.0,
+                                   (target.Start[2] + target.End[2]) / 2.0);
+
+            Document? active = AcApp.DocumentManager.MdiActiveDocument;
+            if (active == null || !ReferenceEquals(active, handle.Document))
+                return Failure(request, ErrorCodes.DocumentNotJobOwned, Stages.Document,
+                    "the owned document is not the active document; refusing to run the command");
+
+            string key = ReadStringFilter(request.Parameters, "idempotency_key") ?? "";
+            if (!NativeAnnotationAdapter.Start(pipeHandle, pick, key))
+                return Failure(request, ErrorCodes.InternalError, Stages.Entity,
+                    "a previous annotation is still in flight");
+
+            var payload = new Dictionary<string, object?>
+            {
+                ["started"] = true,
+                ["target_pipe_handle"] = pipeHandle,
+                ["pick_point"] = new[] { pick.X, pick.Y, pick.Z },
+                ["note"] = "poll tianzheng_annotation_result for the outcome",
+            };
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = "pipe annotation queued";
+            AddDispatchMarker(response);
+            return response;
+        }
+
+        private PluginResponse TianzhengAnnotationResultOp(PluginRequest request)
+        {
+            NativeAnnotationResult? result = NativeAnnotationAdapter.LatestResult;
+            var payload = new Dictionary<string, object?>
+            {
+                ["running"] = NativeAnnotationAdapter.IsRunning,
+                ["available"] = result != null,
+                ["result"] = result,
+            };
+            PluginResponse response = Success(request, Stages.Entity, ToElement(payload));
+            response.SanitizedMessage = result == null
+                ? "no annotation result yet" : "annotation result available";
             AddDispatchMarker(response);
             return response;
         }

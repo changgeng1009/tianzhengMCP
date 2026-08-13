@@ -93,6 +93,13 @@ namespace TianzhengCadPlugin.Protocol
         /// <summary>Query one native equipment object by handle.</summary>
         public const string TianzhengQueryEquipment = "tianzheng_query_equipment";
 
+        // --- S10.4 native pipe annotation --------------------------------------------------
+        /// <summary>Annotate one native pipe with its diameter; storage model decided by the settled diff.</summary>
+        public const string TianzhengAnnotatePipe = "tianzheng_annotate_pipe";
+
+        /// <summary>Read the outcome of the queued annotation.</summary>
+        public const string TianzhengAnnotationResult = "tianzheng_annotation_result";
+
         /// <summary>Every operation_type the protocol will ACCEPT (parse without UNKNOWN_OPERATION).</summary>
         public static readonly IReadOnlySet<string> All = new HashSet<string>
         {
@@ -105,6 +112,7 @@ namespace TianzhengCadPlugin.Protocol
             TianzhengValidatePipeIdentity, TianzhengPipeInventory,
             TianzhengCreateValve, TianzhengValveResult, TianzhengQueryValve,
             TianzhengCreatePump, TianzhengPumpResult, TianzhengQueryEquipment,
+            TianzhengAnnotatePipe, TianzhengAnnotationResult,
         };
 
         /// <summary>Operations actually IMPLEMENTED and answerable in S7.1-A (read-only host skeleton).</summary>
