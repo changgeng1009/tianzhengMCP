@@ -11,6 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping
 
+from mcp_nextgen.s10 import capabilities as s10_caps
 from mcp_nextgen.s8.persistence import (
     IDEMPOTENCY_CONFLICT,
     NATIVE_IDENTITY_MISMATCH,
@@ -207,6 +208,76 @@ class S8TianzhengRouteService:
             status="OK",
             data={"native_identity_confirmed": True, "snapshot": snapshot},
             actual_backend_used=TIANZHENG_BACKEND)
+
+    # ---------------------------------------------------------------- S10 native objects
+
+    def create_pump(self, payload: Mapping[str, Any]) -> TianzhengRouteResult:
+        backend = self._require_backend()
+        try:
+            result = backend.create_pump(
+                str(payload["document_token"]),
+                [float(v) for v in payload["position"]],
+                idempotency_key=str(payload["idempotency_key"]),
+                operation_id=payload.get("operation_id"))
+        except TianzhengBackendError as exc:
+            raise TianzhengRouteError(exc.error_code, str(exc), details=exc.details) from exc
+
+        data = dict(result)
+        # Fields the adapter does not implement must not look controllable merely because the
+        # underlying Tianzheng palette happens to have them.
+        for field_name in ("rotation_control", "pump_type_control", "base_size_control",
+                           "inlet_outlet_elevation_control", "pump_height_control"):
+            data[field_name] = NOT_AVAILABLE
+        return TianzhengRouteResult(
+            status="OK", data=data, actual_backend_used=TIANZHENG_BACKEND)
+
+    def query_pump(self, payload: Mapping[str, Any]) -> TianzhengRouteResult:
+        backend = self._require_backend()
+        try:
+            snapshot = backend.query_equipment(
+                str(payload["document_token"]), str(payload["handle"]))
+        except TianzhengBackendError as exc:
+            raise TianzhengRouteError(exc.error_code, str(exc), details=exc.details) from exc
+        return TianzhengRouteResult(
+            status="OK", data={"snapshot": snapshot}, actual_backend_used=TIANZHENG_BACKEND)
+
+    def annotate_pipe_diameter(self, payload: Mapping[str, Any]) -> TianzhengRouteResult:
+        backend = self._require_backend()
+        try:
+            result = backend.annotate_pipe_diameter(
+                str(payload["document_token"]),
+                str(payload["target_pipe_handle"]),
+                idempotency_key=str(payload["idempotency_key"]),
+                operation_id=payload.get("operation_id"))
+        except TianzhengBackendError as exc:
+            raise TianzhengRouteError(exc.error_code, str(exc), details=exc.details) from exc
+
+        # Reported in the vocabulary of what actually happens: pipe-owned state, not a created
+        # entity. display_text_read stays unavailable because the DN string was confirmed on
+        # SCREEN, and a screen observation is not an API read capability.
+        target = dict(result.get("target_after") or {})
+        applications = [str(a) for a in (target.get("x_data_applications") or [])]
+
+        data = dict(result)
+        data["target_pipe_handle"] = result.get("target_pipe_handle") or payload[
+            "target_pipe_handle"]
+        data["runtime_class"] = target.get("runtime_class") or "TDbPipe"
+        data["annotation_kind"] = "diameter"
+        data["storage_model"] = s10_caps.MODEL_B_PIPE_OWNED_STATE
+        data["xdata_application"] = s10_caps.PIPE_LABEL_XDATA_APPLICATION
+        # Confirmed from the object itself, never from the fact that the command returned.
+        data["native_state_confirmed"] = (
+            s10_caps.PIPE_LABEL_XDATA_APPLICATION in applications)
+        data["persistence_status"] = (
+            "PERSISTED" if result.get("record_persisted") else "NOT_PERSISTED")
+        data["idempotency_status"] = (
+            "ALREADY_APPLIED" if result.get("replayed_from_record") else "APPLIED")
+        data["warnings"] = list(result.get("warnings") or [])
+        # The DN string was confirmed on SCREEN. No native query has been shown to return it,
+        # so the API read capability is reported as unavailable rather than implied.
+        data["display_text_read"] = NOT_AVAILABLE
+        return TianzhengRouteResult(
+            status="OK", data=data, actual_backend_used=TIANZHENG_BACKEND)
 
 
 def build_tianzheng_route_service(

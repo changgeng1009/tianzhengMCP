@@ -119,6 +119,17 @@ def _dispatch_tianzheng_tool(tool_name: str, payload: dict[str, Any]) -> dict[st
     structured geometry; there is no command, LISP or socket surface behind it, and a
     Tianzheng-specific failure keeps its own error code rather than becoming INTERNAL_ERROR.
     """
+    # The S10 capability report is pure data about what the backend CAN do. It must answer even
+    # when no backend is configured: "we cannot tell you what is unavailable" would defeat the
+    # entire point of an honesty report.
+    if tool_name == "cad.tianzheng.native_capabilities":
+        from mcp_nextgen.s10 import capabilities as s10_capabilities
+
+        return _result(payload, status="OK",
+                       data={**s10_capabilities.capability_report(),
+                             "actual_backend_used": None},
+                       backend_kind=BackendKind.REAL_PLUGIN.value)
+
     service = _TIANZHENG_ROUTE_SERVICE
     if service is None:
         return _result(
@@ -148,14 +159,26 @@ def _dispatch_tianzheng_tool(tool_name: str, payload: dict[str, Any]) -> dict[st
                        data={"capabilities": capabilities, "actual_backend_used": None},
                        backend_kind=BackendKind.REAL_PLUGIN.value)
 
-    handlers = {
-        "cad.tianzheng.create_pipe": service.create_pipe,
-        "cad.tianzheng.query_pipe": service.query_pipe,
-        "cad.tianzheng.validate_pipe_identity": service.validate_pipe_identity,
+    # Resolved lazily by name: binding every method up front would require a service to
+    # implement the whole surface just to serve one tool.
+    handler_names = {
+        "cad.tianzheng.create_pipe": "create_pipe",
+        "cad.tianzheng.query_pipe": "query_pipe",
+        "cad.tianzheng.validate_pipe_identity": "validate_pipe_identity",
+        "cad.tianzheng.create_pump": "create_pump",
+        "cad.tianzheng.query_pump": "query_pump",
+        "cad.tianzheng.annotate_pipe_diameter": "annotate_pipe_diameter",
     }
-    handler = handlers.get(tool_name)
-    if handler is None:
+    method_name = handler_names.get(tool_name)
+    if method_name is None:
         raise ControlPlaneError("UNKNOWN_METHOD", f"未知天正工具: {tool_name!r}")
+    handler = getattr(service, method_name, None)
+    if handler is None:
+        return _result(
+            payload, status="UNAVAILABLE", error_code="TIANZHENG_NOT_LOADED",
+            data={"actual_backend_used": None,
+                  "message": f"this backend does not serve {tool_name}"},
+            backend_kind=BackendKind.REAL_PLUGIN.value)
 
     try:
         outcome = handler(payload)

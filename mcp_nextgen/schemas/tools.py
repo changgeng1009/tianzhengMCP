@@ -469,11 +469,92 @@ S9_ENGINEERING_TOOLS: dict[str, dict[str, Any]] = {
 }
 
 
+S10_NATIVE_OBJECT_TOOLS: dict[str, dict[str, Any]] = {
+    # As with the S8 tools these schemas are strict and carry no command, command_text,
+    # script, lisp, keystroke, selection-keyword, raw ObjectId or file-path field. The
+    # Tianzheng command behind each one is an implementation detail of its adapter.
+    "cad.tianzheng.create_pump": _tool(
+        "cad.tianzheng.create_pump",
+        "在 job-owned synthetic 文档中创建一台天正原生 TDbPump；仅接受结构化位置参数。"
+        "rotation / 泵型 / 基座尺寸 / 进出口标高 / 泵高 均未实现，因此不在此暴露。",
+        _input(
+            {
+                "job_id": id_property(),
+                "document_token": {"type": "string", "minLength": 1},
+                "position": {"type": "array", "minItems": 2, "maxItems": 3,
+                             "items": {"type": "number"}},
+                "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 128},
+                "operation_id": {"type": ["string", "null"]},
+            },
+            ["job_id", "document_token", "position"],
+        ),
+        read_only=False,
+        allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L3_SANDBOX_WRITE],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+    "cad.tianzheng.query_pump": _tool(
+        "cad.tianzheng.query_pump",
+        "按 handle 查询天正原生设备快照；不返回 DBObject 或 native 指针。",
+        _input(
+            {
+                "job_id": id_property(),
+                "document_token": {"type": "string", "minLength": 1},
+                "handle": {"type": "string", "minLength": 1, "maxLength": 32},
+            },
+            ["job_id", "document_token", "handle"],
+        ),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+    # Deliberately NOT create_annotation_entity: S10.4 settled that no entity exists. The name
+    # says what the operation does - it annotates a pipe. There is no pick_point field: the
+    # adapter derives the point from the target pipe's own geometry.
+    "cad.tianzheng.annotate_pipe_diameter": _tool(
+        "cad.tianzheng.annotate_pipe_diameter",
+        "为一根天正原生 TDbPipe 添加管径标注；标注状态写在管线自身"
+        "（MODEL_B_PIPE_OWNED_STATE），不产生独立标注实体。调用方只提供 target_pipe_handle。",
+        _input(
+            {
+                "job_id": id_property(),
+                "document_token": {"type": "string", "minLength": 1},
+                "target_pipe_handle": {"type": "string", "minLength": 1, "maxLength": 32},
+                "idempotency_key": {"type": "string", "minLength": 1, "maxLength": 128},
+                "operation_id": {"type": ["string", "null"]},
+            },
+            ["job_id", "document_token", "target_pipe_handle"],
+        ),
+        read_only=False,
+        allowed_levels=[ApprovalLevel.L1_DRY_RUN, ApprovalLevel.L3_SANDBOX_WRITE],
+        status="IMPLEMENTED_BASELINE",
+        backend_kind=BackendKind.REAL_PLUGIN.value,
+        real_backend_available=True,
+        allowed_execution_runtimes=["offline", "mock", "real_plugin"],
+    ),
+    "cad.tianzheng.native_capabilities": _tool(
+        "cad.tianzheng.native_capabilities",
+        "读取 S10 原生对象能力表：runtime / manual / automation 三层状态、"
+        "supported_equipment_types 与命令交互画像。runtime class 存在不等于 create 能力可用。",
+        _input(),
+        read_only=True,
+        allowed_levels=[ApprovalLevel.L0_READ_ONLY],
+        status="IMPLEMENTED_BASELINE",
+    ),
+}
+
+
 #: Everything dispatch_tool can serve: the S4 Mock baseline, the S7 plugin tools, the
-#: S8 Tianzheng tools and the S9 engineering task tools. NEXTGEN_TOOLS itself stays
-#: Mock-only, which its self-check enforces.
+#: S8 Tianzheng tools, the S9 engineering task tools and the S10 native object tools.
+#: NEXTGEN_TOOLS itself stays Mock-only, which its self-check enforces.
 ALL_DISPATCHABLE_TOOLS: dict[str, dict[str, Any]] = {
-    **NEXTGEN_TOOLS, **S7_PLUGIN_TOOLS, **S8_TIANZHENG_TOOLS, **S9_ENGINEERING_TOOLS}
+    **NEXTGEN_TOOLS, **S7_PLUGIN_TOOLS, **S8_TIANZHENG_TOOLS, **S9_ENGINEERING_TOOLS,
+    **S10_NATIVE_OBJECT_TOOLS}
 
 def get_tool(name: str) -> dict[str, Any] | None:
     tool = NEXTGEN_TOOLS.get(name)

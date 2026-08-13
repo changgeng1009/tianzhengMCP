@@ -385,11 +385,63 @@ class RouteIntent:
 
 
 @dataclass(frozen=True)
+class EquipmentIntent:
+    """The engineering wish for a piece of equipment. NOT a block and NOT a TDbPump.
+
+    ``equipment_type`` is engineering vocabulary. Whether a given type can actually be built is
+    a separate capability question - a type being expressible here is not a promise that it is
+    supported, which is exactly the water_tank case.
+    """
+
+    intent_id: str
+    equipment_type: str
+    position: Point
+    system: str = "water_supply"
+    native_object_required: bool = True
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "intent_id": self.intent_id, "kind": "EquipmentIntent",
+            "equipment_type": self.equipment_type,
+            "position": list(self.position),
+            "system": self.system,
+            "native_object_required": self.native_object_required,
+        }
+
+
+#: Annotation kinds the semantic layer can express.
+ANNOTATION_PIPE_DIAMETER = "pipe_diameter"
+
+
+@dataclass(frozen=True)
+class AnnotationIntent:
+    """The engineering wish to annotate something.
+
+    Deliberately says nothing about HOW the annotation is stored. Whether the backend creates
+    an entity or writes state onto the annotated object is an adapter-level fact; letting it
+    leak up here would make the planner depend on a storage model it should never know about.
+    """
+
+    intent_id: str
+    annotation_type: str
+    target_intent_id: str | None = None
+    target_handle: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "intent_id": self.intent_id, "kind": "AnnotationIntent",
+            "annotation_type": self.annotation_type,
+            "target_intent_id": self.target_intent_id,
+            "target_handle": self.target_handle,
+        }
+
+
+@dataclass(frozen=True)
 class ReservedIntent:
     """S10 extension point. Carries meaning but has no backend behind it yet."""
 
     intent_id: str
-    kind: str                        # ValveIntent | EquipmentIntent | AnnotationIntent
+    kind: str                        # ValveIntent | (others promoted to real intents in S10.5)
     position: Point | None = None
     required_capability: str = ""
     metadata: dict[str, Any] = field(default_factory=dict)
@@ -423,6 +475,8 @@ class EngineeringSemanticModel:
     anchors: tuple[AnchorPoint, ...] = ()
     zones: tuple[Zone, ...] = ()
     route_intents: tuple[RouteIntent, ...] = ()
+    equipment_intents: tuple[EquipmentIntent, ...] = ()
+    annotation_intents: tuple[AnnotationIntent, ...] = ()
     reserved_intents: tuple[ReservedIntent, ...] = ()
     verification_rules: tuple[VerificationRule, ...] = ()
     warnings: tuple[str, ...] = ()
@@ -443,6 +497,8 @@ class EngineeringSemanticModel:
             "anchors": [a.to_dict() for a in self.anchors],
             "zones": [z.to_dict() for z in self.zones],
             "route_intents": [r.to_dict() for r in self.route_intents],
+            "equipment_intents": [e.to_dict() for e in self.equipment_intents],
+            "annotation_intents": [a.to_dict() for a in self.annotation_intents],
             "reserved_intents": [r.to_dict() for r in self.reserved_intents],
             "verification_rules": [v.to_dict() for v in self.verification_rules],
             "warnings": list(self.warnings),

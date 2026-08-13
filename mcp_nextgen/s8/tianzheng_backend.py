@@ -11,6 +11,7 @@ creation adapter.
 """
 from __future__ import annotations
 
+import math
 import time
 import uuid
 from dataclasses import dataclass, field
@@ -43,6 +44,21 @@ TIANZHENG_ERROR_TAXONOMY: dict[str, tuple[bool, str]] = {
 }
 
 TARGET_CLASS = "TDbPipe"
+
+
+def _finite_point(values: Sequence[float], field_name: str) -> list[float]:
+    """Coerce a point to floats and refuse NaN or infinity.
+
+    A non-finite coordinate must never reach the command queue: AutoCAD would receive a
+    nonsense coordinate string, and the failure would surface far from its cause.
+    """
+    point = [float(v) for v in values]
+    if not 2 <= len(point) <= 3:
+        raise ValueError(f"{field_name} needs 2 or 3 coordinates, got {len(point)}")
+    for value in point:
+        if not math.isfinite(value):
+            raise ValueError(f"{field_name} contains a non-finite coordinate: {value!r}")
+    return point
 
 
 class TianzhengBackendError(BackendError):
@@ -195,6 +211,63 @@ class TianzhengBackend:
                 details=dict(snapshot))
         return snapshot
 
+    # ------------------------------------------------------------------ S10 native objects
+
+    def create_pump(self, document_token: str, position: Sequence[float], *,
+                    idempotency_key: str, operation_id: str | None = None) -> dict[str, Any]:
+        """Create one native TDbPump. ``position`` is the only caller-controlled field.
+
+        Like the pipe this runs inside AutoCAD's command context, so it is started and then
+        polled rather than waited on inline.
+        """
+        point = _finite_point(position, "position")
+        started = self._call(
+            "tianzheng_create_pump",
+            mutating=True,
+            parameters={"position": point, "idempotency_key": idempotency_key},
+            document_context={"document_token": document_token},
+            operation_id=operation_id or f"pump-{uuid.uuid4().hex[:8]}",
+            idempotency_key=idempotency_key,
+        )
+        if not started.get("started"):
+            raise TianzhengBackendError(
+                "TIANZHENG_PIPE_PERSISTENCE_FAILED",
+                "the plugin did not queue the pump creation", details=dict(started))
+        return self._poll("tianzheng_pump_result")
+
+    def query_equipment(self, document_token: str, handle: str) -> dict[str, Any]:
+        """Snapshot of one native equipment object. Never a DBObject, never a pointer."""
+        return self._call(
+            "tianzheng_query_equipment",
+            mutating=False,
+            parameters={"handle": handle},
+            document_context={"document_token": document_token},
+        )
+
+    def annotate_pipe_diameter(self, document_token: str, target_pipe_handle: str, *,
+                               idempotency_key: str,
+                               operation_id: str | None = None) -> dict[str, Any]:
+        """Annotate one native pipe's diameter.
+
+        The only value crossing this boundary is the target handle. The pick point the
+        underlying command needs is derived inside the plugin from the pipe's own geometry,
+        which is the only place that knows what its hit test requires.
+        """
+        started = self._call(
+            "tianzheng_annotate_pipe",
+            mutating=True,
+            parameters={"target_pipe_handle": target_pipe_handle,
+                        "idempotency_key": idempotency_key},
+            document_context={"document_token": document_token},
+            operation_id=operation_id or f"annotate-{uuid.uuid4().hex[:8]}",
+            idempotency_key=idempotency_key,
+        )
+        if not started.get("started"):
+            raise TianzhengBackendError(
+                "TIANZHENG_PIPE_PERSISTENCE_FAILED",
+                "the plugin did not queue the annotation", details=dict(started))
+        return self._poll("tianzheng_annotation_result")
+
     def inventory(self, document_token: str) -> dict[str, Any]:
         """Counts of native pipes and their related fittings, for duplicate detection."""
         return self._call(
@@ -217,15 +290,24 @@ class TianzhengBackend:
         return response.get("result") or {}
 
     def _poll_creation(self) -> dict[str, Any]:
+        return self._poll("diagnostic_native_pipe_result")
+
+    def _poll(self, result_operation: str) -> dict[str, Any]:
+        """Wait for a queued command to report its own outcome.
+
+        Every S8/S10 creation runs inside AutoCAD's command context, so the caller starts it
+        and then asks for the result. Blocking the plugin's main thread would deadlock the
+        very command that was queued.
+        """
         deadline = time.monotonic() + self._poll_timeout
         while time.monotonic() < deadline:
             time.sleep(self._poll_interval)
-            payload = self._call("diagnostic_native_pipe_result", mutating=False, parameters={})
+            payload = self._call(result_operation, mutating=False, parameters={})
             if payload.get("available") and not payload.get("running"):
                 return payload.get("result") or {}
         raise TianzhengBackendError(
             "TIANZHENG_PIPE_PERSISTENCE_FAILED",
-            "timed out waiting for the creation command to finish")
+            f"timed out waiting for {result_operation} to report a finished command")
 
     @staticmethod
     def _to_creation(payload: Mapping[str, Any]) -> TianzhengPipeCreation:

@@ -14,7 +14,9 @@ from __future__ import annotations
 import hashlib
 from typing import Any, Mapping, Protocol
 
+from mcp_nextgen.s10 import capabilities as s10_caps
 from mcp_nextgen.s9.contracts import (
+    ANNOTATION_PIPE_DIAMETER,
     BLOCKED_BY_MISSING_CAPABILITY,
     REASON_ESTABLISHES_NATIVE_IDENTITY,
     REASON_PERSISTS_RESULT,
@@ -40,6 +42,19 @@ CAP_PIPE_QUERY = "tianzheng_native_pipe_query"
 CAP_PIPE_IDENTITY = "tianzheng_native_pipe_identity_validation"
 CAP_PIPE_PERSISTENCE = "tianzheng_native_pipe_persistence"
 CAP_PIPE_IDEMPOTENCY = "tianzheng_native_pipe_idempotency"
+
+# S10.5 equipment and annotation. The names come from the registry so the two cannot drift.
+CAP_PUMP_CREATE = s10_caps.CAP_PUMP_CREATE
+CAP_EQUIPMENT_CREATE = s10_caps.CAP_EQUIPMENT_CREATE
+CAP_EQUIPMENT_QUERY = s10_caps.CAP_EQUIPMENT_QUERY
+CAP_DIAMETER_ANNOTATION = s10_caps.CAP_DIAMETER_ANNOTATION
+CAP_ANNOTATION_CONTROL = s10_caps.CAP_ANNOTATION_CONTROL
+
+#: Blocker for when a capability covers the FAMILY but not the requested member of it.
+BLOCKED_BY_UNSUPPORTED_EQUIPMENT_TYPE = "PLAN_BLOCKED_BY_UNSUPPORTED_EQUIPMENT_TYPE"
+
+#: Blocker for an annotation kind that has no adapter.
+BLOCKED_BY_UNSUPPORTED_ANNOTATION_TYPE = "PLAN_BLOCKED_BY_UNSUPPORTED_ANNOTATION_TYPE"
 
 TIANZHENG_BACKEND = "tianzheng_native_backend"
 
@@ -103,6 +118,16 @@ class MockEngineeringPlanner:
                 if reserved.required_capability not in absent:
                     absent.append(reserved.required_capability)
 
+        # Equipment and annotation intents imply capabilities of their own.
+        for equipment in model.equipment_intents:
+            for name in (CAP_EQUIPMENT_CREATE, CAP_PUMP_CREATE):
+                if not capability_available(capabilities, name) and name not in absent:
+                    absent.append(name)
+        for annotation in model.annotation_intents:
+            if not capability_available(capabilities, CAP_DIAMETER_ANNOTATION):
+                if CAP_DIAMETER_ANNOTATION not in absent:
+                    absent.append(CAP_DIAMETER_ANNOTATION)
+
         if absent:
             # No partial plan, no substitution, no silent omission.
             return EngineeringOperationPlan(
@@ -116,6 +141,40 @@ class MockEngineeringPlanner:
                 confidence=1.0,
                 warnings=("plan blocked before any operation was emitted",),
             )
+
+        # --- a family capability does not cover every member of the family ---------------
+        #
+        # tianzheng_native_equipment_create being AVAILABLE says only that SOME equipment can
+        # be created. Only pumps have an adapter, so a water tank must block here rather than
+        # be quietly routed to the pump one - which would put the wrong object in the drawing
+        # and report success.
+        for equipment in model.equipment_intents:
+            if not s10_caps.equipment_type_supported(equipment.equipment_type):
+                return EngineeringOperationPlan(
+                    plan_id=plan_id, task_id=task.task_id, operations=(),
+                    required_capabilities=required,
+                    blocked_reason=BLOCKED_BY_UNSUPPORTED_EQUIPMENT_TYPE,
+                    missing_capabilities=(
+                        f"{CAP_EQUIPMENT_CREATE}[{equipment.equipment_type}]",),
+                    approval_requirement=task.approval_level,
+                    confidence=1.0,
+                    warnings=(
+                        f"equipment_type {equipment.equipment_type!r} is not in "
+                        f"supported_equipment_types "
+                        f"{list(s10_caps.SUPPORTED_EQUIPMENT_TYPES)}; it is NOT substituted "
+                        f"with a supported type",))
+
+        for annotation in model.annotation_intents:
+            if annotation.annotation_type != ANNOTATION_PIPE_DIAMETER:
+                return EngineeringOperationPlan(
+                    plan_id=plan_id, task_id=task.task_id, operations=(),
+                    required_capabilities=required,
+                    blocked_reason=BLOCKED_BY_UNSUPPORTED_ANNOTATION_TYPE,
+                    missing_capabilities=(
+                        f"{CAP_ANNOTATION_CONTROL}[{annotation.annotation_type}]",),
+                    approval_requirement=task.approval_level,
+                    confidence=1.0,
+                    warnings=(f"annotation_type {annotation.annotation_type!r} has no adapter",))
 
         # --- native requirement must not be silently downgraded --------------------------
         native_required = any(r.native_object_required for r in model.route_intents) or bool(
@@ -199,6 +258,74 @@ class MockEngineeringPlanner:
                              {"forbidden_zones": [z.to_dict() for z in model.forbidden_zones],
                               "allowed_zones": [z.to_dict() for z in model.allowed_zones]}),
         ]
+
+        # --- S10.5: equipment -------------------------------------------------------------
+        #
+        # The planner names a CAPABILITY, never a Tianzheng command. HZSB, DGGJ and HZGX do not
+        # appear anywhere in a plan: which command an adapter uses is its own business.
+        for index, equipment in enumerate(model.equipment_intents, start=1):
+            create_id = f"op-eq{index}-create-native-equipment"
+            operations.append(PlannedOperation(
+                operation_id=create_id,
+                semantic_intent=equipment.intent_id,
+                backend_capability=CAP_PUMP_CREATE,
+                parameters={"equipment_type": equipment.equipment_type,
+                            "position": list(equipment.position)},
+                idempotency_key=_key(task.task_id, f"equipment-{index}"),
+                expected_result={"native_class": "TDbPump", "primary_count": 1},
+                verification_rule=f"vr-equipment-{index}-identity",
+                why_this_operation=REASON_SATISFIES_ROUTE_REQUIREMENT,
+                what_requirement_it_satisfies=(
+                    f"a native {equipment.equipment_type} at {equipment.position}"),
+                what_constraint_it_obeys="CapabilityConstraint.required_native_object; "
+                                         "supported_equipment_types",
+                what_result_is_expected="one TDbPump, not a block reference",
+            ))
+            operations.append(PlannedOperation(
+                operation_id=f"op-eq{index}-validate-identity",
+                semantic_intent=equipment.intent_id,
+                backend_capability=CAP_EQUIPMENT_QUERY,
+                parameters={},
+                depends_on=(create_id,),
+                expected_result={"native_identity_confirmed": True, "runtime_class": "TDbPump"},
+                verification_rule=f"vr-equipment-{index}-identity",
+                why_this_operation=REASON_ESTABLISHES_NATIVE_IDENTITY,
+                what_requirement_it_satisfies="the equipment must really be native",
+                what_constraint_it_obeys="VerificationConstraint.require_native_identity",
+                what_result_is_expected="runtime class TDbPump, DXF TCH_PUMP",
+            ))
+            verification_rules.append(VerificationRule(
+                f"vr-equipment-{index}-identity", "pump_native_identity",
+                {"expected_class": "TDbPump", "expected_dxf": "TCH_PUMP",
+                 "position": list(equipment.position),
+                 "tolerance": verification.geometry_tolerance}))
+
+        # --- S10.5: annotation ------------------------------------------------------------
+        #
+        # The plan asks for the pipe to BE annotated. It does not say whether that produces an
+        # object or changes the pipe: the storage model is deliberately invisible here.
+        for index, annotation in enumerate(model.annotation_intents, start=1):
+            annotate_id = f"op-an{index}-annotate-pipe-diameter"
+            operations.append(PlannedOperation(
+                operation_id=annotate_id,
+                semantic_intent=annotation.intent_id,
+                backend_capability=CAP_DIAMETER_ANNOTATION,
+                parameters={"annotation_type": annotation.annotation_type,
+                            "target_intent_id": annotation.target_intent_id,
+                            "target_handle": annotation.target_handle},
+                idempotency_key=_key(task.task_id, f"annotation-{index}"),
+                depends_on=("op-1-create-native-pipe",),
+                expected_result={"annotation_applied": True},
+                verification_rule=f"vr-annotation-{index}-state",
+                why_this_operation=REASON_SATISFIES_ROUTE_REQUIREMENT,
+                what_requirement_it_satisfies="the pipe must carry its diameter annotation",
+                what_constraint_it_obeys="CapabilityConstraint.required_capabilities",
+                what_result_is_expected="the annotation is present on the target pipe",
+            ))
+            verification_rules.append(VerificationRule(
+                f"vr-annotation-{index}-state", "pipe_annotation_state",
+                {"expected_class": "TDbPipe",
+                 "annotation_kind": annotation.annotation_type}))
 
         if verification.require_persistence:
             operations.append(PlannedOperation(
