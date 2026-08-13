@@ -17,6 +17,26 @@ S5 的 `RealAutoCadComBackend` 已完成受证据约束的合成 Sandbox MVP 人
 
 S6 在同一 L3 synthetic-only 边界内扩展了结构化普通 CAD 操作：Line、Circle、Polyline、Arc、Rectangle、Text、MText、普通 BlockDefinition/BlockReference，以及受限 Query/Move/Copy/Rotate/Scale/Delete、图层与基础样式确保、保存重开、真实持久化查询和 append-only journal 幂等重放。它已取得显式 Real COM synthetic 验收，能力为 `ordinary_autocad_operations=AVAILABLE_SANDBOX_MVP`；真实 COM batch 只提供可解释的 `best_effort`，`all_or_nothing` 仅由 Mock 模拟，绝不宣称数据库级事务。默认 pytest 仍不加载真实集成。
 
+S10 在同一 L3 synthetic-only 边界内完成了天正原生工程对象 MVP。相对 S9 的原生管线闭环，新增两项真实、自动化、可持久化、幂等的能力：native `TDbPump`（命令 `HZSB`，调用方仅控制 `position`）与 native `TDbPipe` 管径标注状态（命令 `DGGJ`，存储模型 `MODEL_B_PIPE_OWNED_STATE`，不产生独立标注实体，证据为管线自身的 XData 应用 `TG_PIPELABEL_THICK_SHOW`）。一次真实多对象工程任务（管线 + 水泵 + 管径标注）已通过 Planner、Validator、审批、MCP、真实 TianzhengBackend、保存重开与重放验证，Verifier 结果 `ENGINEERING_TASK_PASS`。阀门与主动管件创建保持明确不可用。最终状态为 `S10_TIANZHENG_ENGINEERING_OBJECTS_CORE_COMPLETE_WITH_BLOCKED_OBJECTS`，不是「天正全面支持」。
+
+天正原生对象能力矩阵（唯一权威来源为 `mcp_nextgen/s10/capabilities.py`，细节见 `docs/S10_TIANZHENG_ENGINEERING_OBJECTS.md`）：
+
+```yaml
+tianzheng_native_object_capabilities:
+  native_pipe:                 AVAILABLE_SANDBOX_MVP      # TDbPipe / TCH_PIPE
+  native_pump:                 AVAILABLE_SANDBOX_MVP      # TDbPump / TCH_PUMP, position only
+  pipe_diameter_annotation:    AVAILABLE_SANDBOX_MVP      # pipe-owned state, no annotation entity
+  native_valve:                NOT_IMPLEMENTED            # BLOCKED_BY_INTERACTIVE_INPUT_SURFACE
+  active_fitting_creation:     NOT_IMPLEMENTED            # endpoint fittings are a pipe side effect only
+  water_tank_and_other_equipment: NOT_IMPLEMENTED         # supported_equipment_types = ["pump"]
+  annotation_entity_creation:  NOT_APPLICABLE             # no annotation DBObject exists
+  pipe_diameter_display_text_read: NOT_AVAILABLE          # confirmed on screen, not via API
+  user_dwg_write:              NOT_AVAILABLE
+  production_write:            NOT_AVAILABLE
+```
+
+不得声称：完整天正支持、完整给排水工程能力、支持全部设备、支持阀门、支持全部标注。runtime class 存在不等于 create 能力可用——阀门即为反例：`TDbPipeValve` 可解析且人工可绘，但没有确定性自动化。
+
 `SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=CAD-SAFE-20260714T220937+0800` 关闭，权威最终 SHA256 为 `87b995aa5e1178df71a2c54b503537346151f8e5ac50a8dc7be778be0d69faff`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。`13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9` 仅是 freeze-time provenance SHA，不是当前 S2 预检或验收应使用的基线 SHA。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
 
 ```powershell
