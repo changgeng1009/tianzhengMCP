@@ -258,6 +258,28 @@ class McpEngineeringGateway:
         return self._mcp("cad.tianzheng.validate_pipe_identity", idempotency_key=f"v-{handle}",
                          job_id=self._job_id, document_token=document_token, handle=handle)
 
+    # --- S10 native objects ---------------------------------------------------------------
+    # Each goes through its own MCP tool. The Tianzheng command behind it never appears here,
+    # and the annotation call carries a target handle and nothing else - no pick point.
+
+    def create_pump(self, document_token: str, position: Sequence[float],
+                    *, idempotency_key: str) -> dict[str, Any]:
+        return self._mcp("cad.tianzheng.create_pump", idempotency_key=idempotency_key,
+                         job_id=self._job_id, document_token=document_token,
+                         position=list(position))
+
+    def query_equipment(self, document_token: str, handle: str) -> dict[str, Any]:
+        data = self._mcp("cad.tianzheng.query_pump", idempotency_key=f"qe-{handle}",
+                         job_id=self._job_id, document_token=document_token, handle=handle)
+        return data.get("snapshot") or {}
+
+    def annotate_pipe_diameter(self, document_token: str, target_pipe_handle: str,
+                               *, idempotency_key: str) -> dict[str, Any]:
+        return self._mcp("cad.tianzheng.annotate_pipe_diameter",
+                         idempotency_key=idempotency_key, job_id=self._job_id,
+                         document_token=document_token,
+                         target_pipe_handle=target_pipe_handle)
+
     def inventory(self, document_token: str) -> dict[str, Any]:
         return dict(self._backend.inventory(document_token))
 

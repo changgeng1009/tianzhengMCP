@@ -30,15 +30,22 @@ from mcp_nextgen.s9.geometry import (
     polyline_intersects_box,
     polyline_within_box,
 )
+from mcp_nextgen.s10 import capabilities as s10_caps
 from mcp_nextgen.s9.planner import capability_available
 
 #: Capabilities the planner is allowed to emit. Anything else never reaches a backend.
+#:
+#: The S10 names are DERIVED from the registry rather than retyped. When S10.5 added the pump
+#: and annotation operations this list was not updated, so every plan containing them was
+#: rejected as INVALID - a break the mock end-to-end test could not see, because it drove the
+#: planner and executor but never the validator. Deriving the set removes that class of drift.
 KNOWN_BACKEND_CAPABILITIES = frozenset({
     "tianzheng_native_pipe_create",
     "tianzheng_native_pipe_query",
     "tianzheng_native_pipe_identity_validation",
     "tianzheng_native_pipe_persistence",
     "tianzheng_native_pipe_idempotency",
+    *s10_caps.native_capability_registry(),
 })
 
 
