@@ -56,3 +56,10 @@ M3: 48 tests | M2: 21 tests | M1: 18 tests
 ## 安全
 所有操作默认禁用。d1_allowed=false, source_modification_allowed=false。
 14 个安全字段全部 false。禁止标志自动检测。详见 SAFETY_POLICY.md
+
+## 许可证
+
+MIT 许可仅覆盖 [原创源码清单](LICENSED_SOURCE_FILES.txt) 中逐项列明的文件，版权人为
+Copyright (c) 2026 Yi Wei。完整标准正文见 [LICENSE](LICENSE)，适用范围与排除材料见
+[LICENSE_SCOPE.md](LICENSE_SCOPE.md)。仓库整体、独立文档/提示词/报告、配置与样例数据
+以及第三方材料不自动纳入该许可；已有第三方声明与各依赖的许可继续适用。
