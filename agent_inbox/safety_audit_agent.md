@@ -52,9 +52,9 @@
 若发现其他路径，必须列入 `unexplained_changes`，不得自行修复或删除。最终裁决仅可为 `APPROVE_S2_IMPLEMENTATION` 或 `CAD_CONFIG_S2_BLOCKED_BY_UNEXPLAINED_PREEXISTING_CHANGE`。
 
 ## Input Files
-- `D:\CodexWork\天正\AGENTS.md`
-- `D:\CodexWork\天正\artifacts\baseline_refreeze_after_agents_update\20260714T220937+0800`
-- `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`
+- `D:\ExampleWorkspace\天正\AGENTS.md`
+- `D:\ExampleWorkspace\天正\artifacts\baseline_refreeze_after_agents_update\20260714T220937+0800`
+- `D:\ExampleWorkspace\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`
 - Git index/worktree metadata
 
 ## Constraints
@@ -65,14 +65,14 @@
 - 文本读取显式 UTF-8。
 
 ## Expected Output
-- `D:\CodexWork\天正\artifacts\cad_config_driven_s2\20260715T113724+0800_s2\baseline_precheck.json`
-- `D:\CodexWork\天正\artifacts\cad_config_driven_s2\20260715T113724+0800_s2\s2_preexisting_worktree_changes.json`
-- `D:\CodexWork\天正\artifacts\cad_config_driven_s2\20260715T113724+0800_s2\existing_manifest_audit.json`
-- `D:\CodexWork\天正\agent_outbox\safety_audit_agent_report.md`
+- `D:\ExampleWorkspace\天正\artifacts\cad_config_driven_s2\20260715T113724+0800_s2\baseline_precheck.json`
+- `D:\ExampleWorkspace\天正\artifacts\cad_config_driven_s2\20260715T113724+0800_s2\s2_preexisting_worktree_changes.json`
+- `D:\ExampleWorkspace\天正\artifacts\cad_config_driven_s2\20260715T113724+0800_s2\existing_manifest_audit.json`
+- `D:\ExampleWorkspace\天正\agent_outbox\safety_audit_agent_report.md`
 
 ## User Resolution Addendum
 
-用户已明确确认 `D:\CodexWork\天正\暖通课程设计\**` 下 199 条 tracked 删除均为 S2 开始前的合法预存变化。请仅基于已有 Git 元数据更新证据，不重新扫描或读取被删除文件内容。
+用户已明确确认 `D:\ExampleWorkspace\天正\暖通课程设计\**` 下 199 条 tracked 删除均为 S2 开始前的合法预存变化。请仅基于已有 Git 元数据更新证据，不重新扫描或读取被删除文件内容。
 
 对每条记录设置：
 - `git_status = "D"`

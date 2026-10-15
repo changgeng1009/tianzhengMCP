@@ -93,12 +93,12 @@
 
 ## Task Description
 
-基于 `D:\CodexWork\天正-mcp-lab` 的真实代码和 Git 元数据完成 DeepSeek 交付清单，不得仅依赖 README。递归记录完整目录树、Git 状态、最近提交、未提交文件、入口、Python/.NET/配置/测试/示例/Schema/MCP tools-resources-prompts/transport/mock runtime/backend/job/journal/safety/idempotency/文档。对每项给出真实路径与代码证据；缺失项明确写 `NOT_FOUND`。
+基于 `D:\ExampleWorkspace\天正-mcp-lab` 的真实代码和 Git 元数据完成 DeepSeek 交付清单，不得仅依赖 README。递归记录完整目录树、Git 状态、最近提交、未提交文件、入口、Python/.NET/配置/测试/示例/Schema/MCP tools-resources-prompts/transport/mock runtime/backend/job/journal/safety/idempotency/文档。对每项给出真实路径与代码证据；缺失项明确写 `NOT_FOUND`。
 
 ## Input Files
 
-- `D:\CodexWork\天正-mcp-lab`
-- `D:\CodexWork\天正\AGENTS.md`
+- `D:\ExampleWorkspace\天正-mcp-lab`
+- `D:\ExampleWorkspace\天正\AGENTS.md`
 
 ## Constraints
 
@@ -217,7 +217,7 @@
 
 ## Input Files
 
-- `C:\Users\REDACTED_USER\.agents\skills\autocad-dwg-redraw-skill-main\autocad-dwg-redraw-skill-main\skills\autocad-dwg-redraw`
+- `C:\Users\example-user\.agents\skills\autocad-dwg-redraw-skill-main\autocad-dwg-redraw-skill-main\skills\autocad-dwg-redraw`
 
 ## Constraints
 

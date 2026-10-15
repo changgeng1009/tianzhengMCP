@@ -61,3 +61,13 @@ artifacts/
 
 # Node and package caches
 node_modules/
+
+# Real project/course CAD and Office inputs stay outside the public repository.
+*.dwg
+*.dxf
+*.dwl
+*.dwl2
+*.docx
+*.xlsx
+/artifactsreal.*/
+/图纸/

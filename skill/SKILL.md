@@ -107,7 +107,7 @@ Stage 2 禁止使用 `backend-doctor --connect` 或 `execute-sandbox --execute`�
 需要参考外部 `autocad-dwg-redraw` 示例时，先进入其目录：
 
 ```powershell
-cd "C:\Users\REDACTED_USER\.agents\skills\autocad-dwg-redraw-skill-main\autocad-dwg-redraw-skill-main\skills\autocad-dwg-redraw"
+cd "C:\Users\example-user\.agents\skills\autocad-dwg-redraw-skill-main\autocad-dwg-redraw-skill-main\skills\autocad-dwg-redraw"
 ```
 
 只读取并借鉴其 source 不覆盖、实体证据优先与保存重开验证规则，不修改外部 Skill。

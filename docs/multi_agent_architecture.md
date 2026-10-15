@@ -8,7 +8,7 @@
 | 创建日期 | 2026-07-08 |
 | 创建者 | docs_agent |
 | 对应阶段 | Phase M0 |
-| 项目仓库 | `D:\CodexWork\天正` |
+| 项目仓库 | `D:\ExampleWorkspace\天正` |
 
 ## 1. 系统概述
 

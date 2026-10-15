@@ -38,11 +38,5 @@
     "mvp2_closure": "D:\\ExampleWorkspace\\天正\\reports\\mvp2_core_engineering_closure.json",
     "hardcoding_audit": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6\\stage6_20260711_204619\\audit\\sample_specific_hardcoding_audit.json",
     "run_root": "D:\\ExampleWorkspace\\天正\\artifacts\\stage6\\stage6_20260711_204619"
-  },
-  "historical_distribution_cleanup": {
-    "status": "redacted",
-    "validation_status": "not_rerun",
-    "cad_connected_by_cleanup": false,
-    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
   }
 }

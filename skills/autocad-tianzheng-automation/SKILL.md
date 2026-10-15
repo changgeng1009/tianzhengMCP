@@ -13,7 +13,7 @@ description: 统一、安全地编排普通 AutoCAD、天正给排水、天正�
 
 本 Skill 已提供 `NextGenMcpMockBackend=IMPLEMENTED_BASELINE` 的离线/Mock 门面，`NextGenControlPlane=PARTIALLY_IMPLEMENTED`；两者都不代表真实 CAD 能力。NextGen 真实写入后端仍为 `NOT_IMPLEMENTED`，`NextGenMcpBackendPlaceholder` 只描述该未实现边界。天正暖通写入保持 `INTERFACE_ONLY`。
 
-`SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=20260714T220937+0800` 关闭，基线 SHA256 为 `13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
+`SEC-FINAL-019` 已由当前安全基线 `current_safe_baseline_id=20260714T220937+0800` 关闭，基线 SHA256 为 `13dc72b6bb08de250f14450d9a941766fc0a6cc474e02ae2ec6bcbe6c74d54c9`。该基线因 `intentional AGENTS.md update` 从父基线 `20260714T193554+0800_s2_1` 重新冻结；默认受守卫测试的 `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`，真实 DWG 成功读写、CAD 进程、COM 与天正连接均为 0。项目相对证据目录为 `artifacts/cad_safe_test_baseline/20260714T220937+0800`，明确路径为 `D:\ExampleWorkspace\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`。从项目根复核：
 
 ```powershell
 python -m scripts.verify_safe_test_baseline --baseline "artifacts/cad_safe_test_baseline/20260714T220937+0800" --project-root "."

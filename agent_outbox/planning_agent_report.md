@@ -10,7 +10,7 @@ CAD-CONFIG-S2-PLAN-001 — 只读审计原 CAD-CONFIG-S2 需求与当前统一 S
 
 ## Files Read
 
-- `C:/Users/REDACTED_USER/.codex/attachments/8c6e0797-6389-409b-bbcb-c69532907aa4/pasted-text.txt`
+- `C:/Users/example-user/.codex/attachments/example-attachment/pasted-text.txt`
 - `skills/autocad-tianzheng-automation/schemas/project_manifest.schema.json`
 - `skills/autocad-tianzheng-automation/runtime/*.py`
 - `skills/autocad-tianzheng-automation/safety/*.py`

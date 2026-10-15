@@ -82,8 +82,8 @@ L3 → L4: 用户明确说"我批准真实执行"
 ### 3.1 AutoCAD COM 连接风险
 
 **涉及文件**:
-- [cad/connection.py](/D:/CodexWork/天正/cad/connection.py)
-- [tools/connect.py](/D:/CodexWork/天正/tools/connect.py)
+- [cad/connection.py](/D:/ExampleWorkspace/天正/cad/connection.py)
+- [tools/connect.py](/D:/ExampleWorkspace/天正/tools/connect.py)
 
 **现状**:
 - default_manager 是全局单例 (AutoCADConnectionManager)，任何模块 import 即可使用
@@ -103,9 +103,9 @@ L3 → L4: 用户明确说"我批准真实执行"
 ### 3.2 SendCommand 风险
 
 **涉及文件**:
-- [cad/commands.py](/D:/CodexWork/天正/cad/commands.py)
-- [tools/command.py](/D:/CodexWork/天正/tools/command.py)
-- [server.py](/D:/CodexWork/天正/server.py) (MCP 工具注册)
+- [cad/commands.py](/D:/ExampleWorkspace/天正/cad/commands.py)
+- [tools/command.py](/D:/ExampleWorkspace/天正/tools/command.py)
+- [server.py](/D:/ExampleWorkspace/天正/server.py) (MCP 工具注册)
 
 **现状**:
 - CommandService.send_command() 直接透传任意字符串给 document.SendCommand()
@@ -129,9 +129,9 @@ L3 → L4: 用户明确说"我批准真实执行"
 ### 3.3 源 DWG 误操作风险
 
 **涉及文件**:
-- [cad/entities.py](/D:/CodexWork/天正/cad/entities.py)
-- [tools/draw.py](/D:/CodexWork/天正/tools/draw.py)
-- [execution/executor.py](/D:/CodexWork/天正/execution/executor.py)
+- [cad/entities.py](/D:/ExampleWorkspace/天正/cad/entities.py)
+- [tools/draw.py](/D:/ExampleWorkspace/天正/tools/draw.py)
+- [execution/executor.py](/D:/ExampleWorkspace/天正/execution/executor.py)
 
 **现状**:
 - 基础 CAD 实体创建 (draw_line, draw_polyline, add_text) 直接操作 document.ModelSpace
@@ -168,9 +168,9 @@ L3 → L4: 用户明确说"我批准真实执行"
 ### 3.5 Sandbox 绕行风险
 
 **涉及文件**:
-- [mcp/t30_writeback/sandbox.py](/D:/CodexWork/天正/mcp/t30_writeback/sandbox.py)
-- [mcp/t30_writeback/real_adapter.py](/D:/CodexWork/天正/mcp/t30_writeback/real_adapter.py)
-- [mcp/t30_writeback/transaction.py](/D:/CodexWork/天正/mcp/t30_writeback/transaction.py)
+- [mcp/t30_writeback/sandbox.py](/D:/ExampleWorkspace/天正/mcp/t30_writeback/sandbox.py)
+- [mcp/t30_writeback/real_adapter.py](/D:/ExampleWorkspace/天正/mcp/t30_writeback/real_adapter.py)
+- [mcp/t30_writeback/transaction.py](/D:/ExampleWorkspace/天正/mcp/t30_writeback/transaction.py)
 
 **现状**:
 - create_dwg_sandbox() 创建源 DWG 的文件副本到沙盒目录
@@ -192,8 +192,8 @@ L3 → L4: 用户明确说"我批准真实执行"
 ### 3.6 Dry-Run 前置校验绕行风险
 
 **涉及文件**:
-- [tianzheng_interface/dry_run_engine.py](/D:/CodexWork/天正/tianzheng_interface/dry_run_engine.py)
-- [tianzheng_interface/proxy_handler.py](/D:/CodexWork/天正/tianzheng_interface/proxy_handler.py)
+- [tianzheng_interface/dry_run_engine.py](/D:/ExampleWorkspace/天正/tianzheng_interface/dry_run_engine.py)
+- [tianzheng_interface/proxy_handler.py](/D:/ExampleWorkspace/天正/tianzheng_interface/proxy_handler.py)
 
 **现状**:
 - DryRunEngine.simulate() 始终返回 executable_actions=0
@@ -210,9 +210,9 @@ L3 → L4: 用户明确说"我批准真实执行"
 ### 3.7 T30 天正对象写入风险
 
 **涉及文件**:
-- [mcp/t30_writeback/object_factory.py](/D:/CodexWork/天正/mcp/t30_writeback/object_factory.py)
-- [mcp/t30_writeback/com_probe.py](/D:/CodexWork/天正/mcp/t30_writeback/com_probe.py)
-- [mcp/adapter_t30.py](/D:/CodexWork/天正/mcp/adapter_t30.py)
+- [mcp/t30_writeback/object_factory.py](/D:/ExampleWorkspace/天正/mcp/t30_writeback/object_factory.py)
+- [mcp/t30_writeback/com_probe.py](/D:/ExampleWorkspace/天正/mcp/t30_writeback/com_probe.py)
+- [mcp/adapter_t30.py](/D:/ExampleWorkspace/天正/mcp/adapter_t30.py)
 
 **现状**:
 - T30ObjectFactory 在 fake_mode=True 时不调用 COM

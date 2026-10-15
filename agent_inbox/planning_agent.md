@@ -35,5 +35,5 @@
 - 将预存工作区变更排除在 S2 source change manifest 之外。
 
 ## Expected Output
-- `D:\CodexWork\天正\agent_outbox\planning_agent_report.md`
+- `D:\ExampleWorkspace\天正\agent_outbox\planning_agent_report.md`
 - 报告包含模块分工、目标文件、依赖、测试顺序、报告文件映射和停止条件。

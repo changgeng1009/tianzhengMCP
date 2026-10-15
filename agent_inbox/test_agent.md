@@ -5,10 +5,10 @@
 ## Task Description
 仅准备安全测试执行清单。只读核对现有文件访问守卫、pytest marker、旧安全基线测试命令/结果和测试目录结构，按用户要求生成精确测试命令计划；不得运行 pytest，等待 Safety Agent 明确 `APPROVE_TESTS`。
 ## Input Files
-- `D:\CodexWork\天正\pytest.ini`
-- `D:\CodexWork\天正\conftest.py`
-- `D:\CodexWork\天正\tests`
-- `D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T193554+0800_s2_1\test_command_manifest.json`
+- `D:\ExampleWorkspace\天正\pytest.ini`
+- `D:\ExampleWorkspace\天正\conftest.py`
+- `D:\ExampleWorkspace\天正\tests`
+- `D:\ExampleWorkspace\天正\artifacts\cad_safe_test_baseline\20260714T193554+0800_s2_1\test_command_manifest.json`
 - 旧基线中的测试结果与 marker/守卫策略 JSON
 ## Constraints
 - 禁止运行任何 pytest。
@@ -35,7 +35,7 @@
 - 不修改守卫以放宽安全规则。
 
 ## Expected Output
-- `D:\CodexWork\天正\agent_outbox\test_agent_report.md`
+- `D:\ExampleWorkspace\天正\agent_outbox\test_agent_report.md`
 - 报告包含现有测试路径、建议新增路径、命令、守卫启用方式、计数采集方式和真实 CAD 零访问验收点。
 
 ## WP4 Implementation Authorization

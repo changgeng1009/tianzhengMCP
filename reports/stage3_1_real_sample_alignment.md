@@ -1,5 +1,3 @@
-> redacted / not_rerun: Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence.
-
 Geometry cleanup: redacted / not_rerun. Original drawing-derived coordinates were removed; remaining historical outcomes are not current acceptance evidence.
 
 # Stage 3.1 — 真实样本冻结、只读扫描与泵房局部对齐

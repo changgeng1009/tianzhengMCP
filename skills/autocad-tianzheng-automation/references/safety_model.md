@@ -19,7 +19,7 @@
 - `triggering_change=intentional AGENTS.md update`
 - `DEFAULT_TEST_REAL_DWG_ACCESS_COUNT=0`
 - 项目相对路径：`artifacts/cad_safe_test_baseline/20260714T220937+0800`
-- 明确路径：`D:\CodexWork\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`
+- 明确路径：`D:\ExampleWorkspace\天正\artifacts\cad_safe_test_baseline\20260714T220937+0800`
 - 正式复核：
 
 ```powershell

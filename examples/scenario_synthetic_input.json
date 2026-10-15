@@ -1,0 +1,78 @@
+{
+  "scenarios": [
+    {
+      "scenario_id": "synthetic_example_001",
+      "name": "Synthetic input configuration (no CAD files included)",
+      "reference_sources": [
+        {
+          "type": "pdf",
+          "source_type": "pdf",
+          "path": "external_inputs/reference.pdf",
+          "rendered_png_path": "external_inputs/reference.png"
+        }
+      ],
+      "target_dwg_path": "external_inputs/target.dwg",
+      "expected_missing": [],
+      "manual_anchor_pairs": [
+        {
+          "reference_point": [
+            0,
+            0
+          ],
+          "reference_space": "image_pixel",
+          "target_point": [
+            0,
+            0
+          ],
+          "target_space": "cad_modelspace",
+          "label": "synthetic_origin",
+          "confidence": 1.0
+        },
+        {
+          "reference_point": [
+            100,
+            100
+          ],
+          "reference_space": "image_pixel",
+          "target_point": [
+            100,
+            100
+          ],
+          "target_space": "cad_modelspace",
+          "label": "synthetic_corner",
+          "confidence": 1.0
+        }
+      ],
+      "options": {
+        "enable_spatial_alignment": true,
+        "enable_coordinate_repair_actions": true,
+        "enable_t30_writeback": false,
+        "dry_run_only": true,
+        "verification_mode": "manual_review",
+        "scope": {
+          "enabled": true,
+          "mode": "bbox",
+          "reference_bbox": [
+            0,
+            0,
+            100,
+            100
+          ],
+          "target_bbox": [
+            0,
+            0,
+            100,
+            100
+          ],
+          "coordinate_space": "mixed_reference_image_target_cad",
+          "label": "synthetic_area"
+        }
+      },
+      "metadata": {
+        "synthetic_test_fixture": true,
+        "real_cad_verified": false,
+        "note": "Original synthetic configuration only. No drawing is included. Supply separately authorized inputs before any real CAD workflow; this is not execution approval or acceptance evidence."
+      }
+    }
+  ]
+}

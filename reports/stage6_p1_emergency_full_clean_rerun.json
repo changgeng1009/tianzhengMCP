@@ -13,11 +13,5 @@
   "hard_stop_close_called": false,
   "save_called": false,
   "save_as_called": false,
-  "production_d1_allowed": false,
-  "historical_distribution_cleanup": {
-    "status": "redacted",
-    "validation_status": "not_rerun",
-    "cad_connected_by_cleanup": false,
-    "notice": "Historical artifact redacted for redistribution. Captured drawing geometry, native object properties, handles and input fingerprints are withheld. This cleanup did not connect to CAD or rerun/revalidate the original assertions. Historical outcomes are not current acceptance or synthetic-run evidence."
-  }
+  "production_d1_allowed": false
 }

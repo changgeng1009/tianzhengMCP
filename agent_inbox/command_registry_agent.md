@@ -5,11 +5,11 @@
 
 ## Task Description
 
-对 `D:\CodexWork\天正` 当前正式项目进行真实代码能力审计，形成可供统一 AutoCAD + 天正 Skill 封装使用的当前能力清单与矩阵。代码与测试证据优先，不以 README 声明代替实现证据。
+对 `D:\ExampleWorkspace\天正` 当前正式项目进行真实代码能力审计，形成可供统一 AutoCAD + 天正 Skill 封装使用的当前能力清单与矩阵。代码与测试证据优先，不以 README 声明代替实现证据。
 
 ## Input Files
 
-- `D:\CodexWork\天正`（递归审计）
+- `D:\ExampleWorkspace\天正`（递归审计）
 - 重点目录：`cad/`、`cad_compare/`、`command_registry/`、`coordinate/`、`execution/`、`mcp/`、`mcp_nextgen/`、`mcp_service/`、`pipe_network/`、`reference/`、`roi/`、`semantic_diff/`、`tianzheng/`、`tianzheng_interface/`、`vision/`、`tests/`、`docs/`
 
 ## Constraints

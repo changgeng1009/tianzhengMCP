@@ -117,7 +117,7 @@ TypeError: The Python instance can not be converted to a COM object
 ```json
 {
   "index": 1,
-  "active_document": "姓名班级学号给排水施工图20251219_t8.dwg",
+  "active_document": "synthetic_sample_t8.dwg",
   "picked_entity": {
     "handle": "ABC",
     "object_name": "AcDbProxyEntity",
